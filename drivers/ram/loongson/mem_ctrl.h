@@ -207,7 +207,8 @@ typedef struct {
 typedef struct {
 	char     mc_vref_adjust;
 	char     ddr_vref_adjust;
-	uint8_t  vref;
+	uint8_t  vref_range;
+	uint8_t  vref_value;
 	uint8_t  vref_init;
 	uint8_t  vref_bits_per;
 	uint8_t  vref_bit;

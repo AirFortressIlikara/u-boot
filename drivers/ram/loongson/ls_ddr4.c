@@ -143,10 +143,12 @@ void mm_feature_init(struct mc_setting *mc)
 	mm_ctrl_info.table.str				= 0;
 #endif
 #ifdef DDR3_MODE
-	mm_ctrl_info.vref.vref				= 0x78;
+	mm_ctrl_info.vref.vref_range			= 0x01;
+	mm_ctrl_info.vref.vref_value			= 0x78;
 	mm_ctrl_info.table.pda_mode			= 0;
 #else
-	mm_ctrl_info.vref.vref				= 0x50;
+	mm_ctrl_info.vref.vref_range			= 0x00;
+	mm_ctrl_info.vref.vref_value			= 0x50;
 	mm_ctrl_info.table.pda_mode			= 1;
 #endif
 	mm_ctrl_info.table.signal_test			= 0;
