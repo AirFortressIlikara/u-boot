@@ -45,4 +45,14 @@ config LOONGSON_GENERAL_LOAD
     default n
     select CMD_UNZIP
 
+config LOONGSON_BOARD_SATA_FS
+    bool "board have sata fs"
+    default n
+    select CMD_UNZIP
+
+config LOONGSON_BOARD_MMC_FS
+    bool "board have mmc(such as emmc or SD card) fs"
+    default n
+    select CMD_UNZIP
+
 endmenu

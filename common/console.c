@@ -24,6 +24,14 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
+static int __print_enable = 1;
+
+int print_enable_setup(int enable)
+{
+	__print_enable = enable ? 1 : 0;
+	return __print_enable;
+}
+
 static int on_console(const char *name, const char *value, enum env_op op,
 	int flags)
 {
@@ -515,12 +523,18 @@ int ftstc(int file)
 
 void fputc(int file, const char c)
 {
+	if (!__print_enable)
+		return;
+
 	if (file < MAX_FILES)
 		console_putc(file, c);
 }
 
 void fputs(int file, const char *s)
 {
+	if (!__print_enable)
+		return;
+
 	if (file < MAX_FILES)
 		console_puts(file, s);
 }
@@ -651,6 +665,9 @@ void putc(const char c)
 	if (!gd)
 		return;
 
+	if (!__print_enable)
+		return;
+
 	console_record_putc(c);
 
 	/* sandbox can send characters to stdout before it has a console */
@@ -690,6 +707,9 @@ void putc(const char c)
 void puts(const char *s)
 {
 	if (!gd)
+		return;
+
+	if (!__print_enable)
 		return;
 
 	console_record_puts(s);

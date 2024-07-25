@@ -33,7 +33,7 @@
 		backlight = <&panel_bkl>;
 
 		display-timings {
-#if 1	// 4.3' LCD
+#if 0	// 4.3' LCD
 			native-mode = <&atk_md0430r>;
 
 			atk_md0430r: 800x480 {

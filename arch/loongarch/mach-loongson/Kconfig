@@ -175,4 +175,23 @@ config CPU_FREQ
 
 source "board/loongson/Kconfig"
 
+choice 
+	prompt "DDR4 SDRAM Select"
+	depends on TARGET_LS2K300_MINI_DP
+	default LOONGSON_DDR4_DEFAULT
+
+config LOONGSON_DDR4_DEFAULT
+	bool "Samsung K4A4G165xx(Default)"
+
+config LOONGSON_DDR4_SINKER_1G
+	bool "Sinker SNC1216S26SS12"
+
+config LOONGSON_DDR4_ISOCOM_1G
+	bool "Isocom MD4C1001G"
+
+config LOONGSON_DDR4_ISOCOM_2G
+	bool "Isocom MD4C1002G"
+
+endchoice
+
 endmenu

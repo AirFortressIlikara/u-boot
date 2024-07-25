@@ -306,6 +306,7 @@ static void loongson_env_trigger(void)
 	run_command("loongson_env_trigger ls_trigger_u_rootfs", 0);
 	run_command("loongson_env_trigger ls_trigger_u_uboot", 0);
 	run_command("loongson_env_trigger ls_trigger_boot", 0);
+	run_command("loongson_env_trigger ls_trigger_ab_sys_status", 0);
 }
 
 #ifdef CONFIG_BOARD_EARLY_INIT_F

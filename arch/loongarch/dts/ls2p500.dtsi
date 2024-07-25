@@ -35,24 +35,6 @@
 
 	};
 
-	cpuic: interrupt-controller {
-		compatible = "loongson,cpu-interrupt-controller";
-		interrupt-controller;
-		#interrupt-cells = <1>;
-	};
-
-	extioiic: interrupt-controller@0x14001600 {
-		compatible = "loongson,extioi-interrupt-controller";
-		interrupt-controller;
-		#interrupt-cells = <1>;
-		interrupt-parent = <&cpuic>;
-		interrupts = <3>;
-		interrupt-names = "cascade";
-		vec_count=<128>;
-		misc_func=<0x100>;
-		eio_en_off=<15>;
-	};
-
 	clocks {
 		compatible = "simple-bus";
 		#address-cells = <1>;
@@ -138,7 +120,7 @@
 		};
 
 		gmac1_pins: pinmux_gmac1_pins {
-			pinctrl-single,bits = <0x8 0x00ffffff 0x00ffffff>;
+			pinctrl-single,bits = <0x8 0x00aaaaaa 0x00ffffff>;
 		};
 	};
 
@@ -207,8 +189,6 @@
 			compatible = "ns16550a";
 			reg = <0 0x14200000 0 0x10>;
 			clocks = <&apb_clk>;
-			interrupt-parent = <&extioiic>;
-			interrupts = <0>;
 			// pinctrl-0 = <&uart0>;
 			// pinctrl-names = "default";
 			no-loopback-test;
@@ -240,29 +220,13 @@
 		gmac0: ethernet@14140000 {
 			compatible = "snps,dwmac-3.70a", "snps,arc-dwmac-3.70a";
 			reg = <0 0x14140000 0 0x10000>;
-			interrupt-parent = <&extioiic>;
-			interrupts = <118>;
-			interrupt-names = "macirq";
 			// mac-address = [ 64 48 48 48 48 60 ];/* [>mac 64:48:48:48:48:60 <]*/
-			phy-mode = "rgmii";
 			bus_id = <0x0>;
-			phy_addr = <0xffffffff>;
-			phy-handle = <&eth_phy0>;
 			dma-mask = <0xffffffff 0xffffffff>;
 			// snps,pbl = <2>;
 			// snps,fixed-burst;
 			// snps,force_sf_dma_mode;
 			status = "disabled";
-
-			mdio0: mdio@0 {
-				#address-cells = <1>;
-				#size-cells = <0>;
-				compatible = "snps,dwmac-mdio";
-
-				eth_phy0: ethernet-phy@0 {
-					reg = <0>;
-				};
-			};
 		};
 
 		gmac1: ethernet@14020000 {
@@ -270,26 +234,13 @@
 			reg = <0 0x14020000 0 0x10000>;
 			pinctrl-0 = <&gmac1_pins>;
 			pinctrl-names = "default";
-			interrupt-parent = <&extioiic>;
-			interrupts = <119>;
-			interrupt-names = "macirq";
 			// mac-address = [ 64 48 48 48 48 61 ];/* [>mac 64:48:48:48:48:61 <]*/
-			phy-mode = "rgmii-id";
 			bus_id = <0x1>;
-			phy_addr = <0xffffffff>;
-			phy-handle = <&eth_phy1>;
 			dma-mask = <0xffffffff 0xffffffff>;
+			// snps,pbl = <2>;
+			// snps,fixed-burst;
+			// snps,force_sf_dma_mode;
 			status = "disabled";
-
-			mdio1: mdio@1 {
-				#address-cells = <1>;
-				#size-cells = <0>;
-				compatible = "snps,dwmac-mdio";
-
-				eth_phy1: ethernet-phy@1 {
-					reg = <0>;
-				};
-			};
 		};
 
 		gpio@14202000 {
@@ -399,8 +350,6 @@
 			#size-cells = <0>;
 			pinctrl-0 = <&i2c0_pins>;
 			pinctrl-names = "default";
-			interrupt-parent = <&extioiic>;
-			interrupts = <14>;
 			clock-frequency = <400000>;
 			reg-shift = <0>;
 			clocks = <&apb_clk>;
@@ -413,8 +362,6 @@
 			reg = <0 0x14201800 0 0x0800>;
 			#address-cells = <1>;
 			#size-cells = <0>;
-			interrupt-parent = <&extioiic>;
-			interrupts = <15>;
 			clock-frequency = <400000>;
 			status = "disabled";
 		};
@@ -424,8 +371,6 @@
 			reg = <0 0x15101000 0 0x0800>;
 			#address-cells = <1>;
 			#size-cells = <0>;
-			interrupt-parent = <&extioiic>;
-			interrupts = <16>;
 			clock-frequency = <400000>;
 			status = "disabled";
 		};
@@ -435,8 +380,6 @@
 			reg = <0 0x15101800 0 0x0800>;
 			#address-cells = <1>;
 			#size-cells = <0>;
-			interrupt-parent = <&extioiic>;
-			interrupts = <17>;
 			clock-frequency = <400000>;
 			status = "disabled";
 		};
@@ -452,8 +395,8 @@
 		};
 
 		sdio1: mmc@14218000 {
-			compatible = "loongson,ls1x-mmc";
-			reg = <0 0x14218000 0 0x2000>;
+			compatible = "loongson,ls-mmc";
+			reg = <0 0x14218000 0 0x8000>;
 			pinctrl-0 = <&sdio1_pins>;
 			pinctrl-names = "default";
 			cap-sd-highspeed;
@@ -471,6 +414,13 @@
 			compatible = "generic-ohci";
 			reg = <0 0x14038000 0 0x8000>;
 			dma-mask = <0x0 0xffffffff>;
+		};
+
+		otg: otg@0x14100000 {
+			compatible = "snps,dwc2";
+			reg = <0 0x14100000 0 0x40000>;
+			dma-mask = <0x0 0xffffffff>;
+			status = "disabled";
 		};
 
 		usb2_phy: usb2phy@xhci {

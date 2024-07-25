@@ -277,7 +277,15 @@ static int update_uboot(int dev)
 	/*
 	 * erase uboot_env
 	 */
+	printf("Erase uboot_env partition ... ");
 	sprintf(cmd, "mtd erase uboot_env");
+	run_command(cmd, 0);
+
+	/*
+	 * erase u-boot ddr param
+	 */
+	printf("Erase ddr_context partition ... ");
+	sprintf(cmd, "mtd erase ddr_context");
 	run_command(cmd, 0);
 
 	user_env_save();

@@ -18,7 +18,7 @@ const static struct cmd_gl_default_s __default =
 	.blk_prefix = "/update/",
 	.boot_device = "flash0:1",
 	.root_device = "mmc0",
-	.kernel_device = "mmc0",
+	.kernel_device = "mmc0:1",
 	.kernel_fstype = "ext4",
 	.kernel_prefix = "/boot/",
 }
@@ -28,7 +28,7 @@ const static struct cmd_gl_default_s __default =
 	.blk_prefix = "/update/",
 	.boot_device = "flash0:1",
 	.root_device = "scsi0",
-	.kernel_device = "scsi0",
+	.kernel_device = "scsi0:1",
 	.kernel_fstype = "ext4",
 	.kernel_prefix = "/boot/",
 }

@@ -52,30 +52,6 @@
 		eio_en_off=<27>;
 	};
 
-	chosen {
-		stdout-path = "serial0:115200n8";
-		bootargs = "earlycon";
-	};
-
-	memory {
-		name = "memory";
-		device_type = "memory";
-		reg = <0x90000000 0x00000000 0 0x10000000
-		       0x90000000 0x90000000 0 0x10000000>;
-		u-boot,dm-pre-reloc;
-	};
-
-	reserved-memory {
-		#address-cells = <2>;
-		#size-cells = <2>;
-		ranges;
-
-		bootparam: bootparam_region {
-			reg = <0x90000000 0x0f000000 0x0 0x1000000>;
-			no-map;
-		};
-	};
-
 	clocks {
 		compatible = "simple-bus";
 		#address-cells = <1>;
@@ -231,7 +207,7 @@
 			status = "disabled";
 
 		};
-#if 0
+
 		gmac1: ethernet@0x16030000 {
 			compatible = "snps,dwmac-3.70a", "snps,arc-dwmac-3.70a";
 			reg = <0 0x16030000 0 0x10000>;
@@ -247,7 +223,7 @@
 			dma-mask = <0xffffffff 0xffffffff>;
 			status = "disabled";
 		};
-#endif
+
 		gpio:gpio@0x16104000 {
 			#address-cells = <1>;
 			#size-cells = <0>;
@@ -267,7 +243,6 @@
 			};
 		};
 
-
 		spi0: spi@0x16010000 {
 			compatible = "loongson,ls-spi";
 			reg = <0 0x16010000 0 0x40000>;
@@ -279,7 +254,6 @@
 			u-boot,dm-pre-reloc;
 		};
 
-#if 0
 		spi1: spi@0x16018000 {
 			compatible = "loongson,ls-spi";
 			reg = <0 0x16018000 0 0x40000>;
@@ -299,8 +273,6 @@
 			interrupts = <14>;
 			clock-frequency = <400000>;
 			reg-shift = <0>;
-			clocks = <&apb_clk>;
-			clock-names = "scl";
 			status = "disabled";
 		};
 
@@ -336,7 +308,7 @@
 			clock-frequency = <400000>;
 			status = "disabled";
 		};
-#endif
+
 		emmc0: emmc@0x16140000 {
 			compatible = "loongson,ls-mmc";
 			reg = <0 0x16140000 0 0x8000>;
@@ -374,6 +346,15 @@
 			reg = <0 0x16040000 0 0x40000>;
 			dma-mask = <0x0 0xffffffff>;
 			status = "disabled";
+		};
+
+		// 必须是 watchdog_d 意味着 detect 用于长时间的任务检测
+		wdt:watchdog_d{
+			compatible = "loongson,ls2x-wdt";
+			reg = <0 0x16124000 0 0xC>;
+			clocks = <&apb_clk>;
+			clock-names = "clk";
+			status = "okay";
 		};
 	};
 };

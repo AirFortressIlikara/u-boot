@@ -14,9 +14,8 @@
 #define mem_debug(s...)
 #endif
 
-#define DTB_OFFSET 0xF0000		/* (1024K - 64K) dtb start offset*/
-#define DTB_DIMM_INFO_OFFS 0xF000 // start from DTB 60K
-#define DIMM_INFO_IN_FLASH_OFFS	(PHYS_TO_UNCACHED(0x1c000000) + DTB_OFFSET + DTB_DIMM_INFO_OFFS)
+#define DDR_CONTEXT_OFF 0xFE000 // (1024k - 8k) ddr_context
+#define DIMM_INFO_IN_FLASH_OFFS	(PHYS_TO_UNCACHED(0x1c000000) + DDR_CONTEXT_OFF)
 
 #define USE_DDR_1TMODE
 #define MC_PER_NODE 		1

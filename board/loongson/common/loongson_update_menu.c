@@ -61,11 +61,11 @@ static char *updatemenu_rootfs[] = {
 #endif
 #ifdef CONFIG_LOONGSON_GENERAL_LOAD
 	#ifdef CONFIG_USB_STORAGE
-	"Update rootfs (rootfs.img) (by usb)=general_load --if usb --sym rootfs.img --decompress\0",
+	"Update rootfs (rootfs.img) (by usb)=general_load --if usb --sym rootfs.img --decompress;\0",
 	#endif
-	"Update rootfs (rootfs.img) (by tftp)=general_load --if net --sym rootfs.img --decompress\0",
+	"Update rootfs (rootfs.img) (by tftp)=general_load --if net --sym rootfs.img --decompress;\0",
 	#ifdef CONFIG_MMC
-	"Update rootfs (rootfs.img) (by mmc)=general_load --if mmc1 --sym rootfs.img --decompress\0",
+	"Update rootfs (rootfs.img) (by mmc)=general_load --if mmc1 --sym rootfs.img --decompress;\0",
 	#endif
 #endif
 
@@ -103,7 +103,18 @@ static char *updatemenu_all[] = {
 };
 
 static char *updatemenu_system[] = {
-#ifdef CONFIG_AHCI
+#ifdef CONFIG_LOONGSON_BOARD_MMC_FS
+	"System install to mmc device (by usb)=recover_cmd usb 1 mmc\0",
+	"System install to mmc device (by tftp)=recover_cmd tftp 1 mmc\0",
+	#ifdef CONFIG_MMC
+	"System install to mmc device (by mmc)=recover_cmd mmc 1 mmc\0",
+	#endif
+	"System recover from mmc disk=recover_cmd mmc_r\0",
+	#ifdef LS_DOUBLE_SYSTEM
+	"System recover last time boot=recover_cmd last\0",
+	#endif
+#endif
+#ifdef CONFIG_LOONGSON_BOARD_SATA_FS
 	"System install to sata disk (by usb)=recover_cmd usb\0",
 	"System install to sata disk (by usb iso)=bootcfg usb\0",
 	"System install to sata disk (by tftp)=recover_cmd tftp\0",

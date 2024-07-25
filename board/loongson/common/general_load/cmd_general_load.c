@@ -3,8 +3,32 @@
 #include <common.h>
 #include <command.h>
 #include <stdlib.h>
+#include <blk.h>
 #include "cmd_gl_arg.h"
 #include "general_load.h"
+#include "../loongson_boot_syspart_manager.h"
+#include "../loongson_img_fdisk.h"
+
+static void try_to_read_fdisk(gl_target_t* src)
+{
+	int type;
+	struct blk_desc* desc;
+	if (!src)
+		return;
+
+	type = gl_target_get_type(src);
+	if (type == GL_DEVICE_NET)
+		loongson_try_read_img_fdisk("tftp");
+	else if (type == GL_DEVICE_BLK) {
+		desc = gl_target_get_desc(src);
+		if (!desc)
+			return;
+		if (desc->if_type == IF_TYPE_MMC)
+			loongson_try_read_img_fdisk("mmc");
+		else if (desc->if_type == IF_TYPE_USB)
+			loongson_try_read_img_fdisk("usb");
+	}
+}
 
 // [--from xxx [--fs xxx]] [--to xxx [--fs xxx]]
 static int do_general_load(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[])
@@ -13,6 +37,7 @@ static int do_general_load(struct cmd_tbl *cmdtp, int flag, int argc, char * con
 	gl_target_t* src;
 	gl_target_t* dest;
 	enum gl_extra_e extra = GL_EXTRA_NONE;
+	int update_rootfs_target;
 
 	if(argc == 1)
 		goto end;
@@ -29,6 +54,21 @@ static int do_general_load(struct cmd_tbl *cmdtp, int flag, int argc, char * con
 		goto free_targets;
 
 	ret = general_load(src, dest, extra);
+
+	if (!ret) {
+		update_rootfs_target = 0;
+		if (!strncmp(src->get_symbol(src), "rootfs", strlen("rootfs")))
+			update_rootfs_target = 1;
+		if (!strncmp(src->get_symbol(src), "/update/rootfs", strlen("/update/rootfs")))
+			update_rootfs_target = 1;
+
+		if (update_rootfs_target) {
+			print_enable_setup(0);
+			setup_cur_syspart(SYSPART_FIRST);
+			print_enable_setup(1);
+			try_to_read_fdisk(src);
+		}
+	}
 
 free_targets:
 	destroy_gl_target(dest);

@@ -3,6 +3,8 @@
 #include <common.h>
 #include <command.h>
 #include <malloc.h>
+#include "loongson_boot_syspart_manager.h"
+#include "loongson_wdt_setup.h"
 
 /*
  * 这是一个模拟uboot启动的时候的会自动复位的触发器逻辑
@@ -36,11 +38,15 @@ static void loongson_tip_update_rootfs_change(void);
 static int loongson_handle_update_uboot_change(int index);
 static void loongson_tip_update_uboot_change(void);
 
+static int loongson_handle_ab_sys_status_change(int index);
+static void loongson_tip_ab_sys_status_change(void);
+
 static char* trigger_name_list[] = {
 	"ls_trigger_boot",
 	"ls_trigger_u_kernel",
 	"ls_trigger_u_rootfs",
 	"ls_trigger_u_uboot",
+	"ls_trigger_ab_sys_status",
 	NULL,
 };
 static loongson_trigger_handle_func trigger_handle_func_list[] = {
@@ -48,6 +54,7 @@ static loongson_trigger_handle_func trigger_handle_func_list[] = {
 	loongson_handle_update_kernel_change,
 	loongson_handle_update_rootfs_change,
 	loongson_handle_update_uboot_change,
+	loongson_handle_ab_sys_status_change,
 	NULL
 };
 static loongson_trigger_tip_func trigger_tip_func_list[] = {
@@ -55,9 +62,10 @@ static loongson_trigger_tip_func trigger_tip_func_list[] = {
 	loongson_tip_update_kernel_change,
 	loongson_tip_update_rootfs_change,
 	loongson_tip_update_uboot_change,
+	loongson_tip_ab_sys_status_change,
 	NULL
 };
-static char* trigger_default_value_list[] = {"0", "0", "0", "0", NULL};
+static char* trigger_default_value_list[] = {"0", "0", "0", "0", "0", NULL};
 
 static int trigger_first_check(int index, char* env_value_bak, int buffer_len)
 {
@@ -116,6 +124,27 @@ static int loongson_handle_boot_change(int index)
 		#else
 			return -1;
 		#endif
+	} else if (!strcmp(env_value, "mmc")) {
+		#ifdef EMMC_BOOT_ENV
+			printf("set boot system from mmc0 .....\r\n");
+			ret = run_command(EMMC_BOOT_ENV, 0);
+		#else
+			return -1;
+		#endif
+	} else if (!strcmp(env_value, "mmc0")) {
+		#ifdef EMMC_BOOT_ENV
+			printf("set boot system from mmc0 .....\r\n");
+			ret = run_command(EMMC_BOOT_ENV, 0);
+		#else
+			return -1;
+		#endif
+	} else if (!strcmp(env_value, "mmc1")) {
+		#ifdef SDCARD_BOOT_ENV
+			printf("set boot system from mmc1 .....\r\n");
+			ret = run_command(SDCARD_BOOT_ENV, 0);
+		#else
+			return -1;
+		#endif
 	} else
 		return -1;
 
@@ -125,9 +154,12 @@ static int loongson_handle_boot_change(int index)
 static void loongson_tip_boot_change(void)
 {
 	printf("\tvalue:\n");
-	printf("\t\t0   : no handle\n");
-	printf("\t\tnand: set boot from nand default\n");
-	printf("\t\tssd : set boot from ssd default\n");
+	printf("\t\t0    : no handle\n");
+	printf("\t\tnand : set boot from nand default\n");
+	printf("\t\tssd  : set boot from ssd default\n");
+	printf("\t\tmmc  : set boot from mmc0 default\n");
+	printf("\t\tmmc0 : set boot from mmc0 default\n");
+	printf("\t\tmmc1 : set boot from mmc1 default\n");
 	printf("\n");
 }
 
@@ -243,6 +275,53 @@ static void loongson_tip_update_uboot_change(void)
 	printf("\t\t0   : no handle\n");
 	printf("\t\tusb:  update uboot by usb\n");
 	printf("\t\ttftp: update uboot by tftp\n");
+	printf("\n");
+}
+
+static int loongson_handle_ab_sys_status_change(int index)
+{
+	int ret;
+	char env_value[32];
+
+	ret = trigger_first_check(index, env_value, 32);
+	if (ret == -1)
+		return -1;
+	else if (ret == 1)
+		return 0;
+
+	ret = 0;
+	if (!strcmp(env_value, "boot1")) {
+		printf("Detected new system ...\n");
+		// setup env ls_trigger_ab_sys_status boot2
+		ret = run_command("setenv ls_trigger_ab_sys_status boot2;saveenv", 0);
+	} else if (!strcmp(env_value, "boot1_wdt")) {
+		printf("Detected new system (with boot failed detect)...\n");
+		// setup watchdog 34s 2k max is 34 s
+		ls_wdt_start(LS_WDT_DEFAULT_TIMEOUT_MS);
+		// setup env ls_trigger_ab_sys_status boot2
+		ret = run_command("setenv ls_trigger_ab_sys_status boot2;saveenv", 0);
+	} else if (!strcmp(env_value, "boot2")) {
+		printf("Detected new system boot failed! run back to last system...\n");
+		// switch last boot part
+		switch_syspart();
+		ret = run_command("setenv ls_trigger_ab_sys_status boot4;saveenv", 0);
+	} else if (!strcmp(env_value, "boot4")) {
+		// just wait last part start... and need set this value to be 0
+		ret = 0;
+	} else
+		return -1;
+
+	return ret;
+}
+
+static void loongson_tip_ab_sys_status_change(void)
+{
+	printf("\tvalue:\n");
+	printf("\t\t0       : no handle\n");
+	printf("\t\tboot1   : new system first boot(uboot will change it to be boot2)\n");
+	printf("\t\boot1_wdt: new system first boot and use watchdog detect auto run back(uboot will change it to be boot2)\n");
+	printf("\t\tboot2   : new system first boot failed(system need set this value to be 0, either uboot will boot last disk)\n");
+	printf("\t\boot4    : to old system known install ab system failed\n");
 	printf("\n");
 }
 

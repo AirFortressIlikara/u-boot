@@ -17,6 +17,8 @@
 #define RD_ADDR     0x9000000007000000
 #elif defined(CONFIG_SOC_LS2K1000)
 #define RD_ADDR     0x9000000090040000
+#elif defined(CONFIG_SOC_LS2K300)
+#define RD_ADDR     0x9000000007000000
 #endif
 
 #if RD_ADDR >= LOCK_CACHE_BASE && RD_ADDR < (LOCK_CACHE_BASE + LOCK_CACHE_SIZE)
@@ -39,9 +41,10 @@
 	"bootmenu_1=Update kernel=updatemenu kernel 1\0" \
 	"bootmenu_2=Update rootfs=updatemenu rootfs 1\0" \
 	"bootmenu_3=Update u-boot=updatemenu uboot 1\0" \
-	"bootmenu_4=Update ALL=updatemenu all 1\0" \
-	"bootmenu_5=System install or recover=updatemenu system 1\0" \
-	"bootmenu_6=Board product=updatemenu product 1\0"
+	"bootmenu_4=Update dtb=updatemenu dtb 1\0" \
+	"bootmenu_5=Update ALL=updatemenu all 1\0" \
+	"bootmenu_6=System install or recover=updatemenu system 1\0" \
+	"bootmenu_7=Board product=updatemenu product 1\0"
 
 #if !defined(CONFIG_DM_VIDEO) || !defined(CONFIG_VIDEO)
 #define LOONGSON_BOOTMENU_VIDEO \
@@ -90,11 +93,15 @@ RECOVER_FRONT_BOOTARGS "setenv bootargs ${bootargs} ins_way=usb;" RECOVER_START
 #define RECOVER_MMC_DEFAULT "mmc rescan;fatload mmc 0:1 ${loadaddr} /install/uImage;fatload mmc 0:1 ${rd_start} /install/ramdisk.gz;"\
 RECOVER_FRONT_BOOTARGS "setenv bootargs ${bootargs} ins_way=mmc;" RECOVER_START
 
+#define RECOVER_TFTP_DOWNLOAD_CMD "tftpboot ${loadaddr} uImage;tftpboot ${rd_start} ramdisk.gz;"
+
 #define RECOVER_TFTP_DEFAULT "tftpboot ${loadaddr} uImage;tftpboot ${rd_start} ramdisk.gz;"\
-RECOVER_FRONT_BOOTARGS "setenv bootargs ${bootargs} ins_way=tftp u_ip=${ipaddr} u_sip=${serverip};" RECOVER_START
+RECOVER_FRONT_BOOTARGS "setenv bootargs ${bootargs} ins_way=tftp ins_target=mmc u_ip=${ipaddr} u_sip=${serverip};" RECOVER_START
+
+#define RECOVER_DHCP_DOWNLOAD_CMD "dhcp ${loadaddr} uImage;dhcp ${rd_start} ramdisk.gz;"
 
 #define RECOVER_DHCP_DEFAULT "dhcp ${loadaddr} uImage;dhcp ${rd_start} ramdisk.gz;"\
-RECOVER_FRONT_BOOTARGS "setenv bootargs ${bootargs} ins_way=tftp u_ip=${ipaddr} u_sip=${serverip};" RECOVER_START
+RECOVER_FRONT_BOOTARGS "setenv bootargs ${bootargs} ins_way=tftp ins_target=mmc u_ip=${ipaddr} u_sip=${serverip};" RECOVER_START
 
 #ifdef CONFIG_LINUX_KERNEL_LOG_CLOSE
 #define LINUX_KERNEL_LOG_LEVEL_SETUP " loglevel=0"
@@ -116,16 +123,16 @@ saveenv;"
 
 #define BOOT_NAND_DEFAULT NAND_BOOT_ENV"boot"
 
-#define EMMC_BOOT_ENV "setenv bootargs " CMDLINE_CONSOLE LINUX_KERNEL_LOG_LEVEL_SETUP " root=/dev/mmcblk0 noinitrd init=/linuxrc rootfstype=ext4 rw rootwait; \
-setenv bootcmd ' setenv bootargs ${bootargs} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel}; \
-ext4load mmc 0 ${loadaddr} /boot/uImage;bootm ';\
+#define EMMC_BOOT_ENV "setenv bootargs " CMDLINE_CONSOLE LINUX_KERNEL_LOG_LEVEL_SETUP " noinitrd init=/sbin/init rootfstype=ext4 rw rootwait; \
+setenv bootcmd ' setenv bootargs ${bootargs} root=/dev/mmcblk0p${syspart} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel}; \
+ext4load mmc 0:1 ${loadaddr} /boot/uImage;bootm ';\
 saveenv;"
 
 #define BOOT_EMMC_DEFAULT EMMC_BOOT_ENV"boot"
 
-#define SDCARD_BOOT_ENV "setenv bootargs " CMDLINE_CONSOLE LINUX_KERNEL_LOG_LEVEL_SETUP " root=/dev/mmcblk1 noinitrd init=/linuxrc rootfstype=ext4 rw rootwait; \
-setenv bootcmd ' setenv bootargs ${bootargs} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel}; \
-ext4load mmc 1 ${loadaddr} /boot/uImage;bootm ';\
+#define SDCARD_BOOT_ENV "setenv bootargs " CMDLINE_CONSOLE LINUX_KERNEL_LOG_LEVEL_SETUP " noinitrd init=/sbin/init  rootfstype=ext4 rw rootwait; \
+setenv bootcmd ' setenv bootargs ${bootargs} root=/dev/mmcblk1p${syspart} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel}; \
+ext4load mmc 1:1 ${loadaddr} /boot/uImage;bootm ';\
 saveenv;"
 
 #define BOOT_SDCARD_DEFAULT SDCARD_BOOT_ENV"boot"
@@ -138,9 +145,8 @@ boot"
 saveenv;\
 boot"
 
-#ifdef CONFIG_AHCI
+/* use ab system mode */
 #define LS_DOUBLE_SYSTEM
-#endif
 
 #define	CONFIG_EXTRA_ENV_SETTINGS					\
 	CONSOLE_STDOUT_SETTINGS \

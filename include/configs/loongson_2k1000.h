@@ -54,7 +54,9 @@
 
 /* LS SATA configuration */
 #if defined(CONFIG_LOONGSON_AHCI)
+#ifndef CONFIG_LOONGSON_RECOVER
 #define CONFIG_LOONGSON_RECOVER
+#endif
 #endif
 
 /* Miscellaneous configuration options */

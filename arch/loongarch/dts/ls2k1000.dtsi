@@ -618,6 +618,15 @@
 			status = "disable";
 		};
 
+		// 必须是 watchdog_d 意味着 detect 用于长时间的任务检测
+		wdt:watchdog_d{
+			compatible = "loongson,ls2x-wdt";
+			reg = <0 0x1fe27030 0 0xC>;
+			clocks = <&apb_clk>;
+			clock-names = "clk";
+			status = "okay";
+		};
+
 		pcie@0 {
 			compatible = "loongson,ls2k1000-pci";
 			#interrupt-cells = <1>;

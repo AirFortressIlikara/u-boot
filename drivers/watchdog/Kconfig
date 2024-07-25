@@ -81,6 +81,12 @@ config WDT
 	  What exactly happens when the timer expires is up to a particular
 	  device/driver.
 
+config WDT_LS2X
+	bool "loongson 2x soc watchdog timer support"
+	depends on WDT
+	help
+	  Enable support for the watchdog timer on loongson 2x SoCs.
+
 config WDT_APPLE
 	bool "Apple watchdog timer support"
 	depends on WDT

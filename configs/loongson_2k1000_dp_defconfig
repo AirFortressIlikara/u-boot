@@ -23,7 +23,9 @@ CONFIG_ARCH_LA_LOONGSON=y
 CONFIG_SOC_LS2K1000=y
 CONFIG_CPU_900MHZ=y
 CONFIG_TARGET_LS2K1000_DP=y
+CONFIG_LOONGSON_RECOVER=y
 CONFIG_LOONGSON_GENERAL_LOAD=y
+CONFIG_LOONGSON_BOARD_SATA_FS=y
 CONFIG_SPL_PAYLOAD="u-boot.img.lzo"
 CONFIG_AHCI=y
 CONFIG_PHYS_64BIT=y
@@ -34,9 +36,9 @@ CONFIG_AUTOBOOT_KEYED=y
 CONFIG_AUTOBOOT_DELAY_STR="m"
 CONFIG_AUTOBOOT_STOP_STR="c"
 CONFIG_USE_BOOTARGS=y
-CONFIG_BOOTARGS="root=/dev/sda console=ttyS0,115200 rootfstype=ext4 rw rootwait"
+CONFIG_BOOTARGS="console=ttyS0,115200 rootfstype=ext4 rw rootwait"
 CONFIG_USE_BOOTCOMMAND=y
-CONFIG_BOOTCOMMAND="setenv bootargs ${bootargs} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel}; sf probe;sf read ${fdt_addr} dtb; general_load --sym uImage; bootm "
+CONFIG_BOOTCOMMAND="setenv bootargs ${bootargs} root=/dev/mmcblk0p${syspart} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel};ext4load scsi 0:${syspart} ${loadaddr} /boot/uImage;bootm"
 CONFIG_LOGLEVEL=7
 CONFIG_SYS_CONSOLE_OVERWRITE_ROUTINE=y
 # CONFIG_SYS_DEVICE_NULLDEV is not set
@@ -80,7 +82,7 @@ CONFIG_CMD_ISOFS=y
 CONFIG_CMD_FS_GENERIC=y
 CONFIG_CMD_MTDPARTS=y
 CONFIG_MTDIDS_DEFAULT="nor0=spi0.0"
-CONFIG_MTDPARTS_DEFAULT="spi0.0:924k(uboot),32k(uboot_env),4k(bdinfo),64k(dtb)"
+CONFIG_MTDPARTS_DEFAULT="spi0.0:924k(uboot),32k(uboot_env),4k(bdinfo),56k(dtb),8k(ddr_context)"
 CONFIG_ISO_PARTITION=y
 # CONFIG_SPL_EFI_PARTITION is not set
 CONFIG_OF_LIVE=y
@@ -169,6 +171,10 @@ CONFIG_SPLASH_SCREEN_ALIGN=y
 CONFIG_BMP_16BPP=y
 CONFIG_BMP_24BPP=y
 CONFIG_BMP_32BPP=y
+# CONFIG_WATCHDOG is not set
+# CONFIG_WATCHDOG_AUTOSTART is not set
+CONFIG_WDT=y
+CONFIG_WDT_LS2X=y
 CONFIG_FAT_WRITE=y
 CONFIG_BCH=y
 CONFIG_PANIC_HANG=y

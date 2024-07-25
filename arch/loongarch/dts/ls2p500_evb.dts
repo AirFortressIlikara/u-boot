@@ -109,12 +109,34 @@
 
 &gmac0 {
 	status = "okay";
-	phy-mode = "rgmii-txid";
+	phy-mode = "rgmii";
+	phy-handle = <&eth_phy0>;
+
+	mdio0: mdio@0 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "snps,dwmac-mdio";
+
+		eth_phy0: ethernet-phy@0 {
+			reg = <0>;
+		};
+	};
 };
 
 &gmac1 {
 	status = "okay";
-	phy-mode = "rgmii-txid";
+	phy-mode = "rgmii";
+	phy-handle = <&eth_phy1>;
+
+	mdio1: mdio@1 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "snps,dwmac-mdio";
+
+		eth_phy1: ethernet-phy@0 {
+			reg = <0>;
+		};
+	};
 };
 
 &emmc0 {

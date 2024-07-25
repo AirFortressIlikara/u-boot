@@ -1,42 +1,34 @@
 #include "ls2k300.dtsi"
+
+#if defined(CONFIG_LOONGSON_DDR4_ISOCOM_2G)
+#include "ls2k300_ddr_isocom_2g.dtsi"
+#elif defined(CONFIG_LOONGSON_DDR4_ISOCOM_1G)
+#include "ls2k300_ddr_isocom_1g.dtsi"
+#elif defined(CONFIG_LOONGSON_DDR4_SINKER_1G)
+#include "ls2k300_ddr_sinker_1g.dtsi"
+#else
+#include "ls2k300_ddr_samsung_512m.dtsi"
+#endif
+
 #include <dt-bindings/gpio/gpio.h>
 
 / {
-	mc0: ram@0 {
-		compatible = "loongson,ls2k0300-ddr";
-		u-boot,dm-pre-reloc;
-
-		soc-config-reg = <0x1fe10100>;
-		mc-disable-offs = <4>;
-		mc-default-offs = <5>;
-
-		sdram-type = "ddr4";	// ddr4
-		dimm-type = "udimm";	// rdimm/udimm/sodimm
-
-		cs-map = <0x1>;		// bit map: 	bit0 -- cs0
-					// 		bit1 -- cs1
-					//		bit2 -- cs2
-					//		bit3 -- cs3
-
-		data-width = <16>;	// 8/16
-		sdram-width = <16>;	// 8/16
-		sdram-banks = <4>;	// 4/8
-		sdram-bank-groups = <2>;	// 0/2/4
-		sdram-rows = <15>;
-		sdram-cols = <10>;
-
-		// clk-latency = <0x30>; //
-		// rd-latency = <0x9>; 	//
-		// wr-latency = <0x4>; 	//
-		mc-dqs-odt = <0x8>;		//
-		cmd-timing-mode = <1>;	// 0: 1T mode; 1(default): 2T mode; 2: 3T mode.
-
-		// To enable the feature below, uncomment it.
-		ddr-param-store;
-		// early-printf;
-		/* addr-mirror; */
-		/* reset-revert; */
+	chosen {
+		stdout-path = "serial0:115200n8";
+		bootargs = "earlycon";
 	};
+
+	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		bootparam: bootparam_region {
+			reg = <0x90000000 0x0f000000 0x0 0x1000000>;
+			no-map;
+		};
+	};
+
 };
 
 &spi0 {

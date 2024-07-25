@@ -48,7 +48,7 @@ static void dev_fixup(void)
 
 	/* uart 0 and 1 be 2 line mode */
 	val = readl(LS_GENERAL_CFG0);
-	val |= 0xe000c000;
+	val |= 0xe0008000;
 	writel(val, LS_GENERAL_CFG0);
 
 	/*RTC toytrim rtctrim must init to 0, otherwise time can not update*/

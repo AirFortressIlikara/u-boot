@@ -7,6 +7,17 @@
 #include <asm/gpio.h>
 #include "loongson_storage_read_file.h"
 #include "bdinfo/bdinfo.h"
+#include "loongson_boot_syspart_manager.h"
+
+typedef enum recover_network {
+	NETWORK_TFTP = 0,
+	NETWORK_DHCP,
+	NETWORK_UNKNOWN,
+} recover_network;
+
+// 0 is scsi default
+// 1 is mmc
+static int install_target=0;
 
 static int run_recover_cmd(char *cmd)
 {
@@ -67,6 +78,7 @@ static int run_recover_cmd_for_storage(enum if_type if_type)
 	char* type;
 	enum if_type if_type_set[] = {IF_TYPE_USB, IF_TYPE_MMC};
 	char* type_set[] = {"usb", "mmc", NULL};
+	char* ins_target_set[] = {"scsi", "mmc", NULL};
 	int status;
 
 	status = 0;
@@ -111,7 +123,7 @@ static int run_recover_cmd_for_storage(enum if_type if_type)
 
 	// set bootargs env by loongson env
 	memset(cmdbuf, 0, 256);
-	sprintf(cmdbuf, "setenv bootargs ${bootargs} ins_way=%s;", type);
+	sprintf(cmdbuf, "setenv bootargs ${bootargs} ins_way=%s ins_target=%s;", type, ins_target_set[install_target]);
 	ret = run_command(cmdbuf, 0);
 	if (ret) {
 		status = 3;
@@ -135,6 +147,65 @@ reset_start_failed:
 	return ret;
 }
 
+/*
+ * network_way
+ * 0 tftp
+ * 1 dhcp
+ */
+static int run_recover_cmd_for_network(recover_network network_way)
+{
+	int ret = -1;
+	char cmdbuf[256];	/* working copy of cmd */
+	char* ins_target_set[] = {"scsi", "mmc", NULL};
+	char* download_cmd[] = {RECOVER_TFTP_DOWNLOAD_CMD, RECOVER_DHCP_DOWNLOAD_CMD, NULL};
+	int status;
+
+	status = 0;
+
+	if (network_way >= NETWORK_UNKNOWN) {
+		status = 2;
+		goto reset_failed;
+	}
+
+	// read kernel and ramdisk
+	ret = run_command(download_cmd[network_way], 0);
+	if (ret) {
+		status = 2;
+		goto reset_failed;
+	}
+
+	// set bootargs env
+	ret = run_command(RECOVER_FRONT_BOOTARGS, 0);
+	if (ret) {
+		status = 3;
+		goto reset_failed;
+	};
+
+	// set bootargs env by loongson env
+	memset(cmdbuf, 0, 256);
+	sprintf(cmdbuf, "setenv bootargs ${bootargs} ins_way=tftp ins_target=%s u_ip=${ipaddr} u_sip=${serverip};", ins_target_set[install_target]);
+	ret = run_command(cmdbuf, 0);
+	if (ret) {
+		status = 3;
+		goto reset_failed;
+	}
+
+	// boot kernel and ramdisk.gz
+	ret = run_command(RECOVER_START, 0);
+	if (ret) {
+		status = 3;
+		goto reset_failed;
+	}
+	return ret;
+
+reset_failed:
+	printf("##################################################################\n");
+	if (status == 2)
+		printf("### Error download kernel or ramdisk.gz\n");
+	printf("##################################################################\n");
+	return ret;
+}
+
 static int do_recover_from_usb(void)
 {
 	printf("Install System By USB .....\r\n");
@@ -146,13 +217,13 @@ static int do_recover_from_tftp(void)
 {
 	// char cmd[]= "tftpboot ${loadaddr} uImage;tftpboot ${rd_start} ramdisk.gz;"RECOVER_DEFAULT_ENV"";
 	printf("Install System By tftp .....\r\n");
-	return run_recover_cmd(RECOVER_TFTP_DEFAULT);
+	return run_recover_cmd_for_network(NETWORK_TFTP);
 }
 
 static int do_recover_from_dhcp(void)
 {
 	printf("Install System By dhcp .....\r\n");
-	return run_recover_cmd(RECOVER_DHCP_DEFAULT);
+	return run_recover_cmd_for_network(NETWORK_DHCP);
 }
 
 #ifdef CONFIG_MMC
@@ -172,6 +243,19 @@ static int do_recover_from_sata(char *part_id)
 #else
 	char cmd[CONFIG_SYS_CBSIZE] = {0};
 	snprintf(cmd, sizeof(cmd), "scsi reset;ext4load scsi 0:%s ${loadaddr} uImage;ext4load scsi 0:%s ${rd_start} ramdisk.gz;%s setenv bootargs ${bootargs} rec_sys=1; %s"
+		, part_id, part_id, RECOVER_FRONT_BOOTARGS, RECOVER_START);
+	return run_recover_cmd(cmd);
+#endif
+}
+
+static int do_recover_from_mmc_r(char *part_id)
+{
+#ifdef RECOVER_SATA_DEFAULT
+	printf("Recover System By SATA .....\r\n");
+	return run_recover_cmd(RECOVER_SATA_DEFAULT);
+#else
+	char cmd[CONFIG_SYS_CBSIZE] = {0};
+	snprintf(cmd, sizeof(cmd), "ext4load mmc 0:%s ${loadaddr} uImage;ext4load mmc 0:%s ${rd_start} ramdisk.gz;%s setenv bootargs ${bootargs} rec_sys=1 rec_target=mmc; %s"
 		, part_id, part_id, RECOVER_FRONT_BOOTARGS, RECOVER_START);
 	return run_recover_cmd(cmd);
 #endif
@@ -207,71 +291,18 @@ int recover(void)
 
 #ifdef LS_DOUBLE_SYSTEM
 
-static void do_recover_to_last_save_bdinfo(void)
-{
-	char *env;
-	char *env_buf;
-
-	env = env_get("syspart");
-	env_buf = env_get("syspart_last");
-	bdinfo_set(BDI_ID_SYSPART, env);
-	bdinfo_set(BDI_ID_SYSPART_LAST, env_buf);
-	bdinfo_save();
-}
-
-static void do_recover_to_last_save_env_bdinfo(char* cur_syspart)
-{
-	if (!cur_syspart)
-		cur_syspart = "1";
-
-	if (!strcmp(cur_syspart, "1")) {
-		env_set("syspart", "4");
-		env_set("syspart_last", "1");
-	} else {
-		env_set("syspart", "1");
-		env_set("syspart_last", "4");
-	}
-	env_save();
-	do_recover_to_last_save_bdinfo();
-}
-
-static int do_recover_to_last_handle_error(void)
-{
-	char *env;
-	char *env_last;
-
-	env = env_get("syspart");
-	env_last = env_get("syspart_last");
-
-	// 不相等证明没问题
-	if (strcmp(env, env_last))
-		return 1;
-
-	do_recover_to_last_save_env_bdinfo(env);
-	return 0;
-}
-
 static int do_recover_to_last(void)
 {
 	char *env;
 	int ret;
 
 	env = env_get("bootcmd");
-	if (strstr(env, "scsi") == NULL) {
+	if (!strstr(env, "scsi") && !strstr(env, "mmc") ) {
 		printf("current maybe is boot by nand\n");
 		return -1;
 	}
 
-	// 没有发现异常 (syspart != syspart_last)
-	if (do_recover_to_last_handle_error()) {
-		//两个启动盘的情况 是 两个盘符之间的转换
-		env = env_get("syspart");
-		do_recover_to_last_save_env_bdinfo(env);
-	}
-
-	ret = run_command(BOOT_SATA_DEFAULT, 0);
-	if (ret)
-		printf("recover last time system failed!\n");
+	ret = switch_syspart();
 
 	return ret;
 }
@@ -294,6 +325,16 @@ static int do_recover_cmd(struct cmd_tbl *cmdtp, int flag, int argc, char * cons
 	int ret = -1;
 	if (argc < 2) {
 		return ret;
+	}
+
+	install_target = 0;
+	if (!argv[3])
+		install_target = 0;
+	else {
+		if (!strcmp(argv[3], "scsi"))
+			install_target = 0;
+		else if (!strcmp(argv[3], "mmc"))
+			install_target = 1;
 	}
 
 	if (strcmp(argv[1], "usb") == 0) {
@@ -320,6 +361,16 @@ static int do_recover_cmd(struct cmd_tbl *cmdtp, int flag, int argc, char * cons
 		printf("part_id:%s\n", part_id);
 		ret = do_recover_from_sata(part_id);
 	}
+	else if (strcmp(argv[1], "mmc_r") == 0) {
+		char part_id[4] = "4";
+		if (argc == 3) {
+			memset(part_id, 0, sizeof(part_id));
+			int len = strlen(argv[2]) > sizeof(part_id) ? sizeof(part_id) : strlen(argv[2]);
+			strncpy(part_id, argv[2], len);
+		}
+		printf("part_id:%s\n", part_id);
+		ret = do_recover_from_mmc_r(part_id);
+	}
 #ifdef LS_DOUBLE_SYSTEM
 	else if (strcmp(argv[1], "last") == 0) {
 		ret = do_recover_to_last();
@@ -330,12 +381,12 @@ static int do_recover_cmd(struct cmd_tbl *cmdtp, int flag, int argc, char * cons
 }
 
 #define RECOVER_CMD_TIP_HEAD "recover system by usb or backup partition.\n"\
-								"recover_cmd <option> [part_id]\n"\
-								"option: usb: recover from usb\n"\
-								"option: tftp: recover from tftp\n"
+								"recover_cmd <option> [part_id] [install_target]\n"\
+								"option1: usb: recover from usb\n"\
+								"        tftp: recover from tftp\n"
 
 #ifdef CONFIG_MMC
-#define RECOVER_CMD_TIP_MMC "        mmc: recover from mmc\n"
+#define RECOVER_CMD_TIP_MMC "         mmc: recover from mmc\n"
 #else
 #define RECOVER_CMD_TIP_MMC ""
 #endif
@@ -346,16 +397,30 @@ static int do_recover_cmd(struct cmd_tbl *cmdtp, int flag, int argc, char * cons
 #define RECOVER_CMD_TIP_LAST ""
 #endif
 
+#ifdef CONFIG_LOONGSON_BOARD_SATA_FS
+#define INSTALL_TARGET_SCSI_TIP "option3: scsi: install system to sda"
+#else
+#define INSTALL_TARGET_SCSI_TIP ""
+#endif
+
+#ifdef CONFIG_LOONGSON_BOARD_MMC_FS
+#define INSTALL_TARGET_MMC_TIP "option3: mmc : install system to mmc"
+#else
+#define INSTALL_TARGET_MMC_TIP ""
+#endif
+
 #define RECOVER_CMD_TIP RECOVER_CMD_TIP_HEAD \
 							RECOVER_CMD_TIP_MMC \
 							RECOVER_CMD_TIP_LAST \
-							"        sata: recover from sata\n"\
-							"        part_id: recover from part id of sata\n"
+							"         sata: recover from sata\n"\
+							"         mmc_r: recover from mmc ext4 part\n"\
+							"option2: part_id: recover from part id\n" \
+							INSTALL_TARGET_SCSI_TIP \
+							INSTALL_TARGET_MMC_TIP
 
 U_BOOT_CMD(
-	recover_cmd,    3,    1,     do_recover_cmd,
+	recover_cmd,    4,    1,     do_recover_cmd,
 	"recover the system",
 	RECOVER_CMD_TIP
 );
-
 
