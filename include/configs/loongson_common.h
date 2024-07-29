@@ -33,7 +33,9 @@
 #define RD_SIZE		0x2000000 /* ramdisk size:32M == 32768K*/
 
 /*dtb size: 64K*/
-#define FDT_SIZE	0x10000
+//#define FDT_SIZE	0x10000
+/*dtb size: 56K*/
+#define FDT_SIZE	0xE000
 
 #define LOONGSON_BOOTMENU \
 	"menucmd=bootmenu\0" \
