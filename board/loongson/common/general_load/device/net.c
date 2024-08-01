@@ -13,7 +13,7 @@ static int m__net_gl_read(struct net_gl_desc* self, int proto,
 	// 好在目前只有2K300用 disk.img 模式，暂时需要这样规避
 	// 对于其他所有使用 disk.img 的情况，务必、务必修改整体设计结构！
 	// 禁止存在对操作者隐匿的条件
-#ifdef CONFIG_SOC_LS2K300
+#ifdef CONFIG_LOONGSON_GENERAL_LOAD_FIX_FDISK
 	env_set("netretry", "no");
 #else
 	env_set("netretry", "yes");

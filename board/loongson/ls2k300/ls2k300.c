@@ -26,8 +26,9 @@ static void ls2k0300_usb_phy_init(unsigned long long base, int sel)
 {
 	unsigned int val;
 
-	readl(base + 0x508) &= ~(1 << 3);
 	readl(base + 0x11c) &= ~(1 << (8 + sel));
+	readl(base + 0x11c) |= (1 << 7);
+	readl(base + 0x508) &= ~(1 << 3);
 
 	if (sel) {
 		readl(base + 0x508) |= (1 << 16) | (1 << 17);
@@ -82,6 +83,11 @@ static void dev_fixup(void)
 	val = readl(LS_GENERAL_CFG4);
 	val |= (0x3 << PAD_CTRL_DVO) | (0x3 << PAD_CTRL_GMAC) | (0x3 << PAD_CTRL_USB);
 	writel(val, LS_GENERAL_CFG4);
+
+	// All UARTs in 2 wire mode
+	val = readl(LS_GENERAL_CFG0);
+	val |= (0xe << 20) | (0xe << 24);
+	writel(val, LS_GENERAL_CFG0);
 
 	///*RTC toytrim rtctrim must init to 0, otherwise time can not update*/
 	//writel(0x0, LS_TOY_TRIM_REG);

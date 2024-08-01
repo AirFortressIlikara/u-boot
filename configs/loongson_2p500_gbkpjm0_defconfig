@@ -21,9 +21,12 @@ CONFIG_SPL_SPI_FLASH_SUPPORT=y
 CONFIG_SPL_SPI=y
 CONFIG_ARCH_LA_LOONGSON=y
 CONFIG_SOC_LS2P500=y
-CONFIG_CPU_800MHZ=y
+CONFIG_CPU_600MHZ=y
 CONFIG_TARGET_LS2P500_RSJ=y
+CONFIG_LOONGSON_RECOVER=y
 CONFIG_LOONGSON_GENERAL_LOAD=y
+# CONFIG_LOONGSON_GENERAL_LOAD_FIX_FDISK is not set
+CONFIG_LOONGSON_BOARD_MMC_FS=y
 CONFIG_SPL_PAYLOAD="u-boot.img"
 CONFIG_PHYS_64BIT=y
 CONFIG_SYS_LOAD_ADDR=0x9000000098000000
@@ -35,7 +38,7 @@ CONFIG_AUTOBOOT_STOP_STR="c"
 CONFIG_USE_BOOTARGS=y
 CONFIG_BOOTARGS="console=ttyS0,115200 rw noinitrd init=/linuxrc rootfstype=ext4 rootwait"
 CONFIG_USE_BOOTCOMMAND=y
-CONFIG_BOOTCOMMAND="setenv bootargs ${bootargs} root=/dev/mmcblk0p${syspart} mtdparts=${mtdparts};ext4load mmc 0 ${loadaddr} /boot/uImage;bootm"
+CONFIG_BOOTCOMMAND="setenv bootargs ${bootargs} root=/dev/mmcblk0p${syspart} mtdparts=${mtdparts};ext4load mmc 0:${syspart} ${loadaddr} /boot/uImage;bootm"
 CONFIG_LOGLEVEL=7
 CONFIG_SYS_CONSOLE_OVERWRITE_ROUTINE=y
 # CONFIG_SYS_DEVICE_NULLDEV is not set
