@@ -12,10 +12,10 @@
 #define NETWORK_FREQ 400
 
 #ifdef REF_120M
-#define NODE_REFC	4
-#define NODE_DIV	4
-#else
 #define NODE_REFC	6
+#define NODE_DIV	2
+#else
+#define NODE_REFC	4
 #define NODE_DIV	2
 #endif
 #define NODE_LOOPC	(CORE_FREQ*NODE_REFC*NODE_DIV/REF_FREQ)
