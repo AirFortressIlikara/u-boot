@@ -81,7 +81,13 @@ static void dev_fixup(void)
 
 	//enhance the io driving force
 	val = readl(LS_GENERAL_CFG4);
+// MMC 高驱动力下可到 hs200
+#ifdef CONFIG_LOONGSON_MMC_HIGH_PERFORMANCE
+	val |= (0x3 << PAD_CTRL_DVO) | (0x3 << PAD_CTRL_GMAC) | (0x3 << PAD_CTRL_USB)
+		| (0x7 << PAD_CTRL_EMMC) | (0x7 << PAD_CTRL_SDIO);
+#else
 	val |= (0x3 << PAD_CTRL_DVO) | (0x3 << PAD_CTRL_GMAC) | (0x3 << PAD_CTRL_USB);
+#endif
 	writel(val, LS_GENERAL_CFG4);
 
 	// All UARTs in 2 wire mode

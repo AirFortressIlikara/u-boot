@@ -188,7 +188,7 @@ static int ls_disptiming_to_modesetting(struct ls_video_priv *priv,
 
 	if (priv->conn_type == LS_CONNECTOR_VGA) {
 		for (i = 0; i < ARRAY_SIZE(vgamode); i++) {
-			if (vgamode[i].hactive == timing->hactive.typ 
+			if (vgamode[i].hactive == timing->hactive.typ
 					&& vgamode[i].vactive == timing->vactive.typ) {
 				mode_id = i;
 				break;
@@ -251,7 +251,7 @@ static void config_pll(void __iomem *pll_base, struct ls_pll_cfg *pix_pll)
 
 	writel((out | 1), pll_base);
 #elif defined(CONFIG_SOC_LS2K1000)
-	ulong out = ((ulong)(pix_pll->l1_loopc) << 32) | 
+	ulong out = ((ulong)(pix_pll->l1_loopc) << 32) |
 					(pix_pll->l1_frefc << 26) | (1UL << 42) | (0x3 << 10) | (0x1 << 7);
 
 	writeq(0, pll_base);
@@ -419,9 +419,12 @@ static int ls_dc_init(struct ls_video_priv *priv)
 
 static int ls_read_edid(struct ls_video_priv *priv, int block, u8 *buf)
 {
+	int ret = 0;
+#if defined(CONFIG_DM_I2C)
 	int shift = block * EDID_SIZE;
 	struct udevice *chip;
-	int ret;
+#endif
+
 #ifdef CONFIG_VIDEO_BRIDGE
 	if (priv->conn_type == LS_CONNECTOR_BRIDGE) {
 		ret = video_bridge_read_edid(priv->connector, buf, EDID_SIZE);
@@ -441,7 +444,7 @@ static int ls_read_edid(struct ls_video_priv *priv, int block, u8 *buf)
 		return dm_i2c_read(chip, shift, buf, EDID_SIZE);
 	}
 #endif
-	return 0;
+	return ret;
 }
 
 extern int ls_fill_display_timing_by_name(struct display_timing* timing, char* name);
@@ -658,7 +661,7 @@ static int ls_video_probe(struct udevice *dev)
 
 	debug("%s uc_plat: base 0x%lx, size 0x%x\n",
 		dev->name, uc_plat->base, uc_plat->size);
-	
+
 	priv->ddc_bus = NULL;
 	priv->connector = NULL;
 	priv->conn_type = LS_CONNECTOR_UNKNOWN;
@@ -716,10 +719,10 @@ static int ls_video_probe(struct udevice *dev)
 			panel_enable_backlight(priv->connector);
 	}
 
-	debug("%s - connector type: %s, pix fmt: %d, display resolution: %d x %d\n", dev->name, 
+	debug("%s - connector type: %s, pix fmt: %d, display resolution: %d x %d\n", dev->name,
 			priv->conn_type == LS_CONNECTOR_PANEL ? "Panel" :
 				priv->conn_type == LS_CONNECTOR_VGA ? "VGA" :
-				priv->conn_type == LS_CONNECTOR_HDMI ? "HDMI" : 
+				priv->conn_type == LS_CONNECTOR_HDMI ? "HDMI" :
 				priv->conn_type == LS_CONNECTOR_BRIDGE ? "Bridge" :"Unknown",
 			priv->pix_fmt, priv->timing.hactive.typ, priv->timing.vactive.typ);
 

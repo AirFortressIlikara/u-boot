@@ -14,6 +14,8 @@
 #include <asm/addrspace.h>
 #include <asm/global_data.h>
 #include <asm/io.h>
+#include <stdlib.h>
+#include <dm.h>
 
 #if defined(CONFIG_LOONGSON_BOOT_FIXUP)
 extern void *build_boot_param(void);
@@ -27,6 +29,9 @@ DECLARE_GLOBAL_DATA_PTR;
 static int linux_argc;
 static char **linux_argv;
 static char *linux_argp;
+
+// 新的传参规范里面无需把 command line 拆开成一个一个 直接字符串传进去就好
+static char *linux_command_line;
 
 static char **linux_env;
 static char *linux_env_p;
@@ -256,13 +261,52 @@ static void boot_prep_linux(bootm_headers_t *images)
 	}
 }
 
+/*
+ * 判断使用哪种传参方式
+ * 0 代表旧的传参
+ * 1 代表新的传参
+ */
+static int judge_boot_param_type(bootm_headers_t *images)
+{
+	char* kernel_type;
+	kernel_type = image_get_name(images->legacy_hdr_os);
+
+	if (!strncmp(kernel_type, "Linux-5", 7))
+		return 0;
+	else if (!strncmp(kernel_type, "Linux-4", 7))
+		return 0;
+
+	return 1;
+}
+
+static const char* boot_smbios_type2_board_name(void)
+{
+	struct udevice *dev;
+	ofnode parent_node, node;
+
+	const char* board_name = NULL;
+	uclass_first_device(UCLASS_SYSINFO, &dev);
+	if (dev) {
+		parent_node = dev_read_subnode(dev, "smbios");
+		if (!ofnode_valid(parent_node))
+			return NULL;
+
+		node = ofnode_find_subnode(parent_node, "baseboard");
+		if (!ofnode_valid(node))
+			return NULL;
+
+		board_name = ofnode_read_string(node, "product");
+	}
+	return board_name;
+}
+
 static void boot_jump_linux(bootm_headers_t *images)
 {
 	typedef void __noreturn (*kernel_entry_t)(int, ulong, ulong, ulong);
 	kernel_entry_t kernel = (kernel_entry_t)map_to_sysmem((void*)images->ep);
 #if defined(CONFIG_LOONGSON_BOOT_FIXUP)
 	void *fw_arg2 = NULL, *fw_arg3 = NULL;
-	void *fdt = NULL, *bootparam = NULL;
+	void *bootparam = NULL;
 #endif
 
 	debug("## Transferring control to Linux (at address %p) ...\n", kernel);
@@ -277,21 +321,44 @@ static void boot_jump_linux(bootm_headers_t *images)
 #endif
 
 #if defined(CONFIG_LOONGSON_BOOT_FIXUP)
-	fdt = env_get("fdt_addr");
-	if (fdt) {
-		fdt = (void *)simple_strtoul(fdt, NULL, 16);
-		if (fdt_check_header(fdt)) {
-			printf("Warning: invalid device tree. Used linux default dtb\n");
-			fdt = NULL;
+	bootparam = build_boot_param();
+	if (judge_boot_param_type(images)) {
+		int i;
+		const char* board_name;
+		// 见于 龙芯CPU统一系统架构规范（LA架构嵌入式系列）.pdf 的 4.1 传参约定 一节
+		fw_arg2 = (void*)(*(unsigned long long *)(bootparam + 8));
+		board_name = boot_smbios_type2_board_name();
+
+		// 新的传参规范里面无需把 command line 拆开成一个一个 直接字符串传进去就好
+		// 下标 0 的元素必定为 NULL 无视即可
+		linux_command_line = (char*)calloc(256, sizeof(char));
+		sprintf(linux_command_line, "%s", linux_argv[1]);
+		for (i = 2; i < linux_argc; ++i) {
+			sprintf(linux_command_line, "%s %s", linux_command_line, linux_argv[i]);
 		}
+		// 把要匹配的板卡名字放到 command line 里面
+		sprintf(linux_command_line, "%s bp_start=0x%.llx", linux_command_line, (unsigned long long)bootparam);
+		if (board_name)
+			sprintf(linux_command_line, "%s board_name=%s", linux_command_line, board_name);
+
+		kernel(0, (ulong)linux_command_line, (ulong)fw_arg2, (ulong)fw_arg3);
+	} else {
+		void *fdt = NULL;
+		fdt = env_get("fdt_addr");
+		if (fdt) {
+			fdt = (void *)simple_strtoul(fdt, NULL, 16);
+			if (fdt_check_header(fdt)) {
+				printf("Warning: invalid device tree. Used linux default dtb\n");
+				fdt = NULL;
+			}
+		}
+
+		fw_arg2 = bootparam;
+		fw_arg3 = fdt;
+
+		kernel(linux_argc, (ulong)linux_argv, (ulong)fw_arg2, (ulong)fw_arg3);
 	}
 
-	bootparam = build_boot_param();
-	fw_arg2 = bootparam;
-	fw_arg3 = fdt;
-
-	kernel(linux_argc, (ulong)linux_argv, (ulong)fw_arg2,
-			(ulong)fw_arg3);
 #else
 	if (images->ft_len) {
 		kernel(-2, (ulong)images->ft_addr, 0, 0);

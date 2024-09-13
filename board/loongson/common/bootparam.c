@@ -1,4 +1,5 @@
 #include <common.h>
+#include <command.h>
 #include <asm/addrspace.h>
 #include <smbios.h>
 #include <dm/device.h>
@@ -19,9 +20,10 @@
 
 #if defined(BOOT_PARAMS_BPI)
 
-#ifdef ACPI_SUPPORT
-const efi_guid_t smbios_guid = SMBIOS_TABLE_GUID;
-#endif
+// 无需一定要有 ACPI
+// #ifdef ACPI_SUPPORT
+// const efi_guid_t smbios_guid = SMBIOS_TABLE_GUID;
+// #endif
 
 extern struct efi_system_table systab;
 extern efi_status_t efi_init_systab(void);
@@ -134,13 +136,16 @@ u64 init_vbios(struct boot_params *bp, u64 offset)
 
 void loongson_smbios_init(void)
 {
+	const efi_guid_t smbios_guid = SMBIOS_TABLE_GUID;
+
 	write_smbios_table((ulong)SMBIOS_PHYSICAL_ADDRESS);
 
-#ifdef ACPI_SUPPORT
+	// 无需一定要有 ACPI
+// #ifdef ACPI_SUPPORT
 	/* And expose them to our EFI payload */
-	return efi_install_configuration_table(&smbios_guid,
+	efi_install_configuration_table(&smbios_guid,
 			(void *)SMBIOS_PHYSICAL_ADDRESS);
-#endif
+// #endif
 }
 
 #ifdef ACPI_SUPPORT
@@ -155,6 +160,24 @@ void loongson_acpi_init(void)
 			(void *)v_to_p(ACPI_TABLE_PHYSICAL_ADDRESS));
 }
 #endif
+
+void loongson_fdt_init(void)
+{
+	// 新的传参规范里面 可以把 fdt 放在 efi table 里面
+	const efi_guid_t fdt_guid = EFI_FDT_GUID;
+	void* fdt = (void*)env_get("fdt_addr");
+	if (fdt) {
+		fdt = (void *)simple_strtoul(fdt, NULL, 16);
+		if (fdt_check_header(fdt)) {
+			printf("Warning: invalid device tree. Used linux default dtb\n");
+			fdt = NULL;
+		}
+	}
+
+	if (fdt)
+		efi_install_configuration_table(&fdt_guid,
+						(void *)fdt);
+}
 
 int init_boot_param(struct boot_params *bp)
 {
@@ -184,6 +207,7 @@ int init_boot_param(struct boot_params *bp)
 #ifdef ACPI_SUPPORT
 	loongson_acpi_init();
 #endif
+	loongson_fdt_init();
 	return 0;
 }
 

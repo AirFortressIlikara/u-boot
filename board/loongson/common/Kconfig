@@ -60,4 +60,8 @@ config LOONGSON_BOARD_MMC_FS
     default n
     select CMD_UNZIP
 
+config LOONGSON_MMC_HIGH_PERFORMANCE
+    bool "Change MMC-PAD to 0x7, will support HS200 mode"
+    default n
+
 endmenu

@@ -248,24 +248,24 @@ void mm_feature_init(struct mc_setting *mc)
 	mm_ctrl_info.paster.mc1_row_num			= MC1_ROW_NUM;
 	mm_ctrl_info.paster.mc1_addr_mirror		= MC1_ADDR_MIRROR;
 	mm_ctrl_info.paster.mc1_bg_mirror		= MC1_BG_MIRROR;
-	mm_ctrl_info.param_reg_array			= &param_info;
+	mm_ctrl_info.param_reg_array			= param_info;
 }
 
-void print_mm_ctrl()
+void print_mm_ctrl(void)
 {
 	printf("=================================================================================\n");
 	printf(" mc_type:%u\n",						 mm_ctrl_info.mc_type);
 	printf(" mc_regs_base:%llu\n",                   mm_ctrl_info.mc_regs_base);
 	printf(" cache_mem_base:%llu\n",                 mm_ctrl_info.cache_mem_base);
 	printf(" mem_base:%llu\n",                       mm_ctrl_info.mem_base);
-	printf(" ddr_freq:%lu\n",                       mm_ctrl_info.ddr_freq);
-	printf(" ddr_freq_2slot:%lu\n",                 mm_ctrl_info.ddr_freq_2slot);
-	printf(" dimm_info_in_flash_offset:%lu\n",      mm_ctrl_info.dimm_info_in_flash_offset);
-	printf(" sameba_adj:%lu\n",                     mm_ctrl_info.sameba_adj);
-	printf(" samebg_adj:%lu\n",                     mm_ctrl_info.samebg_adj);
-	printf(" samec_adj:%lu\n",                      mm_ctrl_info.samec_adj);
-	printf(" samecs_adj:%lu\n",                     mm_ctrl_info.samecs_adj);
-	printf(" diffcs_adj:%lu\n",                     mm_ctrl_info.diffcs_adj);
+	printf(" ddr_freq:%llu\n",                       mm_ctrl_info.ddr_freq);
+	printf(" ddr_freq_2slot:%llu\n",                 mm_ctrl_info.ddr_freq_2slot);
+	printf(" dimm_info_in_flash_offset:%llu\n",      mm_ctrl_info.dimm_info_in_flash_offset);
+	printf(" sameba_adj:%llu\n",                     mm_ctrl_info.sameba_adj);
+	printf(" samebg_adj:%llu\n",                     mm_ctrl_info.samebg_adj);
+	printf(" samec_adj:%llu\n",                      mm_ctrl_info.samec_adj);
+	printf(" samecs_adj:%llu\n",                     mm_ctrl_info.samecs_adj);
+	printf(" diffcs_adj:%llu\n",                     mm_ctrl_info.diffcs_adj);
 	printf(" mc_interleave_offset:%llu\n",           mm_ctrl_info.mc_interleave_offset);
 	printf(" ref_clk:%u\n",                        mm_ctrl_info.ref_clk);
 	printf("node_offset:%u\n",                     mm_ctrl_info.node_offset);

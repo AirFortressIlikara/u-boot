@@ -1,52 +1,61 @@
 #!/bin/bash
 
-# AUTHOR: maoxiaochuan@loongson.cn 
-# Date: 2021-12-3
-# ORG: Loongson-GD
-
 #set -x
 
-function setup_mips_env()
-{
-	echo "====>setup env for MIPS..."
-	CC_PREFIX=/opt/mips64el-linux-gcc-8.x/host
-	export PATH=$CC_PREFIX/bin:$PATH
-	export LD_LIBRARY_PATH=$CC_PREFIX/lib:$LD_LIBRARY_PATH
-	export LD_LIBRARY_PATH=$CC_PREFIX/mips64el-buildroot-linux-gnu/lib64:$LD_LIBRARY_PATH
+abi1_toolchain_list=("/opt/loongson-gnu-toolchain-x86_64-loongarch64-linux-gnu" \
+					"/opt/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.4" \
+					"/opt/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.3-1" \
+					"/opt/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.2" \
+					"/opt/toolchain-loongarch64-linux-gnu-gcc8-host-x86_64-2022-07-18")
 
-#	CC_PREFIX=/opt/mips-loongson-gcc8-linux-gnu-2021-06-04
-#	export PATH=$CC_PREFIX/bin:$PATH
-#	export LD_LIBRARY_PATH=$CC_PREFIX/lib:$LD_LIBRARY_PATH
+abi2_toolchain_list=("/opt/loongarch64-linux-gnu-gcc13.3" \
+					"/opt/loongarch64-linux-gnu-gcc14.2")
 
-	export ARCH=mips
-#	export CROSS_COMPILE=mips-linux-gnu-
-	export CROSS_COMPILE=mips64el-linux-
-}
-
-
+real_target=0
+real_toolchain=""
 
 function setup_loongarch_env()
 {
 	echo "====>setup env for LoongArch..."
-#	CC_PREFIX=/opt/toolchain-loongarch64-linux-gnu-gcc8-host-x86_64-2022-07-18
-	CC_PREFIX=/opt/loongson-gnu-toolchain-x86_64-loongarch64-linux-gnu
-	export PATH=$CC_PREFIX/bin:$PATH
-	export LD_LIBRARY_PATH=$CC_PREFIX/lib:$LD_LIBRARY_PATH
-	export LD_LIBRARY_PATH=$CC_PREFIX/loongarch64-linux-gnu/lib64:$LD_LIBRARY_PATH
+	CC_PREFIX=$real_toolchain
+	export PATH=$PATH:$CC_PREFIX/bin
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CC_PREFIX/lib
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CC_PREFIX/loongarch64-linux-gnu/lib64
 
 	export ARCH=loongarch
 	export CROSS_COMPILE=loongarch64-linux-gnu-
 }
 
+for i in ${abi1_toolchain_list[*]}
+do
+	real_toolchain=$i
+	if [ -d $real_toolchain ]; then
+		real_target=1
+		break;
+	fi
+done
 
 if [ $# -eq 1 ] ; then
-	if [ "$1" == "mips" ]; then
-		setup_mips_env
-	else
-		setup_loongarch_env
+	if [[ "$1" == "abi2" ]]; then
+		real_target=0
+		real_toolchain=""
+		for i in ${abi2_toolchain_list[*]}
+		do
+			real_toolchain=$i
+			if [ -d $real_toolchain ]; then
+				real_target=1
+				break;
+			fi
+		done
 	fi
-else
-	setup_loongarch_env
 fi
+
+if [ $real_target -eq 0 ]; then
+	echo "没有找到相关工具链的文件夹"
+fi
+echo "当前声明的工具链为:"
+echo $real_toolchain
+
+setup_loongarch_env
 
 #set +x

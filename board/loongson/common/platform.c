@@ -609,6 +609,8 @@ void abort_key_handle_custom(int abort)
 		abort_key_try_update_uboot_then_install_system,
 	};
 
+	mdelay(2000);
+
 	if (abort < 0 || abort >= sizeof(func_set) / sizeof(abort_key_handle_func))
 		return;
 	ret = func_set[abort]();

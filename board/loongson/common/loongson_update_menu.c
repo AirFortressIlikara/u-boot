@@ -87,7 +87,7 @@ static char *updatemenu_dtb[] = {
 	"Update DTB (dtb.bin) to spi flash (by mmc)=loongson_update mmc dtb\0",
 	#endif
 	"Update DTB (dtb.bin) to spi flash (by tftp)=loongson_update tftp dtb\0",
-	"Clean  DTB parts=sf probe;sf erase dtb 0x10000\0",
+	"Clean  DTB parts=mtd erase dtb\0",
 	NULL
 };
 

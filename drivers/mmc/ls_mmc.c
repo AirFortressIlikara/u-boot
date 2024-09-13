@@ -290,6 +290,10 @@ static int sdio_send_cmd(struct udevice *dev, struct mmc_cmd *cmd, struct mmc_da
 	sdio_writel(host, SDICMDARG, cmd->cmdarg);
 	sdio_writel(host, SDICMDCON, SDIO_MAKE_CMD(cmd_index, flag));
 
+	// 部分EMMC芯片需要延迟
+	// 否则指令发送频率一高会有数据传输问题
+	udelay(1);
+
 	while ((cmd_fin == 0) && timeout--) {
 		sdiintmsk = sdio_readl(host, SDIINTMSK);
 		cmd_fin = SDIO_GET_CMDINT(sdiintmsk);
@@ -345,6 +349,7 @@ out:
 	sdio_writel(host, SDIINTMSK, (sdiintmsk & 0x1fe));
 
 	sdio_writel(host, SDIINTEN, 0x0);
+
 	return err;
 }
 

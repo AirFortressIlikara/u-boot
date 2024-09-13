@@ -19,6 +19,9 @@ enum efi_table_id {
 	MAX_EFI_TABLES,
 };
 
+// 给16个efi table（不够可以加） 目前就 FDT SMBIOS ACPI
+struct efi_configuration_table efi_tables[16];
+
 static struct efi_boot_services efi_boot_services = {
 	.hdr = {
 		.signature = EFI_BOOT_SERVICES_SIGNATURE,
@@ -37,6 +40,14 @@ struct efi_runtime_services efi_runtime_services = {
 
 static u16 firmware_vendor[] = L"LoongSon";
 
+/*
+ * 由于 EFI 在 uboot 里面只有 x86 做了完善
+ * 所以 这些 efi 的 table 由此处自行实现
+ * 然后由于 tables 这个变量是需要手动赋值的
+ * 以前的 NULL 是会导致写入崩溃的
+ * 所以自行创建 efi_tables
+ */
+
 struct efi_system_table systab = {
 	.hdr = {
 		.signature = EFI_SYSTEM_TABLE_SIGNATURE,
@@ -47,7 +58,7 @@ struct efi_system_table systab = {
 	.fw_revision = FW_VERSION << 16 | FW_PATCHLEVEL << 8,
 	.runtime = 0,
 	.nr_tables = 0,
-	.tables = NULL,
+	.tables = efi_tables,
 };
 
 /**

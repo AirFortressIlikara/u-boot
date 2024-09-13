@@ -55,14 +55,14 @@ void __noreturn board_init_f(ulong dummy)
 	ulong new_sp;
 
 #ifdef DBG_ASM
-	printstr("Enter board_init_f...\r\n");
+	printf("Enter board_init_f...\r\n");
 #endif
 	spl_mach_init();
 	ret = spl_early_init();
 	if (ret) {
 		debug("spl_early_init() failed: %d\n", ret);
 #ifdef DBG_ASM
-		printstr("spl_early_init() failed.\r\n");
+		printf("spl_early_init() failed.\r\n");
 #endif
 		hang();
 	}
