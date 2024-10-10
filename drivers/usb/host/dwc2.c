@@ -768,6 +768,7 @@ static int dwc_otg_submit_rh_msg_out(struct dwc2_priv *priv,
 					DWC2_HPRT0_PRTRST);
 			mdelay(50);
 			clrbits_le32(&regs->hprt0, DWC2_HPRT0_PRTRST);
+			mdelay(50);
 			break;
 
 		case USB_PORT_FEAT_POWER:

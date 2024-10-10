@@ -1,7 +1,11 @@
-#include "ls2k300_g2k03z2_core.dtsi"
+#include "ls2k300_g2k03z0_core_v10.dtsi"
 #include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/power-domain/ls2k500-power-domain.h>
 
 / {
+	model = "loongson-2k300";
+
+
 	sysinfo-smbios {
 		compatible = "u-boot,sysinfo-smbios";
 		u-boot,dm-pre-reloc;
@@ -14,12 +18,12 @@
 
 			baseboard {
 				manufacturer = "Loongson";
-				product = "LS2K300-GONGKONG-GBKPGK0";
+				product = "LS2K300-ATK-DL2K0300B-V01";
 			};
 
 			chassis {
 				manufacturer = "Loongson";
-				product = "LS2K300-GONGKONG-GBKPGK0";
+				product = "LS2K300-ATK-DL2K0300B-V01";
 			};
 		};
 	};
@@ -71,7 +75,7 @@
 
 	panel_bkl: backlight {
 		compatible = "gpio-backlight";
-		gpios = <&gpio0 89 GPIO_ACTIVE_HIGH>;
+		gpios = <&gpio0 88 GPIO_ACTIVE_HIGH>;
 		// default-on;
 	};
 };
@@ -79,6 +83,7 @@
 &gmac0 {
 	status = "okay";
 	phy-mode = "rgmii-txid";
+	// max-speed = <100>;
 	phy-handle = <&eth_phy0>;
 	mdio0: mdio@0 {
 		#address-cells = <1>;
@@ -94,6 +99,7 @@
 &gmac1 {
 	status = "okay";
 	phy-mode = "rgmii-txid";
+	// max-speed = <100>;
 	phy-handle = <&eth_phy1>;
 	mdio1: mdio@1 {
 		#address-cells = <1>;
@@ -101,7 +107,7 @@
 		compatible = "snps,dwmac-mdio";
 
 		eth_phy1: ethernet-phy@1 {
-			reg = <0>;
+			reg = <1>;
 		};
 	};
 };

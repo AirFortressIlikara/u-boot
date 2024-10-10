@@ -322,12 +322,13 @@ static int usb_hub_port_reset(struct usb_device *dev, int port,
 
 		/* Switch to long reset delay for the next round */
 		delay = HUB_LONG_RESET_TIME;
+		mdelay(delay);
 	}
 
 	if (tries == MAX_TRIES) {
-		debug("Cannot enable port %i after %i retries, " \
+		printf("Cannot enable port %i after %i retries, " \
 		      "disabling port.\n", port + 1, MAX_TRIES);
-		debug("Maybe the USB cable is bad?\n");
+		printf("Maybe the USB cable is bad?\n");
 		return -1;
 	}
 

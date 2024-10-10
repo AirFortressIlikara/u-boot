@@ -273,6 +273,8 @@ static int judge_boot_param_type(bootm_headers_t *images)
 
 	if (!strncmp(kernel_type, "Linux-5.10.0", 12))
 		return 0;
+	if (!strncmp(kernel_type, "Linux-5.10.97", 12))
+		return 0;
 	else if (!strncmp(kernel_type, "Linux-4", 7))
 		return 0;
 
