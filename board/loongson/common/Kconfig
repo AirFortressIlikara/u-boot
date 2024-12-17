@@ -64,4 +64,8 @@ config LOONGSON_MMC_HIGH_PERFORMANCE
     bool "Change MMC-PAD to 0x7, will support HS200 mode"
     default n
 
+config LOONGSON_USB_LOW_PAD
+    bool "Change USB-PAD to 0x1, Some Board USB is better"
+    default n
+
 endmenu

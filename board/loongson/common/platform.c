@@ -20,6 +20,7 @@
 #include <net.h>
 #include <phy.h>
 #include <ansi.h>
+#include <version_string.h>
 
 #include "loongson_stdout_operation.h"
 #include "loongson_board_info.h"
@@ -196,9 +197,12 @@ static void ethaddr_setup(void)
 	uchar env_ethaddr[ARP_HLEN];
 	char *bdi_ethaddr_str;
 	int id;
+	char* env_val;
+	int need_update_bdinfo;
 
 	for (id = 0; id < 2; ++id) {
 		if (!eth_env_get_enetaddr_by_index("eth", id, env_ethaddr)) {
+			need_update_bdinfo = 0;
 			if (id == 0)
 				bdi_ethaddr_str = bdinfo_get(BDI_ID_MAC0);
 			else
@@ -208,11 +212,22 @@ static void ethaddr_setup(void)
 			if (is_valid_ethaddr(bdi_ethaddr)) {
 				memcpy(env_ethaddr, bdi_ethaddr, ARP_HLEN);
 			} else {
+				need_update_bdinfo = 1;
 				net_random_ethaddr(env_ethaddr);
 				printf("\neth%d: using random MAC address - %pM\n",
 					id, env_ethaddr);
 			}
 			eth_env_set_enetaddr_by_index("eth", id, env_ethaddr);
+			if (need_update_bdinfo) {
+				if (id == 0){
+					env_val = env_get("ethaddr");
+					bdinfo_set(BDI_ID_MAC0, env_val);
+				} else {
+					env_val = env_get("eth1addr");
+					bdinfo_set(BDI_ID_MAC1, env_val);
+				}
+				bdinfo_save();
+			}
 		}
 	}
 }
@@ -307,6 +322,7 @@ static void loongson_env_trigger(void)
 	run_command("loongson_env_trigger ls_trigger_u_uboot", 0);
 	run_command("loongson_env_trigger ls_trigger_boot", 0);
 	run_command("loongson_env_trigger ls_trigger_ab_sys_status", 0);
+	run_command("loongson_env_trigger ls_trigger_mac_sync", 0);
 }
 
 #ifdef CONFIG_BOARD_EARLY_INIT_F
@@ -440,6 +456,8 @@ int last_stage_init(void)
 #ifdef CONFIG_MTD_RAW_NAND
 	adjust_nand_pagesize();
 #endif
+
+	env_set("ver", version_string); // save env 通过 loongson_env_trigger init 减少对spi的刷写
 
 	loongson_env_trigger();
 
@@ -608,8 +626,6 @@ void abort_key_handle_custom(int abort)
 		abort_key_install_system,
 		abort_key_try_update_uboot_then_install_system,
 	};
-
-	mdelay(2000);
 
 	if (abort < 0 || abort >= sizeof(func_set) / sizeof(abort_key_handle_func))
 		return;

@@ -38,7 +38,7 @@ CONFIG_AUTOBOOT_STOP_STR="c"
 CONFIG_USE_BOOTARGS=y
 CONFIG_BOOTARGS="console=ttyS0,115200 rootfstype=ext4 rw rootwait"
 CONFIG_USE_BOOTCOMMAND=y
-CONFIG_BOOTCOMMAND="setenv bootargs ${bootargs} root=/dev/mmcblk0p${syspart} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel};ext4load scsi 0:${syspart} ${loadaddr} /boot/uImage;bootm"
+CONFIG_BOOTCOMMAND="setenv bootargs ${bootargs} root=/dev/sda${syspart} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel};sf probe;sf read ${fdt_addr} dtb;scsi reset;ext4load scsi 0:${syspart} ${loadaddr} /boot/uImage;bootm"
 CONFIG_LOGLEVEL=7
 CONFIG_SYS_CONSOLE_OVERWRITE_ROUTINE=y
 # CONFIG_SYS_DEVICE_NULLDEV is not set
@@ -82,7 +82,7 @@ CONFIG_CMD_ISOFS=y
 CONFIG_CMD_FS_GENERIC=y
 CONFIG_CMD_MTDPARTS=y
 CONFIG_MTDIDS_DEFAULT="nor0=spi0.0"
-CONFIG_MTDPARTS_DEFAULT="spi0.0:924k(uboot),32k(uboot_env),4k(bdinfo),56k(dtb),8k(ddr_context)"
+CONFIG_MTDPARTS_DEFAULT="spi0.0:924k(uboot),32k(uboot_env),4k(bdinfo),52k(dtb),4k(bdinfo_e),8k(ddr_context)"
 CONFIG_ISO_PARTITION=y
 # CONFIG_SPL_EFI_PARTITION is not set
 CONFIG_OF_LIVE=y

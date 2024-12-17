@@ -61,6 +61,17 @@ static struct ls_bdinfo bdinfo = {
 	.loc = BDI_LOC_UNKNOWN,
 };
 
+static int ishex(char c)
+{
+	if (c >= '0' && c <='9')
+		return 1;
+	if (c >= 'a' && c <='f')
+		return 1;
+	if (c >= 'A' && c <='F')
+		return 1;
+	return 0;
+}
+
 int bdi_validate(enum bdi_id id, char *data)
 {
 	char *p = NULL;
@@ -83,8 +94,8 @@ int bdi_validate(enum bdi_id id, char *data)
 			return -EINVAL;
 
 		for (i = 0; i < 6; i++) {
-			if (!isdigit(data[i*3])
-				  || !isdigit(data[i*3+1]))
+			if (!ishex(data[i*3])
+				  || !ishex(data[i*3+1]))
 				return -EINVAL;
 
 			if (i > 0 && (data[i*3-1] != ':'))

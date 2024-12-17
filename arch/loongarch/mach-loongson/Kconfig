@@ -59,6 +59,8 @@ choice
 	prompt "Board select"
 	default TARGET_LS2K500_GENERIC if SOC_LS2K500
 	default TARGET_LS2K1000_GENERIC if SOC_LS2K1000
+	default TARGET_LS2P500_GENERIC if SOC_LS2P500
+	default TARGET_LS2K300_GENERIC if SOC_LS2K300
 
 
 config TARGET_LS2K500_GENERIC
@@ -133,6 +135,12 @@ config TARGET_LS2K1000_GBKPDM0_V10
 	help
 	  This supports Loongson GD 2k1000 GBKPDM0 V10 board.
 
+config TARGET_LS2P500_GENERIC
+	bool "Generic LS2P500 SoC Board"
+	depends on SOC_LS2P500
+	help
+	  This supports Loongson Generic 2P500 SoC family board.
+
 config TARGET_LS2P500_EVB
 	bool "LS2P500 EVB Board"
 	depends on SOC_LS2P500
@@ -145,11 +153,41 @@ config TARGET_LS2P500_RSJ
 	help
 	  This supports Loongson 2P500 RSJ board.
 
+config TARGET_LS2P500_GBKPJM
+	bool "LS2P500 GBKPJM Board"
+	depends on SOC_LS2P500
+	help
+	  This supports Loongson 2P500 GBKPJM board.
+
+config TARGET_LS2K300_GENERIC
+	bool "Generic LS2K300 SoC Board"
+	depends on SOC_LS2K300
+	help
+	  This supports Loongson Generic 2K300 SoC family board.
+
 config TARGET_LS2K300_MINI_DP
 	bool "LS2K300 MINI_DP Board"
 	depends on SOC_LS2K300
 	help
 	  This supports Loongson 2K300 MINI_DP board.
+
+config TARGET_LS2K300_PAI
+	bool "LS2K300 PAI Board"
+	depends on SOC_LS2K300
+	help
+	  This supports Loongson 2K300 PAI board.
+
+config TARGET_LS2K300_TEWEI
+	bool "LS2K300 TEWEI Board"
+	depends on SOC_LS2K300
+	help
+	  This supports Loongson 2K300 Customer TEWEI board.
+
+config TARGET_LS2K300_GBKPRZ
+	bool "LS2K300 GBKPRZ Board"
+	depends on SOC_LS2K300
+	help
+	  This supports Loongson 2K300 Customer GBKPRZ board.
 
 endchoice
 
@@ -177,7 +215,7 @@ source "board/loongson/Kconfig"
 
 choice 
 	prompt "DDR4 SDRAM Select"
-	depends on TARGET_LS2K300_MINI_DP
+	depends on SOC_LS2K300
 	default LOONGSON_DDR4_DEFAULT
 
 config LOONGSON_DDR4_DEFAULT

@@ -99,13 +99,19 @@
 						0x4 0x00ffffff 0x00ffffff>;
 		};
 		//gmac
-		gmac0_pins: pinmux_G16_G47_as_gmac {
+		gmac0_pins: pinmux_G16_G39_as_gmac {
 			pinctrl-single,bits = <0x4 0xff000000 0xff000000
 						0x8 0x0000ffff 0x0000ffff>;
 		};
-		gmac1_pins: pinmux_G40_G55_as_gmac {
-			pinctrl-single,bits = <0x8 0xaaaa0000 0xffff0000
-						0xc 0x0000aaaa 0x0000ffff>;
+		uart0_pins: pinmux_G40_G41_as_uart {
+			pinctrl-single,bits = <0x8 0x000f0000 0x000f0000>;
+		};
+		gmac1_pins: pinmux_G42_G55_as_gmac {
+			pinctrl-single,bits = <0x8 0x55500000 0xfff00000
+						0xc 0x00005555 0x0000ffff>;
+		};
+		i2c3_as_gpio: pinmux_G54_G55_as_gpio {
+			pinctrl-single,bits = <0xc 0x00000000 0x0000f000>;
 		};
 		//sdio
 		sdio0_pins: pinmux_G90_G99_as_sdio {

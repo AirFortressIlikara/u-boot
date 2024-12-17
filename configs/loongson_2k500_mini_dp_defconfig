@@ -73,7 +73,7 @@ CONFIG_CMD_FAT=y
 CONFIG_CMD_FS_GENERIC=y
 CONFIG_CMD_MTDPARTS=y
 CONFIG_MTDIDS_DEFAULT="nand0=ls-nand,nor0=spi0.0"
-CONFIG_MTDPARTS_DEFAULT="ls-nand:14m(kernel),-(root);spi0.0:924k(uboot),32k(uboot_env),4k(bdinfo),56k(dtb),8k(ddr_context)"
+CONFIG_MTDPARTS_DEFAULT="ls-nand:14m(kernel),-(root);spi0.0:924k(uboot),32k(uboot_env),4k(bdinfo),52k(dtb),4k(bdinfo_e),8k(ddr_context)"
 CONFIG_ISO_PARTITION=y
 CONFIG_PARTITION_UUIDS=y
 CONFIG_OF_LIVE=y

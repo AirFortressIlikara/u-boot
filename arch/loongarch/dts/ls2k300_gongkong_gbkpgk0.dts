@@ -1,0 +1,59 @@
+#include "ls2k300_g2k03z2_core.dtsi"
+
+/ {
+	sysinfo-smbios {
+		compatible = "u-boot,sysinfo-smbios";
+		u-boot,dm-pre-reloc;
+
+		smbios {
+			system {
+				manufacturer = "Loongson";
+				product = "LS2K300";
+			};
+
+			baseboard {
+				manufacturer = "Loongson";
+				product = "LS2K300-GONGKONG-GBKPGK0";
+			};
+
+			chassis {
+				manufacturer = "Loongson";
+				product = "LS2K300-GONGKONG-GBKPGK0";
+			};
+		};
+	};
+};
+
+&gmac0 {
+	status = "okay";
+	phy-mode = "rgmii-txid";
+	phy-handle = <&eth_phy0>;
+	mdio0: mdio@0 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "snps,dwmac-mdio";
+
+		eth_phy0: ethernet-phy@0 {
+			reg = <0>;
+		};
+	};
+};
+
+&gmac1 {
+	status = "okay";
+	phy-mode = "rgmii-txid";
+	phy-handle = <&eth_phy1>;
+	mdio1: mdio@1 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "snps,dwmac-mdio";
+
+		eth_phy1: ethernet-phy@1 {
+			reg = <0>;
+		};
+	};
+};
+
+&otg {
+	status = "okay";
+};

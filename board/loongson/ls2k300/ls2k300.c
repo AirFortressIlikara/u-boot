@@ -81,12 +81,21 @@ static void dev_fixup(void)
 
 	//enhance the io driving force
 	val = readl(LS_GENERAL_CFG4);
+
+	val |= (0x3 << PAD_CTRL_DVO) | (0x3 << PAD_CTRL_GMAC);
 // MMC 高驱动力下可到 hs200
 #ifdef CONFIG_LOONGSON_MMC_HIGH_PERFORMANCE
-	val |= (0x3 << PAD_CTRL_DVO) | (0x3 << PAD_CTRL_GMAC) | (0x3 << PAD_CTRL_USB)
-		| (0x7 << PAD_CTRL_EMMC) | (0x7 << PAD_CTRL_SDIO);
+	if (!strcmp(CONFIG_DEFAULT_DEVICE_TREE, "ls2k300_atk_dl2k0300b_v01")) {
+		val |= (0x2 << PAD_CTRL_EMMC) | (0x7 << PAD_CTRL_SDIO);
+	} else {
+		val |= (0x7 << PAD_CTRL_EMMC) | (0x7 << PAD_CTRL_SDIO);
+	}
+#endif
+
+#ifdef CONFIG_LOONGSON_USB_LOW_PAD
+	val |= (0x1 << PAD_CTRL_USB);
 #else
-	val |= (0x3 << PAD_CTRL_DVO) | (0x3 << PAD_CTRL_GMAC) | (0x3 << PAD_CTRL_USB);
+	val |= (0x7 << PAD_CTRL_USB);
 #endif
 	writel(val, LS_GENERAL_CFG4);
 
@@ -153,6 +162,7 @@ int ls_board_early_init_r(void)
 #ifdef CONFIG_BOARD_LATE_INIT
 int ls_board_late_init(void)
 {
+	uclass_probe_all(UCLASS_MISC);
 	if (IS_ENABLED(CONFIG_LED)) {
 		led_default_state();
 	}

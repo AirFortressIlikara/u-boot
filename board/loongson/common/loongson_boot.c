@@ -116,7 +116,7 @@ static int do_loongson_factory_boot(struct cmd_tbl *cmdtp, int flag, int argc, c
 
 	//ret = run_command("loongson_update dhcp uboot", 0);
 
-	ret = run_command("general_load --if net --sym rootfs.ext4.gz --decompress", 0);
+	ret = run_command("general_load --if net:192.168.1.2 --fmt dhcp --sym rootfs.img --decompress", 0);
 	if (ret)
 		return ret;
 

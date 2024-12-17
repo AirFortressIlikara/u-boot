@@ -248,8 +248,8 @@ static int update_uboot(int dev)
 
 	if (run_command("sf probe", 0) == 0) {
 		char buf[128] = {0};
-		snprintf(buf, sizeof(buf), "mtd erase dtb");
-		ret = run_command(buf, 0);
+		// snprintf(buf, sizeof(buf), "mtd erase dtb");
+		// ret = run_command(buf, 0);
 		snprintf(buf, sizeof(buf), "sf erase 0 0x%x;sf update ${loadaddr} 0 ${filesize}", CONFIG_ENV_OFFSET);
 		ret = run_command(buf, 0);
 	} else {

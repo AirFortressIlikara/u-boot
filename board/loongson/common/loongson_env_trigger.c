@@ -5,6 +5,7 @@
 #include <malloc.h>
 #include "loongson_boot_syspart_manager.h"
 #include "loongson_wdt_setup.h"
+#include "bdinfo/bdinfo.h"
 
 /*
  * 这是一个模拟uboot启动的时候的会自动复位的触发器逻辑
@@ -41,12 +42,16 @@ static void loongson_tip_update_uboot_change(void);
 static int loongson_handle_ab_sys_status_change(int index);
 static void loongson_tip_ab_sys_status_change(void);
 
+static int loongson_handle_mac_sync(int index);
+static void loongson_tip_mac_sync(void);
+
 static char* trigger_name_list[] = {
 	"ls_trigger_boot",
 	"ls_trigger_u_kernel",
 	"ls_trigger_u_rootfs",
 	"ls_trigger_u_uboot",
 	"ls_trigger_ab_sys_status",
+	"ls_trigger_mac_sync",
 	NULL,
 };
 static loongson_trigger_handle_func trigger_handle_func_list[] = {
@@ -55,6 +60,7 @@ static loongson_trigger_handle_func trigger_handle_func_list[] = {
 	loongson_handle_update_rootfs_change,
 	loongson_handle_update_uboot_change,
 	loongson_handle_ab_sys_status_change,
+	loongson_handle_mac_sync,
 	NULL
 };
 static loongson_trigger_tip_func trigger_tip_func_list[] = {
@@ -63,9 +69,10 @@ static loongson_trigger_tip_func trigger_tip_func_list[] = {
 	loongson_tip_update_rootfs_change,
 	loongson_tip_update_uboot_change,
 	loongson_tip_ab_sys_status_change,
+	loongson_tip_mac_sync,
 	NULL
 };
-static char* trigger_default_value_list[] = {"0", "0", "0", "0", "0", NULL};
+static char* trigger_default_value_list[] = {"0", "0", "0", "0", "0", "0", NULL};
 
 static int trigger_first_check(int index, char* env_value_bak, int buffer_len)
 {
@@ -226,8 +233,28 @@ static int loongson_handle_update_rootfs_change(int index)
 	} else if (!strcmp(env_value, "ssdtftp")) {
 		printf("update rootfs which in sata by tftp .....\r\n");
 		ret = run_command("recover tftp", 0);
-	}
-	else
+	} else if (!strcmp(env_value, "ssddhcp")) {
+		printf("update rootfs which in sata by dhcp .....\r\n");
+		ret = run_command("recover dhcp 1 scsi", 0);
+	} else if (!strcmp(env_value, "mmctftp")) {
+		printf("update rootfs which in mmc by tftp .....\r\n");
+		ret = run_command("recover tftp 1 mmc", 0);
+	} else if (!strcmp(env_value, "mmcdhcp")) {
+		printf("update rootfs which in mmc by dhcp .....\r\n");
+		ret = run_command("recover dhcp 1 mmc", 0);
+	} else if (!strcmp(env_value, "imgusb")) {
+		printf("update rootfs.img by usb .....\r\n");
+		ret = run_command("general_load --if usb --sym rootfs.img --decompress", 0);
+	} else if (!strcmp(env_value, "imgtftp")) {
+		printf("update rootfs.img by tftp .....\r\n");
+		ret = run_command("general_load --if net --sym rootfs.img --decompress", 0);
+	} else if (!strcmp(env_value, "imgmmc")) {
+		printf("update rootfs.img by mmc .....\r\n");
+		ret = run_command("general_load --if mmc1 --sym rootfs.img --decompress", 0);
+	} else if (!strcmp(env_value, "imgdhcp")) {
+		printf("update rootfs.img by dhcp.....\r\n");
+		ret = run_command("general_load --if net --fmt dhcp --sym rootfs.img --decompress", 0);
+	} else
 		return -1;
 
 	return ret;
@@ -322,6 +349,40 @@ static void loongson_tip_ab_sys_status_change(void)
 	printf("\t\boot1_wdt: new system first boot and use watchdog detect auto run back(uboot will change it to be boot2)\n");
 	printf("\t\tboot2   : new system first boot failed(system need set this value to be 0, either uboot will boot last disk)\n");
 	printf("\t\boot4    : to old system known install ab system failed\n");
+	printf("\n");
+}
+
+static int loongson_handle_mac_sync(int index)
+{
+	int ret;
+	char env_value[32];
+	char* env_val; // uboot_env value
+
+	ret = trigger_first_check(index, env_value, 32);
+	if (ret == -1)
+		return -1;
+	else if (ret == 1)
+		return 0;
+
+	ret = 0;
+	if (!strcmp(env_value, "1")) {
+		printf("sync mac to nvmem ...\n");
+		env_val = env_get("ethaddr");
+		bdinfo_set(BDI_ID_MAC0, env_val);
+		env_val = env_get("eth1addr");
+		bdinfo_set(BDI_ID_MAC1, env_val);
+		bdinfo_save();
+	} else
+		return -1;
+
+	return ret;
+}
+
+static void loongson_tip_mac_sync(void)
+{
+	printf("\tvalue:\n");
+	printf("\t\t0       : no handle\n");
+	printf("\t\t1       : sync uboot_env mac to bdinfo\n");
 	printf("\n");
 }
 

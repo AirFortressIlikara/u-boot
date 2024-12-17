@@ -271,7 +271,7 @@ static int judge_boot_param_type(bootm_headers_t *images)
 	char* kernel_type;
 	kernel_type = image_get_name(images->legacy_hdr_os);
 
-	if (!strncmp(kernel_type, "Linux-5", 7))
+	if (!strncmp(kernel_type, "Linux-5.10.0", 12))
 		return 0;
 	else if (!strncmp(kernel_type, "Linux-4", 7))
 		return 0;
@@ -397,3 +397,4 @@ int do_bootm_linux(int flag, int argc, char *const argv[],
 	/* does not return */
 	return 1;
 }
+

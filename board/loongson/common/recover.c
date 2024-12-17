@@ -328,7 +328,7 @@ static int do_recover_cmd(struct cmd_tbl *cmdtp, int flag, int argc, char * cons
 	}
 
 	install_target = 0;
-	if (!argv[3])
+	if (argc != 3)
 		install_target = 0;
 	else {
 		if (!strcmp(argv[3], "scsi"))
