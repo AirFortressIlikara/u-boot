@@ -189,6 +189,12 @@ config TARGET_LS2K300_GBKPRZ
 	help
 	  This supports Loongson 2K300 Customer GBKPRZ board.
 
+config TARGET_LS2K300_99PI_WIFI
+	bool "LS2K300 99PI WIFI Board"
+	depends on SOC_LS2K300
+	help
+	  This supports Loongson 2K300 Customer 99PI WIFI board.
+
 endchoice
 
 config SYS_CPU
