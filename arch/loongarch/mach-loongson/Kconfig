@@ -195,6 +195,12 @@ config TARGET_LS2K300_99PI_WIFI
 	help
 	  This supports Loongson 2K300 Customer 99PI WIFI board.
 
+config TARGET_LS2K300_99PI_TF
+	bool "LS2K300 99PI TF Board"
+	depends on SOC_LS2K300
+	help
+	  This supports Loongson 2K300 Customer 99PI TF board.
+
 endchoice
 
 config SYS_CPU
