@@ -288,6 +288,48 @@ config PHY_XILINX_ZYNQMP
 	  Enable this to support ZynqMP High Speed Gigabit Transceiver
 	  that is part of ZynqMP SoC.
 
+config PHY_LS2K_USB
+	bool "loongson 2k serial soc usb config phy"
+	depends on PHY
+	help
+	  Support the loongson 2k usb PHY config
+
+config ALLWINNER_GEN
+	bool "allwinner gen"
+	depends on PHY
+	help
+	  Support the general allwinner phy
+
+config MARVELL_GEN
+	bool "marvell gen"
+	depends on PHY
+	help
+	  Support the general marvell phy
+
+config ROCKCHIP_GEN
+	bool "rockchip gen"
+	depends on PHY
+	help
+	  Support the general rockchip phy
+
+config SOCIONEXT_GEN
+	bool "socionext gen"
+	depends on PHY
+	help
+	  Support the general socionext phy
+
+config CADENCE_GEN
+	bool "cadence gen"
+	depends on PHY
+	help
+	  Support the general cadence phy
+
+config TI_GEN
+	bool "ti gen"
+	depends on PHY
+	help
+	  Support the general ti phy
+
 source "drivers/phy/rockchip/Kconfig"
 source "drivers/phy/cadence/Kconfig"
 source "drivers/phy/ti/Kconfig"

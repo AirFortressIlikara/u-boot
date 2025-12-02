@@ -18,6 +18,23 @@
 #include <linux/ioport.h>
 #include <asm/global_data.h>
 
+#ifdef DEBUG
+void ofnode_list(const void *fdt)
+{
+	int depth;
+	int namelen;
+	int offset = 0;
+
+	for (depth = 0;
+	     (offset >= 0) && (depth >= 0);
+	     offset = fdt_next_node(fdt, offset, &depth))  {
+
+		const char *p = fdt_get_name(fdt, offset, &namelen);
+		printf("fdt_nodename_eq_ fdt_node:%s\n", p);	
+	}	 
+}
+#endif
+
 bool ofnode_name_eq(ofnode node, const char *name)
 {
 	const char *node_name;
@@ -548,8 +565,9 @@ ofnode ofnode_path(const char *path)
 {
 	if (of_live_active())
 		return np_to_ofnode(of_find_node_by_path(path));
-	else
+	else {
 		return offset_to_ofnode(fdt_path_offset(gd->fdt_blob, path));
+	}
 }
 
 const void *ofnode_read_chosen_prop(const char *propname, int *sizep)

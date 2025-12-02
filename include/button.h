@@ -37,6 +37,7 @@ struct button_ops {
 	 * @return button state button_state_t, or -ve on error
 	 */
 	enum button_state_t (*get_state)(struct udevice *dev);
+	int (*get_code)(struct udevice* dev);
 };
 
 #define button_get_ops(dev)	((struct button_ops *)(dev)->driver->ops)
@@ -57,5 +58,9 @@ int button_get_by_label(const char *label, struct udevice **devp);
  * Return: button state button_state_t, or -ve on error
  */
 enum button_state_t button_get_state(struct udevice *dev);
+
+#ifdef CONFIG_BUTTON_GPIO
+int drv_button_input_init(void);
+#endif
 
 #endif

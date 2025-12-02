@@ -25,6 +25,7 @@
 #include <bootcount.h>
 #include <crypt.h>
 #include <dm/ofnode.h>
+#include <ansi.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -52,6 +53,9 @@ static int menukey;
 #else
 #define AUTOBOOT_MENUKEY 0
 #endif
+
+#define STDOUT_SERIAL_OFF	0
+#define STDOUT_SERIAL_ON	1
 
 /**
  * passwd_abort_crypt() - check for a crypt-style hashed key sequence to abort booting
@@ -213,6 +217,8 @@ static int passwd_abort_sha256(uint64_t etime)
 	return abort;
 }
 
+__weak void custom_abort_key_probe(char* presskey, int presskey_len, int* abort, int abort_min_limit) {}
+
 /**
  * passwd_abort_key() - check for a key sequence to aborted booting
  *
@@ -290,9 +296,10 @@ static int passwd_abort_key(uint64_t etime)
 				/* don't retry auto boot */
 				if (!delaykey[i].retry)
 					bootretry_dont_retry();
-				abort = 1;
+				abort = 1 + i;
 			}
 		}
+		custom_abort_key_probe(presskey, presskey_len, &abort, sizeof(delaykey) / sizeof(delaykey[0]));
 	} while (!abort && get_ticks() <= etime);
 
 	return abort;
@@ -472,21 +479,28 @@ const char *bootdelay_process(void)
 	return s;
 }
 
+__weak void custom_abort_key_handle(int abort) {}
+__weak void autoboot_failed_custom_handle(const char* s){}
+
 void autoboot_command(const char *s)
 {
 	debug("### main_loop: bootcmd=\"%s\"\n", s ? s : "<UNDEFINED>");
-
+	int abort = 0;
+	abort = abortboot(stored_bootdelay);
 	if (s && (stored_bootdelay == -2 ||
-		 (stored_bootdelay != -1 && !abortboot(stored_bootdelay)))) {
+		 (stored_bootdelay != -1 && !abort))) {
 		bool lock;
 		int prev;
+		int ret;
 
 		lock = autoboot_keyed() &&
 			!IS_ENABLED(CONFIG_AUTOBOOT_KEYED_CTRLC);
 		if (lock)
 			prev = disable_ctrlc(1); /* disable Ctrl-C checking */
 
-		run_command_list(s, -1, 0);
+		ret = run_command_list(s, -1, 0);
+		if (ret)
+			autoboot_failed_custom_handle(s);
 
 		if (lock)
 			disable_ctrlc(prev);	/* restore Ctrl-C checking */
@@ -497,5 +511,6 @@ void autoboot_command(const char *s)
 		s = env_get("menucmd");
 		if (s)
 			run_command_list(s, -1, 0);
-	}
+	} else
+		custom_abort_key_handle(abort);
 }

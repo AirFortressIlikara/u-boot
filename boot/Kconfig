@@ -1043,6 +1043,30 @@ config BOOTCOMMAND
 	  This is the string of commands that will be used as bootcmd and if
 	  AUTOBOOT is set, automatically run.
 
+config INIT_USB_INPUT_DEV_BOOT
+	bool "usb init to check dev when boot"
+	depends on USB
+	default y
+	help
+	  this is enable usb scan dev when boot
+	  just for check keyboard(or other) to let it input vaild
+
+config LOGO_FILE_NAME
+	string "logo file name (just support bmp)"
+	default "loongson"
+	help
+	  this option can custom boot logo
+	  just support bmp file
+	  e.g.
+	  loongson.bmp
+	  this option value is loongson
+
+config LINUX_KERNEL_LOG_CLOSE
+	bool "close linux kernel log(loglevel=0)"
+	default n
+	help
+	  set loglevel=0 in cmdline
+
 config USE_PREBOOT
 	bool "Enable preboot"
 	help
