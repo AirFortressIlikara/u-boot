@@ -345,7 +345,6 @@ __weak int ls_board_early_init_r(void)
 
 static int update_unknown_board_name(void)
 {
-#ifndef CONFIG_LOONGSON_COMPAT
 	char* temp;
 	char* board_name;
 	find_bdname();
@@ -366,7 +365,6 @@ static int update_unknown_board_name(void)
 	bdinfo_set(BDI_ID_NAME, board_name);
 	bdinfo_save();
 	board_name = bdinfo_get(BDI_ID_NAME);
-#endif
 	return 0;
 }
 
@@ -431,10 +429,6 @@ int last_stage_init(void)
 {
 	print_notice();
 	user_env_fetch();
-
-#if defined(CONFIG_SPL) && !defined(CONFIG_SPL_BUILD) && defined(CONFIG_LOONGSON_COMPAT)
-	multi_boards_check_store();
-#endif
 
 #ifdef CONFIG_INIT_USB_INPUT_DEV_BOOT
 	/* start usb so that usb keyboard can be used as input device */

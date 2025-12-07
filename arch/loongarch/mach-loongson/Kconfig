@@ -6,22 +6,22 @@ choice
 config SOC_LS2K500
 	bool "Support for LS2K500 family SoCs"
 	depends on SUPPORTS_CPU_LOONGARCH64
-	select LOONGARCH_L1_CACHE_SHIFT_6
+	select SYS_CACHE_SHIFT_6
 
 config SOC_LS2K1000
 	bool "Support for LS2K1000 family SoCs"
 	depends on SUPPORTS_CPU_LOONGARCH64
-	select LOONGARCH_L1_CACHE_SHIFT_6
+	select SYS_CACHE_SHIFT_6
 
 config SOC_LS2P500
 	bool "Support for LS2P500 family SoCs"
 	depends on SUPPORTS_CPU_LOONGARCH64
-	select LOONGARCH_L1_CACHE_SHIFT_6
+	select SYS_CACHE_SHIFT_6
 
 config SOC_LS2K300
 	bool "Support for LS2K300 family SoCs"
 	depends on SUPPORTS_CPU_LOONGARCH64
-	select LOONGARCH_L1_CACHE_SHIFT_6
+	select SYS_CACHE_SHIFT_6
 
 endchoice
 
@@ -53,154 +53,6 @@ config CPU_1000MHZ
 config CPU_1100MHZ
 	bool "1100MHz"
 	depends on SOC_LS2K1000 || SOC_LS2K300
-endchoice
-
-choice
-	prompt "Board select"
-	default TARGET_LS2K500_GENERIC if SOC_LS2K500
-	default TARGET_LS2K1000_GENERIC if SOC_LS2K1000
-	default TARGET_LS2P500_GENERIC if SOC_LS2P500
-	default TARGET_LS2K300_GENERIC if SOC_LS2K300
-
-
-config TARGET_LS2K500_GENERIC
-	bool "Generic LS2K500 SoC Board"
-	depends on SOC_LS2K500
-	help
-	  This supports Loongson Generic 2K500 SoC family board.
-
-config TARGET_LS2K500_EVB
-	bool "LS2K500 EVB Board"
-	depends on SOC_LS2K500
-	help
-	  This supports Loongson 2K500 EVB board.
-
-config TARGET_LS2K500_MINI_DP
-	bool "LS2K500 MINI_DP Board"
-	depends on SOC_LS2K500
-	help
-	  This supports Loongson 2K500 MINI_DP board.
-
-config TARGET_LS2K500_MODI_HCT
-	bool "LS2K500 MODI_HCT Board"
-	depends on SOC_LS2K500
-	help
-	  This supports Loongson 2K500 MODI_HCT board.
-
-config TARGET_LS2K500_HUOLONG_MB
-	bool "LS_GD 2K500 HUOLONG MB Board"
-	depends on SOC_LS2K500
-	help
-	  This supports Loongson GD 2K500 HuoLong MB board.
-
-config TARGET_LS2K500_DAYU400_MB
-	bool "LS_GD 2K500 DAYU400 MB Board"
-	depends on SOC_LS2K500
-	help
-	  This supports HiHOPE 2K500 DAYU400 MB board.
-
-config TARGET_LS2K500_ZHENGTAI_PCS1800_V10
-	bool "LS_GD 2K500 ZHENGTAI PCS1800 V1.0 Board"
-	depends on SOC_LS2K500
-	help
-	  This supports 2K500 ZHENGTAI PCS1800 V1.0 board.
-
-config TARGET_LS2K500_ZJJZ
-	bool "LS_GD 2K500 ZheJiang xinling ZJJZ Board"
-	depends on SOC_LS2K500
-	help
-	  This supports 2K500 ZheJiang xinling ZJJZ board.
-
-config TARGET_LS2K1000_GENERIC
-	bool "Generic LS2K1000 SoC Board"
-	depends on SOC_LS2K1000
-	help
-	  This supports Loongson Generic 2K1000 SoC family board.
-
-config TARGET_LS2K1000_JINLONG_MB
-	bool "LS_GD 2K1000 JinLong MB Board"
-	depends on SOC_LS2K1000
-	help
-	  This supports Loongson GD 2k1000 JinLong MB board.
-
-config TARGET_LS2K1000_DP
-	bool "LS_GD 2K1000 DP Board"
-	depends on SOC_LS2K1000
-	help
-	  This supports Loongson GD 2k1000 DP board.
-
-config TARGET_LS2K1000_GBKPDM0_V10
-	bool "LS_GD 2K1000 GBKPDM0 V10 Board"
-	depends on SOC_LS2K1000
-	help
-	  This supports Loongson GD 2k1000 GBKPDM0 V10 board.
-
-config TARGET_LS2P500_GENERIC
-	bool "Generic LS2P500 SoC Board"
-	depends on SOC_LS2P500
-	help
-	  This supports Loongson Generic 2P500 SoC family board.
-
-config TARGET_LS2P500_EVB
-	bool "LS2P500 EVB Board"
-	depends on SOC_LS2P500
-	help
-	  This supports Loongson 2P500 EVB board.
-
-config TARGET_LS2P500_RSJ
-	bool "LS2P500 RSJ Board"
-	depends on SOC_LS2P500
-	help
-	  This supports Loongson 2P500 RSJ board.
-
-config TARGET_LS2P500_GBKPJM
-	bool "LS2P500 GBKPJM Board"
-	depends on SOC_LS2P500
-	help
-	  This supports Loongson 2P500 GBKPJM board.
-
-config TARGET_LS2K300_GENERIC
-	bool "Generic LS2K300 SoC Board"
-	depends on SOC_LS2K300
-	help
-	  This supports Loongson Generic 2K300 SoC family board.
-
-config TARGET_LS2K300_MINI_DP
-	bool "LS2K300 MINI_DP Board"
-	depends on SOC_LS2K300
-	help
-	  This supports Loongson 2K300 MINI_DP board.
-
-config TARGET_LS2K300_PAI
-	bool "LS2K300 PAI Board"
-	depends on SOC_LS2K300
-	help
-	  This supports Loongson 2K300 PAI board.
-
-config TARGET_LS2K300_TEWEI
-	bool "LS2K300 TEWEI Board"
-	depends on SOC_LS2K300
-	help
-	  This supports Loongson 2K300 Customer TEWEI board.
-
-config TARGET_LS2K300_GBKPRZ
-	bool "LS2K300 GBKPRZ Board"
-	depends on SOC_LS2K300
-	help
-	  This supports Loongson 2K300 Customer GBKPRZ board.
-
-config TARGET_LS2K300_99PI_WIFI
-	bool "LS2K300 99PI WIFI Board"
-	depends on SOC_LS2K300
-	help
-	  This supports Loongson 2K300 Customer 99PI WIFI board.
-
-config TARGET_LS2K300_99PI_TF
-	bool "LS2K300 99PI TF Board"
-	depends on SOC_LS2K300
-	help
-	  This supports Loongson 2K300 Customer 99PI TF board.
-
 endchoice
 
 config SYS_CPU

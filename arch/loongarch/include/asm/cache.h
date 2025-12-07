@@ -18,22 +18,8 @@ struct cache_desc {
 	unsigned char flags;	/* Flags describing cache properties */
 };
 
-#define L1_CACHE_SHIFT		CONFIG_LOONGARCH_L1_CACHE_SHIFT
-#define L1_CACHE_BYTES		(1 << L1_CACHE_SHIFT)
-
-#define ARCH_DMA_MINALIGN	(L1_CACHE_BYTES)
-
-/*
- * CONFIG_SYS_CACHELINE_SIZE is still used in various drivers primarily for
- * DMA buffer alignment. Satisfy those drivers by providing it as a synonym
- * of ARCH_DMA_MINALIGN for now.
- */
-#define CONFIG_SYS_CACHELINE_SIZE ARCH_DMA_MINALIGN
+#define ARCH_DMA_MINALIGN	(CONFIG_SYS_CACHELINE_SIZE)
 
 void loongarch_cache_probe(void);
-unsigned long icache_line_size(void);
-unsigned long dcache_line_size(void);
-unsigned long vcache_line_size(void);
-unsigned long scache_line_size(void);
 
 #endif /* __ASM_LA_CACHE_H */

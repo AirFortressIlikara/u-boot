@@ -46,20 +46,6 @@ endchoice
 
 source "arch/loongarch/mach-loongson/Kconfig"
 
-menu "General setup"
-
-config ROM_EXCEPTION_VECTORS
-	bool "Build U-Boot image with exception vectors"
-	help
-	  Enable this to include exception vectors in the U-Boot image. This is
-	  required if the U-Boot entry point is equal to the address of the
-	  CPU reset exception vector (e.g. U-Boot as ROM loader in Qemu,
-	  U-Boot booted from parallel NOR flash).
-	  Disable this, if the U-Boot image is booted from DRAM (e.g. by SPL).
-	  In that case the image size will be reduced by 0x500 bytes.
-
-endmenu
-
 menu "OS boot interface"
 
 config LOONGARCH_BOOT_CMDLINE_LEGACY
@@ -70,15 +56,6 @@ config LOONGARCH_BOOT_CMDLINE_LEGACY
 	  command line to the kernel. All bootargs will be prepared as argc/argv
 	  compatible list. The argument count (argc) is stored in register $a0.
 	  The address of the argument list (argv) is stored in register $a1.
-
-
-config LOONGARCH_BOOT_FDT
-	bool "Hand over a flattened device tree to Linux kernel"
-	default n
-	help
-	  Enable this option if you want U-Boot to hand over a flattened
-	  device tree to the kernel. According to UHI register $a0 will be set
-	  to -2 and the FDT address is stored in $a1.
 
 endmenu
 
@@ -99,73 +76,5 @@ config DMA_ADDR_T_64BIT
 	default y if 64BIT
 	help
 	 Select this to enable 64-bit DMA addressing
-
-config SYS_DCACHE_SIZE
-	int
-	default 0
-	help
-	  The total size of the L1 Dcache, if known at compile time.
-
-config SYS_DCACHE_LINE_SIZE
-	int
-	default 0
-	help
-	  The size of L1 Dcache lines, if known at compile time.
-
-config SYS_ICACHE_SIZE
-	int
-	default 0
-	help
-	  The total size of the L1 ICache, if known at compile time.
-
-config SYS_ICACHE_LINE_SIZE
-	int
-	default 0
-	help
-	  The size of L1 Icache lines, if known at compile time.
-
-config SYS_SCACHE_LINE_SIZE
-	int
-	default 0
-	help
-	  The size of L2 cache lines, if known at compile time.
-
-
-config SYS_CACHE_SIZE_AUTO
-	def_bool y if SYS_DCACHE_SIZE = 0 && SYS_ICACHE_SIZE = 0 && \
-		SYS_DCACHE_LINE_SIZE = 0 && SYS_ICACHE_LINE_SIZE = 0 && \
-		SYS_SCACHE_LINE_SIZE = 0
-	help
-	  Select this (or let it be auto-selected by not defining any cache
-	  sizes) in order to allow U-Boot to automatically detect the sizes
-	  of caches at runtime. This has a small cost in code size & runtime
-	  so if you know the cache configuration for your system at compile
-	  time it would be beneficial to configure it.
-
-config LOONGARCH_L1_CACHE_SHIFT_4
-	bool
-
-config LOONGARCH_L1_CACHE_SHIFT_5
-	bool
-
-config LOONGARCH_L1_CACHE_SHIFT_6
-	bool
-
-config LOONGARCH_L1_CACHE_SHIFT_7
-	bool
-
-config LOONGARCH_L1_CACHE_SHIFT
-	int
-	default "7" if LOONGARCH_L1_CACHE_SHIFT_7
-	default "6" if LOONGARCH_L1_CACHE_SHIFT_6
-	default "5" if LOONGARCH_L1_CACHE_SHIFT_5
-	default "4" if LOONGARCH_L1_CACHE_SHIFT_4
-	default "6"
-
-config LOONGARCH_L2_CACHE
-	bool
-	help
-	  Select this if your system includes an L2 cache and you want U-Boot
-	  to initialise & maintain it.
 
 endmenu

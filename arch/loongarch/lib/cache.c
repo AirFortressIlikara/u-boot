@@ -118,42 +118,6 @@ void local_flush_icache_range(unsigned long start, unsigned long end)
 	asm volatile ("\tibar 0\n"::);
 }
 
-inline unsigned long icache_line_size(void)
-{
-#ifdef CONFIG_SYS_CACHE_SIZE_AUTO
-	return gd->arch.icache.linesz;
-#else
-	return CONFIG_SYS_ICACHE_LINE_SIZE;
-#endif
-}
-
-inline unsigned long dcache_line_size(void)
-{
-#ifdef CONFIG_SYS_CACHE_SIZE_AUTO
-	return gd->arch.dcache.linesz;
-#else
-	return CONFIG_SYS_DCACHE_LINE_SIZE;
-#endif
-}
-
-inline unsigned long vcache_line_size(void)
-{
-#ifdef CONFIG_SYS_CACHE_SIZE_AUTO
-	return gd->arch.vcache.linesz;
-#else
-	return CONFIG_SYS_VCACHE_LINE_SIZE;
-#endif
-}
-
-inline unsigned long scache_line_size(void)
-{
-#ifdef CONFIG_SYS_CACHE_SIZE_AUTO
-	return gd->arch.scache.linesz;
-#else
-	return CONFIG_SYS_SCACHE_LINE_SIZE;
-#endif
-}
-
 void flush_cache(unsigned long addr, unsigned long size)
 {
 

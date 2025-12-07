@@ -7,7 +7,6 @@
 
 obj-$(CONFIG_MACH_LOONGSON)		+= platform.o
 obj-$(CONFIG_MACH_LOONGSON)		+= bdinfo/
-obj-$(CONFIG_LOONGSON_COMPAT)		+= multi_boards_compat.o
 obj-$(CONFIG_MACH_LOONGSON)			+= board_kernel_product.o loongson_board_info.o
 
 ifndef CONFIG_SPL_BUILD

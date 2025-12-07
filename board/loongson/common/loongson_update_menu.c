@@ -15,10 +15,6 @@
 
 #include "loongson_update.h"
 
-#ifdef CONFIG_LOONGSON_COMPAT
-#include "board_kernel_product.h"
-#endif
-
 extern const char *update_typename_str[UPDATE_TYPE_COUNT];
 int updatemenu_type;
 int updatemenu_return = UPDATEMENU_RETURN_CONSOLE;

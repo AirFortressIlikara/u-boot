@@ -121,16 +121,10 @@ static void user_env_fetch_about_syspart(void)
 
 void user_env_fetch(void)
 {
-/*
- * 没有多板卡兼容也需要保存 bdinfo
- * 否则会 一直刷新 syspart 的值 为默认值
- */
-#ifndef CONFIG_LOONGSON_COMPAT
 	if(bdinfo_save_in_nv()) {
 		user_env_save();
 		return;
 	}
-#endif
 	user_env_fetch_about_syspart();
 }
 
