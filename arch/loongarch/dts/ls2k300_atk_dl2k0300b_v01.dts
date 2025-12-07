@@ -84,6 +84,9 @@
 	status = "okay";
 	phy-mode = "rgmii-txid";
 	// max-speed = <100>;
+	snps,reset-gpio = <&gpio0 72 GPIO_ACTIVE_HIGH>;
+	snps,reset-delays-us = <0 10000 1000000>;
+	snps,reset-active-low;
 	phy-handle = <&eth_phy0>;
 	mdio0: mdio@0 {
 		#address-cells = <1>;
@@ -100,6 +103,9 @@
 	status = "okay";
 	phy-mode = "rgmii-txid";
 	// max-speed = <100>;
+	snps,reset-gpio = <&gpio0 73 GPIO_ACTIVE_HIGH>;
+	snps,reset-delays-us = <0 10000 1000000>;
+	snps,reset-active-low;
 	phy-handle = <&eth_phy1>;
 	mdio1: mdio@1 {
 		#address-cells = <1>;
