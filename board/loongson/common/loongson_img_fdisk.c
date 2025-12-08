@@ -8,7 +8,7 @@
 static void try_read_block(char* block_type)
 {
 	int ret;
-#if defined(CONFIG_SOC_LS2K300) || defined(CONFIG_SOC_LS2P500)
+#if defined(CONFIG_SOC_LS2K300)
 	char* target_block = "mmc0:1";
 #else
 	char* target_block = "scsi0:1";
@@ -47,7 +47,7 @@ static void try_read_block(char* block_type)
 static void try_read_tftp(void)
 {
 	char* server_ip = NULL;
-#if defined(CONFIG_SOC_LS2K300) || defined(CONFIG_SOC_LS2P500)
+#if defined(CONFIG_SOC_LS2K300)
 	char* target_block = "mmc0:1";
 #else
 	char* target_block = "scsi0:1";

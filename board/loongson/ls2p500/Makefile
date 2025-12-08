@@ -1,1 +1,0 @@
-obj-$(CONFIG_SOC_LS2P500) += ls2p500.o

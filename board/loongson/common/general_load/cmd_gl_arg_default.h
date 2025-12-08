@@ -12,7 +12,7 @@ struct cmd_gl_default_s
 };
 
 const static struct cmd_gl_default_s __default =
-#if defined(CONFIG_SOC_LS2K300) || defined(CONFIG_SOC_LS2P500)
+#if defined(CONFIG_SOC_LS2K300)
 {
 	.net_proto = "tftp",
 	.blk_prefix = "/update/",

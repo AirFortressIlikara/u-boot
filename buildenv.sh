@@ -25,7 +25,7 @@ function usage()
 {
 	echo "Usage:"
 	echo "./buildenv.sh <chip> [options]"
-	echo "chip: <2k300/2k500/2k1000/2p500/all>"
+	echo "chip: <2k300/2k500/2k1000/all>"
 	echo "options: it's same as u-boot make defconfig"
 }
 
