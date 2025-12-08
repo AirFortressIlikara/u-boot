@@ -283,12 +283,6 @@ else
 ifneq ($(wildcard $(srctree)/$(src)/logos/$(VENDOR).bmp),)
 LOGO_BMP= $(srctree)/$(src)/logos/$(VENDOR).bmp
 endif
-
-LOGONAME := $(patsubst "%",%,$(CONFIG_LOGO_FILE_NAME))
-ifneq ($(wildcard $(srctree)/$(src)/logos/$(LOGONAME).bmp),)
-LOGO_BMP= $(srctree)/$(src)/logos/$(LOGONAME).bmp
-endif
-
 endif
 
 endif # !LOGO_BMP

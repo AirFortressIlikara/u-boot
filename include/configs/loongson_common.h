@@ -105,34 +105,28 @@ RECOVER_FRONT_BOOTARGS "setenv bootargs ${bootargs} ins_way=tftp ins_target=mmc 
 #define RECOVER_DHCP_DEFAULT "dhcp ${loadaddr} uImage;dhcp ${rd_start} ramdisk.gz;"\
 RECOVER_FRONT_BOOTARGS "setenv bootargs ${bootargs} ins_way=tftp ins_target=mmc u_ip=${ipaddr} u_sip=${serverip};" RECOVER_START
 
-#ifdef CONFIG_LINUX_KERNEL_LOG_CLOSE
-#define LINUX_KERNEL_LOG_LEVEL_SETUP " loglevel=0"
-#else
-#define LINUX_KERNEL_LOG_LEVEL_SETUP ""
-#endif
-
-#define SATA_BOOT_ENV "setenv bootargs " CMDLINE_CONSOLE LINUX_KERNEL_LOG_LEVEL_SETUP " rootfstype=ext4 rw rootwait; \
+#define SATA_BOOT_ENV "setenv bootargs " CMDLINE_CONSOLE " rootfstype=ext4 rw rootwait; \
 setenv bootcmd ' setenv bootargs ${bootargs} root=/dev/sda${syspart} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel}; \
 sf probe;sf read ${fdt_addr} dtb;scsi reset;ext4load scsi 0:${syspart} ${loadaddr} /boot/uImage;bootm ';\
 saveenv;"
 
 #define BOOT_SATA_DEFAULT SATA_BOOT_ENV"boot"
 
-#define NAND_BOOT_ENV "setenv bootargs " CMDLINE_CONSOLE LINUX_KERNEL_LOG_LEVEL_SETUP " root=ubi0:rootfs noinitrd init=/linuxrc rootfstype=ubifs rw; \
+#define NAND_BOOT_ENV "setenv bootargs " CMDLINE_CONSOLE " root=ubi0:rootfs noinitrd init=/linuxrc rootfstype=ubifs rw; \
 setenv bootcmd ' setenv bootargs ${bootargs} ubi.mtd=root,${nand_pagesize} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel}; \
 sf probe;sf read ${fdt_addr} dtb;nboot kernel;bootm ';\
 saveenv;"
 
 #define BOOT_NAND_DEFAULT NAND_BOOT_ENV"boot"
 
-#define EMMC_BOOT_ENV "setenv bootargs " CMDLINE_CONSOLE LINUX_KERNEL_LOG_LEVEL_SETUP " noinitrd init=/sbin/init rootfstype=ext4 rw rootwait; \
+#define EMMC_BOOT_ENV "setenv bootargs " CMDLINE_CONSOLE " noinitrd init=/sbin/init rootfstype=ext4 rw rootwait; \
 setenv bootcmd ' setenv bootargs ${bootargs} root=/dev/mmcblk0p${syspart} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel}; \
 ext4load mmc 0:1 ${loadaddr} /boot/uImage;bootm ';\
 saveenv;"
 
 #define BOOT_EMMC_DEFAULT EMMC_BOOT_ENV"boot"
 
-#define SDCARD_BOOT_ENV "setenv bootargs " CMDLINE_CONSOLE LINUX_KERNEL_LOG_LEVEL_SETUP " noinitrd init=/sbin/init  rootfstype=ext4 rw rootwait; \
+#define SDCARD_BOOT_ENV "setenv bootargs " CMDLINE_CONSOLE " noinitrd init=/sbin/init  rootfstype=ext4 rw rootwait; \
 setenv bootcmd ' setenv bootargs ${bootargs} root=/dev/mmcblk1p${syspart} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel}; \
 ext4load mmc 1:1 ${loadaddr} /boot/uImage;bootm ';\
 saveenv;"
