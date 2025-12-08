@@ -1,8 +1,6 @@
-#include "ls2k300.dtsi"
-#include "ls2k300_ddr_samsung_512m.dtsi"
 #include "ls2k300_99pi.dtsi"
+#include "ls2k300_ddr_samsung_512m.dtsi"
 #include <dt-bindings/gpio/gpio.h>
-#include <dt-bindings/power-domain/ls2k500-power-domain.h>
 
 / {
 	sysinfo-smbios {

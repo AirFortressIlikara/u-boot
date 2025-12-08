@@ -4,18 +4,12 @@
 #define __LOONGSON_ENV_H__
 
 
-#if defined(CONFIG_SOC_LS2K500)
-#define CMDLINE_CONSOLE		"console=ttyS2,115200"
-#else
 #define CMDLINE_CONSOLE		"console=ttyS0,115200"
-#endif
 
 #ifdef CONFIG_64BIT
 #define FDT_ADDR    0x900000000a000000
 
-#if defined(CONFIG_SOC_LS2K500)
-#define RD_ADDR     0x9000000007000000
-#elif defined(CONFIG_SOC_LS2K300)
+#if defined(CONFIG_SOC_LS2K300)
 #define RD_ADDR     0x9000000007000000
 #endif
 

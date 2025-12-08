@@ -1,7 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0+
 
-dtb-$(CONFIG_SOC_LS2K500) += ls2k500_mini_dp.dtb
-
 include $(srctree)/scripts/Makefile.dts
 
 targets += $(dtb-y)

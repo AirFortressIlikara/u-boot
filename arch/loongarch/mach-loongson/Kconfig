@@ -3,11 +3,6 @@ choice
 	prompt "Loongson soc family select"
 	depends on ARCH_LA_LOONGSON
 
-config SOC_LS2K500
-	bool "Support for LS2K500 family SoCs"
-	depends on SUPPORTS_CPU_LOONGARCH64
-	select SYS_CACHE_SHIFT_6
-
 config SOC_LS2K300
 	bool "Support for LS2K300 family SoCs"
 	depends on SUPPORTS_CPU_LOONGARCH64
@@ -46,10 +41,9 @@ config CPU_1100MHZ
 endchoice
 
 config SYS_CPU
-	default "LA264" if SOC_LS2K500 || SOC_LS2K300
+	default "LA264" if SOC_LS2K300
 
 config SYS_SOC
-	default "ls2k500" if SOC_LS2K500
 	default "ls2k300" if SOC_LS2K300
 
 config CPU_FREQ

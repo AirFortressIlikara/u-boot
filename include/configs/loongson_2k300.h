@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0+ */
 /*
- * DEV_LS2K500 configuration
+ * DEV_LS2K300 configuration
  *
  * Copyright (c) 2022 Loongson Technologies
  * Author: Xiaochuan Mao<maoxiaochuan@loongson.cn>

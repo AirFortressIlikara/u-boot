@@ -287,4 +287,4 @@
         sd      t1, 0x80(v0);
 */
 
-#endif /* __MACH_LA_LS2K500_H */
+#endif /* __MACH_LA_LS2K300_H */

@@ -7,15 +7,6 @@ config MACH_LOONGSON
 config SYS_VENDOR
 	default "loongson"
 
-if SOC_LS2K500
-config SYS_BOARD
-	default "ls2k500"
-
-config SYS_CONFIG_NAME
-	default "loongson_2k500"
-
-endif
-
 if SOC_LS2K300
 config SYS_BOARD
 	default "ls2k300"

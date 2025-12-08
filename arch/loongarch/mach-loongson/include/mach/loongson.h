@@ -3,9 +3,7 @@
 
 #include <config.h>
 
-#ifdef CONFIG_SOC_LS2K500
-#include "ls2k500/ls2k500.h"
-#elif defined(CONFIG_SOC_LS2K300)
+#ifdef CONFIG_SOC_LS2K300
 #include "ls2k300/ls2k300.h"
 #endif
 
