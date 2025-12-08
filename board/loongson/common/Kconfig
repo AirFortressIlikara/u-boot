@@ -1,12 +1,5 @@
 menu "Loongson common options"
 
-config LOONGSON_FACTORY_BOOT
-	bool "Loongson Factory Boot BDINFO."
-	default n
-	depends on MACH_LOONGSON
-	depends on LOONGSON_GENERAL_LOAD
-	select CMD_DHCP
-
 config LOONGSON_BOOT_FIXUP
 	bool "Fixup Loongson boot param before boot kernel."
 	default y

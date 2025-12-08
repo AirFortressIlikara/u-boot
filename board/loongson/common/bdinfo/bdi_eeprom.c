@@ -18,9 +18,6 @@ static int bdi_id_size[BDI_ID_MAX] = {
 	[BDI_ID_MAC0] = 16,
 	[BDI_ID_MAC1] = 16,
 	[BDI_ID_SYSPART] = 1,
-#ifdef CONFIG_LOONGSON_FACTORY_BOOT
-	[BDI_ID_FACTORY_BOOTED] = 1,
-#endif
 	[BDI_ID_BOARD_PRODUCT_ID] = 1,
 };
 
@@ -75,9 +72,6 @@ static int decode_bdi_data(uint8_t *savebuf, int size, enum bdi_id id, uint8_t *
 				data[0], data[1], data[2], data[3], data[4], data[5]);
 		break;
 	case BDI_ID_SYSPART:
-#ifdef CONFIG_LOONGSON_FACTORY_BOOT
-	case BDI_ID_FACTORY_BOOTED:
-#endif
 	case BDI_ID_BOARD_PRODUCT_ID:
 		len = snprintf(savebuf, size, "%s=%d", bdi_id_name[id], data[0]);
 		break;
@@ -191,9 +185,6 @@ static int code_bdi_data(uint8_t *savebuf, int size, enum bdi_id id, uint8_t *da
 		len = 6;
 		break;
 	case BDI_ID_SYSPART:
-#ifdef CONFIG_LOONGSON_FACTORY_BOOT
-	case BDI_ID_FACTORY_BOOTED:
-#endif
 	case BDI_ID_BOARD_PRODUCT_ID:
 		*savebuf = simple_strtoul(data, NULL, 0);
 		len = 1;
