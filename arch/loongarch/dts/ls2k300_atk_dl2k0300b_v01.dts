@@ -1,4 +1,5 @@
 #include "ls2k300_g2k03z0_core_v10.dtsi"
+#include "ls2k300_ddr_isocom_1g.dtsi"
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/power-domain/ls2k500-power-domain.h>
 
