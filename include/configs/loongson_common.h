@@ -141,9 +141,6 @@ boot"
 saveenv;\
 boot"
 
-/* use ab system mode */
-#define LS_DOUBLE_SYSTEM
-
 #define	CONFIG_EXTRA_ENV_SETTINGS					\
 	CONSOLE_STDOUT_SETTINGS \
 	LOONGSON_BOOTMENU \

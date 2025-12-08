@@ -18,9 +18,6 @@ static int bdi_id_size[BDI_ID_MAX] = {
 	[BDI_ID_MAC0] = 16,
 	[BDI_ID_MAC1] = 16,
 	[BDI_ID_SYSPART] = 1,
-#ifdef LS_DOUBLE_SYSTEM
-	[BDI_ID_SYSPART_LAST] = 1,
-#endif
 #ifdef CONFIG_LOONGSON_FACTORY_BOOT
 	[BDI_ID_FACTORY_BOOTED] = 1,
 #endif
@@ -78,9 +75,6 @@ static int decode_bdi_data(uint8_t *savebuf, int size, enum bdi_id id, uint8_t *
 				data[0], data[1], data[2], data[3], data[4], data[5]);
 		break;
 	case BDI_ID_SYSPART:
-#ifdef LS_DOUBLE_SYSTEM
-	case BDI_ID_SYSPART_LAST:
-#endif
 #ifdef CONFIG_LOONGSON_FACTORY_BOOT
 	case BDI_ID_FACTORY_BOOTED:
 #endif
@@ -197,9 +191,6 @@ static int code_bdi_data(uint8_t *savebuf, int size, enum bdi_id id, uint8_t *da
 		len = 6;
 		break;
 	case BDI_ID_SYSPART:
-#ifdef LS_DOUBLE_SYSTEM
-	case BDI_ID_SYSPART_LAST:
-#endif
 #ifdef CONFIG_LOONGSON_FACTORY_BOOT
 	case BDI_ID_FACTORY_BOOTED:
 #endif

@@ -261,25 +261,6 @@ static int do_recover_from_mmc_r(char *part_id)
 #endif
 }
 
-#ifdef LS_DOUBLE_SYSTEM
-
-static int do_recover_to_last(void)
-{
-	char *env;
-	int ret;
-
-	env = env_get("bootcmd");
-	if (!strstr(env, "scsi") && !strstr(env, "mmc") ) {
-		printf("current maybe is boot by nand\n");
-		return -1;
-	}
-
-	ret = switch_syspart();
-
-	return ret;
-}
-#endif
-
 /*
 * recover_cmd usb . recover from usb
 * recover_cmd sata. recover from sata
@@ -343,11 +324,6 @@ static int do_recover_cmd(struct cmd_tbl *cmdtp, int flag, int argc, char * cons
 		printf("part_id:%s\n", part_id);
 		ret = do_recover_from_mmc_r(part_id);
 	}
-#ifdef LS_DOUBLE_SYSTEM
-	else if (strcmp(argv[1], "last") == 0) {
-		ret = do_recover_to_last();
-	}
-#endif
 
 	return ret;
 }
@@ -361,12 +337,6 @@ static int do_recover_cmd(struct cmd_tbl *cmdtp, int flag, int argc, char * cons
 #define RECOVER_CMD_TIP_MMC "         mmc: recover from mmc\n"
 #else
 #define RECOVER_CMD_TIP_MMC ""
-#endif
-
-#ifdef LS_DOUBLE_SYSTEM
-#define RECOVER_CMD_TIP_LAST "        last: recover to last time boot system\n"
-#else
-#define RECOVER_CMD_TIP_LAST ""
 #endif
 
 #ifdef CONFIG_LOONGSON_BOARD_SATA_FS
@@ -383,7 +353,6 @@ static int do_recover_cmd(struct cmd_tbl *cmdtp, int flag, int argc, char * cons
 
 #define RECOVER_CMD_TIP RECOVER_CMD_TIP_HEAD \
 							RECOVER_CMD_TIP_MMC \
-							RECOVER_CMD_TIP_LAST \
 							"         sata: recover from sata\n"\
 							"         mmc_r: recover from mmc ext4 part\n"\
 							"option2: part_id: recover from part id\n" \

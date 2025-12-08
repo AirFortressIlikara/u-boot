@@ -27,9 +27,6 @@ char *bdi_id_name[BDI_ID_MAX] = {
 	[BDI_ID_MAC0] = "mac0",
 	[BDI_ID_MAC1] = "mac1",
 	[BDI_ID_SYSPART] = "syspart",
-#ifdef LS_DOUBLE_SYSTEM
-	[BDI_ID_SYSPART_LAST] = "syspart_last",
-#endif
 #ifdef CONFIG_LOONGSON_FACTORY_BOOT
 	[BDI_ID_FACTORY_BOOTED] = "factory_booted",
 #endif
@@ -42,9 +39,6 @@ static char default_bdinfo[] = {
 	"mac0=00:00:00:00:00:00\0"
 	"mac1=00:00:00:00:00:00\0"
 	"syspart=1\0"
-#ifdef LS_DOUBLE_SYSTEM
-	"syspart_last=1\0"
-#endif
 #ifdef CONFIG_LOONGSON_FACTORY_BOOT
 	"factory_booted=0\n"
 #endif
@@ -103,9 +97,6 @@ int bdi_validate(enum bdi_id id, char *data)
 		}
 		break;
 	case BDI_ID_SYSPART:
-#ifdef LS_DOUBLE_SYSTEM
-	case BDI_ID_SYSPART_LAST:
-#endif
 #ifdef CONFIG_LOONGSON_FACTORY_BOOT
 	case BDI_ID_FACTORY_BOOTED:
 #endif

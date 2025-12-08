@@ -29,13 +29,6 @@ static int setup_syspart_nvme_env(char* syspart)
 
 	bdinfo_set(BDI_ID_SYSPART, syspart);
 
-#ifdef LS_DOUBLE_SYSTEM
-	if (!strcmp(syspart, SYSPART_FIRST))
-		bdinfo_set(BDI_ID_SYSPART_LAST, SYSPART_SECOND);
-	else
-		bdinfo_set(BDI_ID_SYSPART_LAST, SYSPART_FIRST);
-#endif
-
 	bdinfo_save();
 	return 0;
 }

@@ -69,26 +69,6 @@ static void user_env_save(void)
 		need_save = true;
 	}
 
-#ifdef LS_DOUBLE_SYSTEM
-	env_val = env_get("syspart_last");
-	bdi_val = bdinfo_get(BDI_ID_SYSPART_LAST);
-	if (!env_val) {
-		env_val = env_get("syspart");
-		if (!strcmp(env_val, "1")) {
-			env_set("syspart_last", "4");
-			bdinfo_set(BDI_ID_SYSPART_LAST, "4");
-		} else {
-			env_set("syspart_last", "1");
-			bdinfo_set(BDI_ID_SYSPART_LAST, "1");
-		}
-		env_save();
-		need_save = true;
-	} else if (strcmp(env_val, bdi_val) != 0) {
-		bdinfo_set(BDI_ID_SYSPART_LAST, env_val);
-		need_save = true;
-	}
-#endif
-
 	if (need_save)
 		bdinfo_save();
 }
@@ -111,12 +91,6 @@ static void user_env_fetch_about_syspart(void)
 	bdi_val = bdinfo_get(BDI_ID_SYSPART);
 	if (bdi_val)
 		env_set("syspart", bdi_val);
-
-#ifdef LS_DOUBLE_SYSTEM
-	bdi_val = bdinfo_get(BDI_ID_SYSPART_LAST);
-	if (bdi_val)
-		env_set("syspart_last", bdi_val);
-#endif
 }
 
 void user_env_fetch(void)

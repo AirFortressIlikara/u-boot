@@ -106,9 +106,6 @@ static char *updatemenu_system[] = {
 	"System install to mmc device (by mmc)=recover_cmd mmc 1 mmc\0",
 	#endif
 	"System recover from mmc disk=recover_cmd mmc_r\0",
-	#ifdef LS_DOUBLE_SYSTEM
-	"System recover last time boot=recover_cmd last\0",
-	#endif
 #endif
 #ifdef CONFIG_LOONGSON_BOARD_SATA_FS
 	"System install to sata disk (by usb)=recover_cmd usb\0",
@@ -118,9 +115,6 @@ static char *updatemenu_system[] = {
 	"System install to sata disk (by mmc)=recover_cmd mmc\0",
 	#endif
 	"System recover from sata disk=recover_cmd sata\0",
-	#ifdef LS_DOUBLE_SYSTEM
-	"System recover last time boot=recover_cmd last\0",
-	#endif
 #endif
 	NULL
 };
