@@ -5,5 +5,4 @@ obj-y 	+= spl.o
 endif
 
 obj-$(CONFIG_SOC_LS2K500)	+= ls2k500/
-obj-$(CONFIG_SOC_LS2K1000)	+= ls2k1000/
 obj-$(CONFIG_SOC_LS2K300)	+= ls2k300/

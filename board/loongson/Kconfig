@@ -16,15 +16,6 @@ config SYS_CONFIG_NAME
 
 endif
 
-if SOC_LS2K1000
-config SYS_BOARD
-	default "ls2k1000"
-
-config SYS_CONFIG_NAME
-	default "loongson_2k1000"
-
-endif
-
 if SOC_LS2K300
 config SYS_BOARD
 	default "ls2k300"

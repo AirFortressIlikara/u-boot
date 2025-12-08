@@ -15,8 +15,6 @@
 
 #if defined(CONFIG_SOC_LS2K500)
 #define RD_ADDR     0x9000000007000000
-#elif defined(CONFIG_SOC_LS2K1000)
-#define RD_ADDR     0x9000000090040000
 #elif defined(CONFIG_SOC_LS2K300)
 #define RD_ADDR     0x9000000007000000
 #endif

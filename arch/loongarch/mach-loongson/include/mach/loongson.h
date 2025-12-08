@@ -5,8 +5,6 @@
 
 #ifdef CONFIG_SOC_LS2K500
 #include "ls2k500/ls2k500.h"
-#elif defined(CONFIG_SOC_LS2K1000)
-#include "ls2k1000/ls2k1000.h"
 #elif defined(CONFIG_SOC_LS2K300)
 #include "ls2k300/ls2k300.h"
 #endif

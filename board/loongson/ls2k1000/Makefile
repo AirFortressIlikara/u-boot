@@ -1,1 +1,0 @@
-obj-$(CONFIG_SOC_LS2K1000) += ls2k1000.o pcie.o

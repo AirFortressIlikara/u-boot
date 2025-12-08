@@ -8,11 +8,6 @@ config SOC_LS2K500
 	depends on SUPPORTS_CPU_LOONGARCH64
 	select SYS_CACHE_SHIFT_6
 
-config SOC_LS2K1000
-	bool "Support for LS2K1000 family SoCs"
-	depends on SUPPORTS_CPU_LOONGARCH64
-	select SYS_CACHE_SHIFT_6
-
 config SOC_LS2K300
 	bool "Support for LS2K300 family SoCs"
 	depends on SUPPORTS_CPU_LOONGARCH64
@@ -35,27 +30,26 @@ config CPU_700MHZ
 
 config CPU_800MHZ
 	bool "800MHz"
-	depends on SOC_LS2K1000 || SOC_LS2K300
+	depends on SOC_LS2K300
 
 config CPU_900MHZ
 	bool "900MHz"
-	depends on SOC_LS2K1000 || SOC_LS2K300
+	depends on SOC_LS2K300
 
 config CPU_1000MHZ
 	bool "1000MHz"
-	depends on SOC_LS2K1000 || SOC_LS2K300
+	depends on SOC_LS2K300
 
 config CPU_1100MHZ
 	bool "1100MHz"
-	depends on SOC_LS2K1000 || SOC_LS2K300
+	depends on SOC_LS2K300
 endchoice
 
 config SYS_CPU
-	default "LA264" if SOC_LS2K500 || SOC_LS2K1000 || SOC_LS2K300
+	default "LA264" if SOC_LS2K500 || SOC_LS2K300
 
 config SYS_SOC
 	default "ls2k500" if SOC_LS2K500
-	default "ls2k1000" if SOC_LS2K1000
 	default "ls2k300" if SOC_LS2K300
 
 config CPU_FREQ
