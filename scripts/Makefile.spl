@@ -123,14 +123,6 @@ PLATFORM_LIBGCC = arch/$(ARCH)/lib/lib.a
 PLATFORM_LIBS := $(filter-out %/lib.a, $(filter-out -lgcc, $(PLATFORM_LIBS))) $(PLATFORM_LIBGCC)
 endif
 
-ifdef CONFIG_LOONGSON_DDR4
-ifneq ($(CONFIG_GCC_VERSION), $(firstword $(shell echo "130000 $(CONFIG_GCC_VERSION)" | tr ' ' '\n' | sort -n)))
-PLATFORM_LIBS += $(abspath $(srctree)/drivers/ram/loongson/libmem_config_new_abi.a)
-else
-PLATFORM_LIBS += $(abspath $(srctree)/drivers/ram/loongson/libmem_config.a)
-endif
-endif
-
 u-boot-spl-init := $(head-y)
 u-boot-spl-main := $(libs-y)
 ifdef CONFIG_$(SPL_TPL_)OF_PLATDATA

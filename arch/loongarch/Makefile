@@ -29,3 +29,11 @@ tune-$(CONFIG_CPU_LOONGARCH64) = -mtune=loongarch64
 cflags-y += -I$(srctree)/arch/loongarch/include/asm/mach-generic
 
 PLATFORM_CPPFLAGS += $(arch-y) $(tune-y) $(cflags-y)
+
+ifdef CONFIG_LOONGSON_DDR4
+ifneq ($(CONFIG_GCC_VERSION), $(firstword $(shell echo "130000 $(CONFIG_GCC_VERSION)" | tr ' ' '\n' | sort -n)))
+PLATFORM_LIBS += $(abspath $(srctree)/drivers/ram/loongson/libmem_config_new_abi.a_shipped)
+else
+PLATFORM_LIBS += $(abspath $(srctree)/drivers/ram/loongson/libmem_config.a_shipped)
+endif
+endif
