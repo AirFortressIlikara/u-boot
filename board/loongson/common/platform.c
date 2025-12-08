@@ -410,14 +410,6 @@ int last_stage_init(void)
 	phy_ls2k_usb_init();
 #endif
 
-#ifdef CONFIG_LOONGSON_RECOVER
-	/*
-	 * 上电时长按按钮3秒进入recover功能, recover优先顺序usb>mmc>sata
-	 * 按键使用 LS_RECOVER_GPIO_BUTTON 定义的gpio
-	 */
-	recover();
-#endif
-
 #ifdef CONFIG_MTD_RAW_NAND
 	adjust_nand_pagesize();
 #endif

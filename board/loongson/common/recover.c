@@ -261,34 +261,6 @@ static int do_recover_from_mmc_r(char *part_id)
 #endif
 }
 
-/* 上电时长按按钮3秒进入recover功能, recover优先顺序usb>mmc>sata
-   按键使用 LS_RECOVER_GPIO_BUTTON 定义的gpio */
-int recover(void)
-{
-#ifdef LS_RECOVER_GPIO_BUTTON
-	int ret;
-	int timeout = 0;
-
-	gpio_request(LS_RECOVER_GPIO_BUTTON, "recover_butt");
-	gpio_direction_input(LS_RECOVER_GPIO_BUTTON);
-
-	while (gpio_get_value(LS_RECOVER_GPIO_BUTTON) == 0) {
-		mdelay(10);
-		timeout++;
-		if (timeout > 300) {
-			if (do_recover_from_usb() == 0) {
-			} else if (do_recover_from_mmc() == 0) {
-			} else {
-				char part_id[4] = "4";
-				do_recover_from_sata(part_id);
-			}
-			break;
-		}
-	}
-#endif
-	return 0;
-}
-
 #ifdef LS_DOUBLE_SYSTEM
 
 static int do_recover_to_last(void)
