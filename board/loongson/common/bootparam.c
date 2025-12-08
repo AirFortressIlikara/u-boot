@@ -7,8 +7,6 @@
 #include <ram.h>
 #include "bootparam.h"
 
-#include "board_kernel_product.h"
-
 #define BOOTPARAMS_ADDRESS			0x0f030400
 #define BOOTPARAMS_SIZE				0x9c00
 #define SMBIOS_PHYSICAL_ADDRESS 	0x0fffe000
@@ -274,8 +272,6 @@ void *build_boot_param(void)
 {
 	struct boot_params *bp =
 		(struct boot_params *)PHYS_TO_CACHED(BOOTPARAMS_ADDRESS);
-
-	update_board_kernel_product();
 
 	init_boot_param(bp);
 	return bp;

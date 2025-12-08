@@ -23,7 +23,6 @@
 #include <version_string.h>
 
 #include "loongson_stdout_operation.h"
-#include "loongson_board_info.h"
 
 #define NOTICE_STR1 "c to enter u-boot console"
 #define NOTICE_STR2 "m to enter boot menu"
@@ -343,36 +342,10 @@ __weak int ls_board_early_init_r(void)
 	return 0;
 }
 
-static int update_unknown_board_name(void)
-{
-	char* temp;
-	char* board_name;
-	find_bdname();
-	if (!bdname)
-		return 0;
-	board_name = bdinfo_get(BDI_ID_NAME);
-	/*
-	 * 设置 BDI_ID_NAME 的条件
-	 * NULL
-	 * 不是 当前板卡的 desc (包括了 unknown)
-	 */
-	temp = get_board_name_by_desc((char*)bdname);
-	if (!temp)
-		return 0;
-	if (board_name && !strcmp(board_name, temp))
-		return 0;
-	board_name = temp;
-	bdinfo_set(BDI_ID_NAME, board_name);
-	bdinfo_save();
-	board_name = bdinfo_get(BDI_ID_NAME);
-	return 0;
-}
-
 int board_early_init_r(void)
 {
 	beep_boot();
 	bdinfo_init();
-	update_unknown_board_name();
 	return ls_board_early_init_r();
 }
 #endif
