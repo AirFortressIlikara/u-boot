@@ -139,13 +139,6 @@ static struct mmc *__init_mmc_device(int dev, bool force_init,
 		return NULL;
 	}
 
-#ifdef CONFIG_MMC_LOONGSON_EMMC
-	// ls-emmc 驱动不能 force-init，否则卡死
-	if (strcmp(mmc->cfg->name, "loongson_emmc") == 0)
-	{
-		force_init = false;
-	}
-#endif
 	if (!mmc_getcd(mmc))
 		force_init = true;
 
