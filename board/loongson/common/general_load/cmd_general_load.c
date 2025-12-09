@@ -67,9 +67,7 @@ static int do_general_load(struct cmd_tbl *cmdtp, int flag, int argc, char * con
 			update_rootfs_target = 1;
 
 		if (update_rootfs_target) {
-			print_enable_setup(0);
 			setup_cur_syspart(SYSPART_FIRST);
-			print_enable_setup(1);
 			try_to_read_fdisk(src);
 		}
 	}
@@ -101,5 +99,3 @@ U_BOOT_CMD(
 	"general load from xxx to xxx",
 	GENERAL_LOAD_CMD_TIP
 );
-
-

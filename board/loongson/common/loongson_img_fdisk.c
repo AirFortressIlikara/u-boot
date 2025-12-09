@@ -69,7 +69,6 @@ int loongson_try_read_img_fdisk(char* read_way)
 	if (!read_way)
 		return -1;
 
-	print_enable_setup(0);
 	if (!strcmp(read_way, "usb")) {
 		try_read_block(read_way);
 	} else  if (!strcmp(read_way, "mmc")) {
@@ -77,6 +76,5 @@ int loongson_try_read_img_fdisk(char* read_way)
 	} else if (!strcmp(read_way, "tftp")) {
 		try_read_tftp();
 	}
-	print_enable_setup(1);
 	return 0;
 }

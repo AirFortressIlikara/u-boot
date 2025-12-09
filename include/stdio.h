@@ -56,6 +56,4 @@ void fputc(int file, const char c);
 int ftstc(int file);
 int fgetc(int file);
 
-int print_enable_setup(int enable);
-
 #endif /* __STDIO_H */
