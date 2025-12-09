@@ -1,8 +1,6 @@
 #include <image.h>
 #include <lmb.h>
 #include <mmc.h>
-#include <scsi.h>
-#include <nand.h>
 #include <mtd.h>
 #include <blk.h>
 #include <part.h>

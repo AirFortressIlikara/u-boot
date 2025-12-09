@@ -4,8 +4,6 @@
 #include <env.h>
 #include <pci.h>
 #include <usb.h>
-#include <scsi.h>
-#include <ahci.h>
 #include <led.h>
 #include <asm/io.h>
 #include <dm.h>
@@ -170,4 +168,3 @@ int ls_board_late_init(void)
 	return 0;
 }
 #endif
-

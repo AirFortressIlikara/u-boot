@@ -9,26 +9,6 @@
 
 typedef int (*loongson_boot_func)(void);
 
-static int loongson_boot_ssd(void)
-{
-#ifdef BOOT_SATA_DEFAULT
-	printf("boot system from ssd .....\r\n");
-	return run_command(BOOT_SATA_DEFAULT, 0);
-#else
-	return -1;
-#endif
-}
-
-static int loongson_boot_nand(void)
-{
-#ifdef BOOT_NAND_DEFAULT
-	printf("boot system from nand .....\r\n");
-	return run_command(BOOT_NAND_DEFAULT, 0);
-#else
-	return -1;
-#endif
-}
-
 static int loongson_boot_emmc(void)
 {
 #ifdef BOOT_EMMC_DEFAULT
@@ -49,8 +29,8 @@ static int loongson_boot_sdcard(void)
 #endif
 }
 
-static char* boot_param_list[LOONGSON_BOOT_TYPE_SIZE] = {"ssd", "nand", "emmc", "sdcard"};
-static loongson_boot_func boot_func_list[LOONGSON_BOOT_TYPE_SIZE] = {loongson_boot_ssd, loongson_boot_nand, loongson_boot_emmc, loongson_boot_sdcard};
+static char* boot_param_list[LOONGSON_BOOT_TYPE_SIZE] = {"emmc", "sdcard"};
+static loongson_boot_func boot_func_list[LOONGSON_BOOT_TYPE_SIZE] = {loongson_boot_emmc, loongson_boot_sdcard};
 
 static int do_loongson_boot(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[])
 {
@@ -78,23 +58,15 @@ static int do_loongson_boot(struct cmd_tbl *cmdtp, int flag, int argc, char * co
 
 #define LOONGSON_BOOT_USAGE_HEAD "<option>\n" \
 
-#ifdef BOOT_SATA_DEFAULT
-#define LOONGSON_BOOT_SSD_USAGE "option: ssd: boot from ssd\n"
-#else
-#define LOONGSON_BOOT_SSD_USAGE "not support boot from ssd\n"
-#endif
+#define LOONGSON_BOOT_EMMC_USAGE "option: emmc: boot from emmc\n"
 
-#ifdef BOOT_NAND_DEFAULT
-#define LOONGSON_BOOT_NAND_USAGE "option: nand: boot from nand\n"
-#else
-#define LOONGSON_BOOT_NAND_USAGE "not support boot from nand\n"
-#endif
+#define LOONGSON_BOOT_SDCARD_USAGE "option: sdcard: boot from sdcard\n"
 
 #define LOONGSON_BOOT_HELP LOONGSON_BOOT_HELP_HEAD
 
 #define LOONGSON_BOOT_USAGE LOONGSON_BOOT_USAGE_HEAD \
-							LOONGSON_BOOT_SSD_USAGE \
-							LOONGSON_BOOT_NAND_USAGE
+							LOONGSON_BOOT_EMMC_USAGE \
+							LOONGSON_BOOT_SDCARD_USAGE
 
 U_BOOT_CMD(
 	loongson_boot,    2,    1,     do_loongson_boot,

@@ -28,33 +28,11 @@ static char *updatemenu_kernel[] = {
 	"Update kernel (uImage) (by mmc)=general_load --if mmc1 --sym uImage\0",
 	#endif
 	"Update kernel (uImage) (by tftp)=general_load --if net --sym uImage\0",
-#else
-#ifdef CONFIG_AHCI
-	"Update kernel (uImage) to sata disk (by usb)=loongson_update usb kernel sata\0",
-	#ifdef CONFIG_MMC
-	"Update kernel (uImage) to sata disk (by mmc)=loongson_update mmc kernel sata\0",
-	#endif
-	"Update kernel (uImage) to sata disk (by tftp)=loongson_update tftp kernel sata\0",
-#endif
-#ifdef CONFIG_MTD_RAW_NAND
-	"Update kernel (uImage) to nand flash (by usb)=loongson_update usb kernel nand\0",
-	#ifdef CONFIG_MMC
-	"Update kernel (uImage) to nand flash (by mmc)=loongson_update mmc kernel nand\0",
-	#endif
-	"Update kernel (uImage) to nand flash (by tftp)=loongson_update tftp kernel nand\0",
-#endif
 #endif
 	NULL
 };
 
 static char *updatemenu_rootfs[] = {
-#ifdef CONFIG_MTD_RAW_NAND
-	"Update rootfs (rootfs-ubifs-ze.img) to nand flash (by usb)=loongson_update usb rootfs\0",
-	#ifdef CONFIG_MMC
-	"Update rootfs (rootfs-ubifs-ze.img) to nand flash (by mmc)=loongson_update mmc rootfs\0",
-	#endif
-	"Update rootfs (rootfs-ubifs-ze.img) to nand flash (by tftp)=loongson_update tftp rootfs\0",
-#endif
 #ifdef CONFIG_LOONGSON_GENERAL_LOAD
 	#ifdef CONFIG_USB_STORAGE
 	"Update rootfs (rootfs.img) (by usb)=general_load --if usb --sym rootfs.img --decompress;\0",
@@ -87,17 +65,6 @@ static char *updatemenu_dtb[] = {
 	NULL
 };
 
-static char *updatemenu_all[] = {
-#ifdef CONFIG_MTD_RAW_NAND
-	"Update all (kernel rootfs uboot) to nand flash (by usb)=loongson_update usb all nand\0",
-	#ifdef CONFIG_MMC
-	"Update all (kernel rootfs uboot) to nand flash (by mmc)=loongson_update mmc all nand\0",
-	#endif
-	"Update all (kernel rootfs uboot) to nand flash (by tftp)=loongson_update tftp all nand\0",
-#endif
-	NULL
-};
-
 static char *updatemenu_system[] = {
 #ifdef CONFIG_LOONGSON_BOARD_MMC_FS
 	"System install to mmc device (by usb)=recover_cmd usb 1 mmc\0",
@@ -105,36 +72,11 @@ static char *updatemenu_system[] = {
 	#ifdef CONFIG_MMC
 	"System install to mmc device (by mmc)=recover_cmd mmc 1 mmc\0",
 	#endif
-	"System recover from mmc disk=recover_cmd mmc_r\0",
-#endif
-#ifdef CONFIG_LOONGSON_BOARD_SATA_FS
-	"System install to sata disk (by usb)=recover_cmd usb\0",
-	"System install to sata disk (by usb iso)=bootcfg usb\0",
-	"System install to sata disk (by tftp)=recover_cmd tftp\0",
-	#ifdef CONFIG_MMC
-	"System install to sata disk (by mmc)=recover_cmd mmc\0",
-	#endif
-	"System recover from sata disk=recover_cmd sata\0",
 #endif
 	NULL
 };
 
-#ifndef BOOT_SATA_DEFAULT
-#define BOOT_SATA_DEFAULT
-#endif
-
-#ifndef BOOT_NAND_DEFAULT
-#define BOOT_NAND_DEFAULT
-#endif
-
 static char *updatemenu_bootselect[] = {
-#ifdef CONFIG_AHCI
-	"System Boot from sata disk=loongson_boot ssd\0",
-	"System Boot from sata disk(boof.cfg)=bootcfg scsi\0",
-#endif
-#ifdef CONFIG_MTD_RAW_NAND
-	"System Boot from nand flash=loongson_boot nand\0",
-#endif
 #ifdef CONFIG_MMC
 	"System Boot from emmc=loongson_boot emmc\0",
 	"System Boot from sdcard=loongson_boot sdcard\0",
@@ -172,21 +114,6 @@ __weak void update_rotation(char *command, int num)
 	run_command(command, 0);
 }
 #endif
-
-__weak int set_board_kernel_product_id(char* command)
-{
-	printf("cur uboot dont support select board product\n");
-	return 0;
-}
-
-__weak char* product_null_set[] = {
-	NULL
-};
-
-__weak char* get_board_kernel_product_menu_option(int n)
-{
-	return product_null_set[n];
-}
 
 /* maximum updatemenu entries */
 #define MAX_COUNT	99
@@ -239,9 +166,6 @@ static char *updatemenu_getoption(unsigned short int n)
 	case UPDATE_TYPE_DTB:
 		return updatemenu_dtb[n];
 		break;
-	case UPDATE_TYPE_ALL:
-		return updatemenu_all[n];
-		break;
 	case UPDATE_TYPE_SYSTEM:
 		return updatemenu_system[n];
 		break;
@@ -253,9 +177,6 @@ static char *updatemenu_getoption(unsigned short int n)
 		break;
 	case UPDATE_TYPE_ROTATION:
 		return rotation_menu[n];
-		break;
-	case UPDTAE_TYPE_PRODUCT:
-		return get_board_kernel_product_menu_option(n);
 		break;
 	}
 	return NULL;
@@ -620,8 +541,6 @@ cleanup:
 			update_resolution(command, num);
 		} else if (updatemenu_type == UPDATE_TYPE_ROTATION) {
 			update_rotation(command, num);
-		} else if (updatemenu_type == UPDTAE_TYPE_PRODUCT) {
-			set_board_kernel_product_id(command);
 		} else {
 			run_command(command, 0);
 		}
@@ -673,109 +592,4 @@ U_BOOT_CMD(
 	updatemenu, 3, 1, do_updatemenu,
 	"ANSI terminal updatemenu",
 	"<kernel|rootfs|uboot|dtb|system|resolution>"
-);
-
-int do_updatemenu_kernel(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
-{
-	updatemenu_type = UPDATE_TYPE_KERNEL;
-	updatemenu_return = UPDATEMENU_RETURN_CONSOLE;
-	updatemenu_show();
-
-	return 0;
-}
-
-U_BOOT_CMD(
-	updatemenu_kernel, 2, 1, do_updatemenu_kernel,
-	"ANSI terminal updatemenu_kernel",
-	"command to update uImage"
-);
-
-int do_updatemenu_rootfs(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
-{
-	updatemenu_type = UPDATE_TYPE_ROOTFS;
-	updatemenu_return = UPDATEMENU_RETURN_CONSOLE;
-	updatemenu_show();
-
-	return 0;
-}
-
-U_BOOT_CMD(
-	updatemenu_rootfs, 2, 1, do_updatemenu_rootfs,
-	"ANSI terminal updatemenu_rootfs",
-	"command to update rootfs"
-);
-
-int do_updatemenu_uboot(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
-{
-	updatemenu_type = UPDATE_TYPE_UBOOT;
-	updatemenu_return = UPDATEMENU_RETURN_CONSOLE;
-	updatemenu_show();
-
-	return 0;
-}
-
-U_BOOT_CMD(
-	updatemenu_uboot, 2, 1, do_updatemenu_uboot,
-	"ANSI terminal updatemenu_uboot",
-	"command to update u-boot"
-);
-
-int do_updatemenu_dtb(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
-{
-	updatemenu_type = UPDATE_TYPE_DTB;
-	updatemenu_return = UPDATEMENU_RETURN_CONSOLE;
-	updatemenu_show();
-
-	return 0;
-}
-
-U_BOOT_CMD(
-	updatemenu_dtb, 2, 1, do_updatemenu_dtb,
-	"ANSI terminal updatemenu_dtb",
-	"command to update dtb file"
-);
-
-int do_updatemenu_all(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
-{
-	updatemenu_type = UPDATE_TYPE_ALL;
-	updatemenu_return = UPDATEMENU_RETURN_CONSOLE;
-	updatemenu_show();
-
-	return 0;
-}
-
-U_BOOT_CMD(
-	updatemenu_all, 2, 1, do_updatemenu_all,
-	"ANSI terminal updatemenu_all",
-	"command to update kernel roofs u-boot to nand flash"
-);
-
-int do_updatemenu_system(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
-{
-	updatemenu_type = UPDATE_TYPE_SYSTEM;
-	updatemenu_return = UPDATEMENU_RETURN_CONSOLE;
-	updatemenu_show();
-
-	return 0;
-}
-
-U_BOOT_CMD(
-	updatemenu_system, 2, 1, do_updatemenu_system,
-	"ANSI terminal updatemenu_system",
-	"command to install or recover system to ssd disk"
-);
-
-int do_board_product_menu(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
-{
-	updatemenu_type = UPDTAE_TYPE_PRODUCT;
-	updatemenu_return = UPDATEMENU_RETURN_CONSOLE;
-	updatemenu_show();
-
-	return 0;
-}
-
-U_BOOT_CMD(
-	board_product_menu, 2, 1, do_board_product_menu,
-	"ANSI terminal board_product_menu",
-	"command to select board product to change board function"
 );

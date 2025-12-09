@@ -1,6 +1,4 @@
 #include <mmc.h>
-#include <scsi.h>
-#include <nand.h>
 #include <blk.h>
 
 #include "gl_target.h"
@@ -72,36 +70,6 @@ static struct blk_desc* gl_usb_init(int devnum)
 	return blk_get_devnum_by_type(IF_TYPE_USB, devnum);
 }
 
-static struct blk_desc* gl_scsi_init(int devnum)
-{
-#ifdef CONFIG_SCSI
-	int ret;
-#ifndef CONFIG_DM_SCSI
-	scsi_bus_reset(NULL);
-#endif
-	ret = scsi_scan(true);
-	if (ret)
-		return NULL;
-#endif
-	return blk_get_devnum_by_type(IF_TYPE_SCSI, devnum);
-}
-
-static struct mtd_gl_desc* gl_nand_init(int devnum)
-{
-#ifdef CONFIG_MTD_RAW_NAND
-	struct mtd_gl_desc* desc;
-	struct mtd_info* mtd;
-
-	mtd_probe_devices();
-	mtd = get_nand_dev_by_index(devnum);
-	desc = mtd_gl_init(mtd);
-
-	return desc;
-#else
-	return 0;
-#endif
-}
-
 static struct mtd_gl_desc* gl_flash_init(int devnum)
 {
 	struct mtd_gl_desc* desc;
@@ -150,16 +118,6 @@ static int m__target_set_device(gl_target_t* self, char* if_part)
 		priv->type = GL_DEVICE_BLK;
 		priv->desc = gl_usb_init(
 				gl_get_devnum(if_part + 3, &priv->part));
-	}
-	else if (strncmp(if_part, "scsi", 4) == 0) {
-		priv->type = GL_DEVICE_BLK;
-		priv->desc = gl_scsi_init(
-				gl_get_devnum(if_part + 4, &priv->part));
-	}
-	else if	(strncmp(if_part, "nand", 4) == 0) {
-		priv->type = GL_DEVICE_MTD;
-		priv->desc = gl_nand_init(
-				gl_get_devnum(if_part + 4, &priv->part));
 	}
 	else if	(strncmp(if_part, "flash", 5) == 0) {
 		priv->type = GL_DEVICE_MTD;

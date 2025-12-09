@@ -36,14 +36,12 @@
 	"bootmenu_2=Update rootfs=updatemenu rootfs 1\0" \
 	"bootmenu_3=Update u-boot=updatemenu uboot 1\0" \
 	"bootmenu_4=Update dtb=updatemenu dtb 1\0" \
-	"bootmenu_5=Update ALL=updatemenu all 1\0" \
-	"bootmenu_6=System install or recover=updatemenu system 1\0" \
-	"bootmenu_7=Board product=updatemenu product 1\0"
+	"bootmenu_5=System install or recover=updatemenu system 1\0"
 
 #if !defined(CONFIG_DM_VIDEO) || !defined(CONFIG_VIDEO)
 #define LOONGSON_BOOTMENU_VIDEO \
-	"bootmenu_7=Video resolution select=updatemenu resolution 1\0" \
-	"bootmenu_8=Video rotation select=updatemenu rotation 1\0"
+	"bootmenu_6=Video resolution select=updatemenu resolution 1\0" \
+	"bootmenu_7=Video rotation select=updatemenu rotation 1\0"
 #else
 #define LOONGSON_BOOTMENU_VIDEO
 #endif
@@ -91,20 +89,6 @@ RECOVER_FRONT_BOOTARGS "setenv bootargs ${bootargs} ins_way=tftp ins_target=mmc 
 #define RECOVER_DHCP_DEFAULT "dhcp ${loadaddr} uImage;dhcp ${rd_start} ramdisk.gz;"\
 RECOVER_FRONT_BOOTARGS "setenv bootargs ${bootargs} ins_way=tftp ins_target=mmc u_ip=${ipaddr} u_sip=${serverip};" RECOVER_START
 
-#define SATA_BOOT_ENV "setenv bootargs " CMDLINE_CONSOLE " rootfstype=ext4 rw rootwait; \
-setenv bootcmd ' setenv bootargs ${bootargs} root=/dev/sda${syspart} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel}; \
-sf probe;sf read ${fdt_addr} dtb;scsi reset;ext4load scsi 0:${syspart} ${loadaddr} /boot/uImage;bootm ';\
-saveenv;"
-
-#define BOOT_SATA_DEFAULT SATA_BOOT_ENV"boot"
-
-#define NAND_BOOT_ENV "setenv bootargs " CMDLINE_CONSOLE " root=ubi0:rootfs noinitrd init=/linuxrc rootfstype=ubifs rw; \
-setenv bootcmd ' setenv bootargs ${bootargs} ubi.mtd=root,${nand_pagesize} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel}; \
-sf probe;sf read ${fdt_addr} dtb;nboot kernel;bootm ';\
-saveenv;"
-
-#define BOOT_NAND_DEFAULT NAND_BOOT_ENV"boot"
-
 #define EMMC_BOOT_ENV "setenv bootargs " CMDLINE_CONSOLE " noinitrd init=/sbin/init rootfstype=ext4 rw rootwait; \
 setenv bootcmd ' setenv bootargs ${bootargs} root=/dev/mmcblk0p${syspart} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel}; \
 ext4load mmc 0:1 ${loadaddr} /boot/uImage;bootm ';\
@@ -118,10 +102,6 @@ ext4load mmc 1:1 ${loadaddr} /boot/uImage;bootm ';\
 saveenv;"
 
 #define BOOT_SDCARD_DEFAULT SDCARD_BOOT_ENV"boot"
-
-#define BOOT_SATA_CFG_DEFAULT "setenv bootcmd ' bootcfg scsi ';\
-saveenv;\
-boot"
 
 #define BOOT_USB_CFG_DEFAULT "setenv bootcmd ' bootcfg usb ';\
 saveenv;\

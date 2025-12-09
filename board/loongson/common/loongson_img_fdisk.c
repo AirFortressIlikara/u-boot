@@ -10,8 +10,6 @@ static void try_read_block(char* block_type)
 	int ret;
 #if defined(CONFIG_SOC_LS2K300)
 	char* target_block = "mmc0:1";
-#else
-	char* target_block = "scsi0:1";
 #endif
 	char cmd[256];
 
@@ -49,8 +47,6 @@ static void try_read_tftp(void)
 	char* server_ip = NULL;
 #if defined(CONFIG_SOC_LS2K300)
 	char* target_block = "mmc0:1";
-#else
-	char* target_block = "scsi0:1";
 #endif
 	char cmd[256];
 	// general_load --if net:192.168.1.2 --fmt tftp --sym fdisk.txt --of mmc0:1 --fmt ext4 --sym /root/fdisk.txt --force

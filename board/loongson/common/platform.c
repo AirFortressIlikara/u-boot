@@ -15,7 +15,6 @@
 #include <linux/delay.h>
 #include <sound.h>
 #include "bdinfo/bdinfo.h"
-#include <nand.h>
 #include <env.h>
 #include <net.h>
 #include <phy.h>
@@ -297,17 +296,6 @@ static void print_notice(void)
 	printf("************************************************************\n");
 }
 
-static void loongson_env_trigger(void)
-{
-	run_command("loongson_env_trigger init", 0);
-	run_command("loongson_env_trigger ls_trigger_u_kernel", 0);
-	run_command("loongson_env_trigger ls_trigger_u_rootfs", 0);
-	run_command("loongson_env_trigger ls_trigger_u_uboot", 0);
-	run_command("loongson_env_trigger ls_trigger_boot", 0);
-	run_command("loongson_env_trigger ls_trigger_ab_sys_status", 0);
-	run_command("loongson_env_trigger ls_trigger_mac_sync", 0);
-}
-
 #ifdef CONFIG_BOARD_EARLY_INIT_F
 __weak int ls_board_early_init_f(void)
 {
@@ -349,38 +337,6 @@ int board_late_init(void)
 extern void user_env_fetch(void);
 extern int recover(void);
 
-#ifdef CONFIG_MTD_RAW_NAND
-void adjust_nand_pagesize(void)
-{
-	struct mtd_info* mtd;
-	mtd = get_nand_dev_by_index(0);
-	if (mtd) {
-		int cur_page_size;
-		char cur_page_size_str[10];
-		char *env_page_size_str;
-		char *default_page_size_str = "2048";
-
-		env_page_size_str = env_get("nand_pagesize");
-		if (!env_page_size_str) {
-			printf("nand_pagesize is null, use default pagesize(2048)\n");
-			env_page_size_str = default_page_size_str;
-			env_set("nand_pagesize", env_page_size_str);
-		}
-
-		cur_page_size = mtd->writesize;
-
-		memset(cur_page_size_str, 0, 10);
-		sprintf(cur_page_size_str, "%d", cur_page_size);
-		cur_page_size_str[9] = 0;
-
-		if (strcmp(cur_page_size_str, env_page_size_str)) {
-			printf("change env nand_pagesize to be %s(ori is %s)\n", cur_page_size_str, env_page_size_str);
-			env_set("nand_pagesize", cur_page_size_str);
-		}
-	}
-}
-#endif
-
 int last_stage_init(void)
 {
 	print_notice();
@@ -393,13 +349,7 @@ int last_stage_init(void)
 	phy_ls2k_usb_init();
 #endif
 
-#ifdef CONFIG_MTD_RAW_NAND
-	adjust_nand_pagesize();
-#endif
-
 	env_set("ver", version_string); // save env 通过 loongson_env_trigger init 减少对spi的刷写
-
-	loongson_env_trigger();
 
 	return 0;
 }
@@ -447,168 +397,3 @@ __weak void spl_board_init(void)
 	return ;
 }
 #endif
-
-// Please use the scsi with driver model(CONFIG_DM_SCSI) first!
-#ifdef CONFIG_SCSI_AHCI_PLAT
-void scsi_init(void)
-{
-	void __iomem *ahci_base;
-
-	ahci_base = (void __iomem *)LS_SATA_BASE;
-	printf("scsi ahci plat %p\n", ahci_base);
-	if(!ahci_init(ahci_base))
-		scsi_scan(1);
-}
-#endif
-
-static int cur_abort_min_limit;
-void custom_abort_key_probe(char* presskey, int presskey_len, int* abort, int abort_min_limit)
-{
-	if (!abort || !presskey)
-		return;
-
-	cur_abort_min_limit = abort_min_limit;
-
-	if (presskey_len >= 1) {
-		if (!memcmp(presskey + presskey_len - 1, "r", 1))
-			abort[0] = abort_min_limit + 1;
-		else if (!memcmp(presskey + presskey_len - 1, "k", 1))
-			abort[0] = abort_min_limit + 2;
-		else if (!memcmp(presskey + presskey_len - 1, "a", 1))
-			abort[0] = abort_min_limit + 3;
-		else if (!memcmp(presskey + presskey_len - 1, "i", 1))
-			abort[0] = abort_min_limit + 4;
-		else if (!memcmp(presskey + presskey_len - 1, "o", 1))
-			abort[0] = abort_min_limit + 5;
-	}
-}
-
-static int abort_key_bootmenu(void)
-{
-	const char* s;
-	set_stdout(STDOUT_VIDEO, STDOUT_ON);
-	s = env_get("menucmd");
-	if (s)
-		run_command_list(s, -1, 0);
-	return 0;
-}
-
-static int abort_key_cmdline(void)
-{
-		set_stdout(STDOUT_VIDEO, STDOUT_OFF);
-#if defined(CONFIG_VIDEO) || defined(CONFIG_DM_VIDEO)
-		puts(ANSI_CLEAR_CONSOLE);
-#endif
-		set_stdout(STDOUT_VIDEO, STDOUT_ON);
-		return 0;
-}
-
-static void split_line_printf(void)
-{
-	printf("######################################\n");
-}
-
-static int abort_key_update_rootfs(void)
-{
-	return run_command("loongson_update usb rootfs nand", 0);
-}
-
-static int abort_key_update_kernel(void)
-{
-	return run_command("loongson_update usb kernel nand", 0);
-}
-
-static int abort_key_update_kernel_rootfs(void)
-{
-	int ret = 0;
-	int ret_k;
-	int ret_r;
-	ret_k = abort_key_update_kernel();
-	ret_r = abort_key_update_rootfs();
-	split_line_printf();
-	if (!ret_k)
-		printf("update kernel success!\n");
-	if (!ret_r)
-		printf("update rootfs success!\n");
-	if (ret_k && ret_r) {
-		ret = 1;
-		printf("update kernel or rootfs failed!\n");
-	}
-	split_line_printf();
-	return ret;
-}
-
-static int abort_key_install_system(void)
-{
-	return run_command("recover_cmd usb", 0);
-}
-
-static int abort_key_try_update_uboot_then_install_system(void)
-{
-	int ret_uboot;
-	int ret_recov;
-	ret_uboot = run_command("loongson_update usb uboot", 0);
-	ret_recov = run_command("recover_cmd usb", 0);
-	if (ret_uboot == 0)
-		run_command("reset", 0);
-	return ret_uboot | ret_recov;
-}
-
-typedef int (*abort_key_handle_func)(void);
-
-void abort_key_handle_custom(int abort)
-{
-	int ret;
-	abort_key_handle_func func_set[] = {
-		abort_key_update_rootfs,
-		abort_key_update_kernel,
-		abort_key_update_kernel_rootfs,
-		abort_key_install_system,
-		abort_key_try_update_uboot_then_install_system,
-	};
-
-	if (abort < 0 || abort >= sizeof(func_set) / sizeof(abort_key_handle_func))
-		return;
-	ret = func_set[abort]();
-
-	if (!ret) {
-		printf("boot after 3s!\n");
-		mdelay(3000);
-		run_command("boot", 0);
-		return;
-	}
-
-	split_line_printf();
-	printf("update failed!\n");
-	split_line_printf();
-
-#ifdef CONFIG_LOONGSON_KEYHANDLE_FAIL_CONTINUE_BOOT
-	// 失败后可以继续启动
-	printf("boot after 3s!\n");
-	mdelay(3000);
-	run_command("boot", 0);
-#endif
-}
-
-void custom_abort_key_handle(int abort)
-{
-	abort_key_handle_func generic_func_set[] = {abort_key_bootmenu, abort_key_cmdline};
-
-	if (abort <= 0)
-		return;
-
-	--abort;
-	if (abort < cur_abort_min_limit)  //bootdelaykey or bootstopkey
-		generic_func_set[abort]();
-	else {
-		abort -= cur_abort_min_limit; // start form limit (limit -> 0)
-		abort_key_handle_custom(abort);
-	}
-}
-
-void autoboot_failed_custom_handle(const char* s)
-{
-	set_stdout(STDOUT_VIDEO, STDOUT_ON);
-	printf("Bootcmd=\"%s\"\n", s ? s : "<UNDEFINED>");
-	printf("Boot Kernel failed. Kernel not found or bad.\n");
-}

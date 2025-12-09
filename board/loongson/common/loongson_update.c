@@ -29,25 +29,10 @@ const char *update_typename_str[UPDATE_TYPE_COUNT] = {
 	[UPDATE_TYPE_UBOOT]		= "uboot",
 	[UPDATE_TYPE_DTB]		= "dtb",
 	[UPDATE_TYPE_SYSTEM]	= "system",
-	[UPDATE_TYPE_ALL]		= "all",
 	[UPDATE_TYPE_BOOTSELECT]		= "bootselect",
 	[UPDATE_TYPE_RESOLUTION]		= "resolution",
 	[UPDATE_TYPE_ROTATION]  = "rotation",
-	[UPDTAE_TYPE_PRODUCT]  = "product",
 };
-
-static int mtdparts_probe(void)
-{
-	int ret = -1;
-
-	run_command("sf probe", 0);
-
-	ret = mtdparts_init();
-	if (ret) {
-		printf("-----> mtdparts init failed! partition not found or toolarge\r\n");
-	}
-	return ret;
-}
 
 static void user_env_save(void)
 {
@@ -57,7 +42,7 @@ static void user_env_save(void)
 
 	// syspart 用于保存操作系统分区的分区号，如：
 	//   linux: sda1、sda2 ...
-	//   uboot: scsi 0:1、scsi 0:2 ...
+	//   uboot: mmc 0:1、mmc 0:2 ...
 	env_val = env_get("syspart");
 	if (env_val == NULL)
 		return;
@@ -105,7 +90,7 @@ void user_env_fetch(void)
 static void update_failed_way_tip(int way)
 {
 	if (way == UPDATE_DEV_USB) {
-		printf("### check usb filesystem type must be fat32\n");
+		printf("### check usb filesystem type must be fat32 or ext4\n");
 	} else if (way == UPDATE_DEV_TFTP) {
 		printf("### check tftp server running in PC\n");
 		printf("### check board link PC by eth cable(RJ45)\n");
@@ -123,18 +108,10 @@ static void update_failed_way_tip(int way)
 static void update_failed_target_tip(int way, int target)
 {
 	char uboot_file[] = "u-boot-with-spl.bin";
-	char kernel_file[] = "uImage";
-	char rootfs_file[] = "rootfs-ubifs-ze.img";
 	char dtb_file[] = "dtb.bin";
 	char* file;
 
-	if (target == UPDATE_TYPE_KERNEL) {
-		printf("### check where update kernel(nand? sata?)\n");
-		file = kernel_file;
-	}
-	else if (target == UPDATE_TYPE_ROOTFS)
-		file = rootfs_file;
-	else if (target == UPDATE_TYPE_UBOOT)
+	if (target == UPDATE_TYPE_UBOOT)
 		file = uboot_file;
 	else if (target == UPDATE_TYPE_DTB)
 		file = dtb_file;
@@ -302,125 +279,6 @@ static int update_dtb(int dev)
 	return ret;
 }
 
-static int update_kernel(int dev, char *typename, char *kernelname)
-{
-	char cmd[256];
-	char kernel[32] = "uImage";
-	int ret = -1;
-
-	printf("update kernel....................\n");
-
-	if (!typename) {
-		printf("error! not appoint where update kernel(nand? sata?)\n");
-		goto err;
-	}
-
-	if (kernelname) {
-		memset(kernel, 0, sizeof(kernel));
-		sprintf(kernel, "%s", kernelname);
-	}
-
-	memset(cmd, 0, 256);
-	switch (dev) {
-	case UPDATE_DEV_USB:
-		sprintf(cmd, "update/%s", kernel);
-		ret = storage_read_file(IF_TYPE_USB, "${loadaddr}", cmd, 0, NULL, NULL);
-		break;
-	case UPDATE_DEV_TFTP:
-		sprintf(cmd, "tftpboot ${loadaddr} %s", kernel);
-		ret = run_command(cmd, 0);
-		break;
-	case UPDATE_DEV_MMC:
-		sprintf(cmd, "update/%s", kernel);
-		ret = storage_read_file(IF_TYPE_MMC, "${loadaddr}", cmd, 0, NULL, NULL);
-	case UPDATE_DEV_DHCP:
-		sprintf(cmd, "dhcp ${loadaddr} ${serverip}:%s", kernel);
-		ret = run_command(cmd, 0);
-		break;
-	}
-
-	if (ret) {
-		if (ret) {
-			printf("upgrade kernel failed, not found update/%s file!\r\n", kernel);
-			goto err;
-		}
-	}
-
-	if (strcmp(typename, "nand") == 0) {
-		ret = mtdparts_probe();
-		if (ret)
-			goto err;
-		printf("update kernel to nand............\n");
-		ret = run_command("nand erase.part kernel;nand write ${loadaddr} kernel ${filesize}", 0);
-		if (ret) {
-			goto err;
-		}
-	} else if (strcmp(typename, "sata") == 0) {
-		printf("update kernel to ssd.............\n");
-		sprintf(cmd, "scsi reset;ext4write scsi 0:${syspart} ${loadaddr} /boot/%s ${filesize}", kernel);
-		ret = run_command(cmd, 0);
-		if (ret) {
-			goto err;
-		}
-	} else if (strcmp(typename, "mmc") == 0) {
-		printf("update kernel to mmc.............\n");
-		sprintf(cmd, "ext4write mmc 0:1 ${loadaddr} /%s ${filesize}", kernel);
-		ret = run_command(cmd, 0);
-		if (ret) {
-			goto err;
-		}
-	} else {
-		printf("upgrade kernel failed: nand or sata?\r\n");
-		ret = -1;
-		goto err;
-	}
-
-err:
-	update_result_display(ret, dev, UPDATE_TYPE_KERNEL);
-
-	return ret;
-}
-
-static int update_rootfs(int dev)
-{
-	int ret = -1;
-
-	printf("update rootfs to nand............\n");
-
-	switch (dev) {
-	case UPDATE_DEV_USB:
-		ret = storage_read_file(IF_TYPE_USB, "${loadaddr}", "update/rootfs-ubifs-ze.img", 0, NULL, NULL);
-		break;
-	case UPDATE_DEV_TFTP:
-		ret = run_command("tftpboot ${loadaddr} rootfs-ubifs-ze.img", 0);
-		break;
-	case UPDATE_DEV_MMC:
-		ret = storage_read_file(IF_TYPE_MMC, "${loadaddr}", "update/rootfs-ubifs-ze.img", 0, NULL, NULL);
-		break;
-	case UPDATE_DEV_DHCP:
-		ret = run_command("dhcp ${loadaddr} ${serverip}:rootfs-ubifs-ze.img", 0);
-		break;
-	}
-
-	if (ret) {
-		if (ret) {
-			printf("upgrade rootfs failed, not found update/rootfs-ubifs-ze.img file!\r\n");
-			return ret;
-		}
-	}
-
-	ret = mtdparts_probe();
-	if (ret) {
-		return ret;
-	}
-
-	ret = run_command("nand erase.part root;nand write ${loadaddr} root ${filesize}", 0);
-
-	update_result_display(ret, dev, UPDATE_TYPE_ROOTFS);
-
-	return ret;
-}
-
 static int do_loongson_update(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[])
 {
 	int ret;
@@ -456,7 +314,7 @@ static int do_loongson_update(struct cmd_tbl *cmdtp, int flag, int argc, char * 
 		printf("\n");
 		printf("######################################################\n");
 		printf("### upgrade type unknown\r\n");
-		printf("### please intput type: kernel\\rootfs\\uboot\\dtb\\all\r\n");
+		printf("### please intput type: uboot\\dtb\r\n");
 		goto err;
 	}
 
@@ -491,18 +349,6 @@ static int do_loongson_update(struct cmd_tbl *cmdtp, int flag, int argc, char * 
 	case UPDATE_TYPE_DTB:
 		ret = update_dtb(dev);
 		break;
-	case UPDATE_TYPE_KERNEL:
-		ret = update_kernel(dev, argv[3], argv[4]);
-		break;
-	case UPDATE_TYPE_ROOTFS:
-		ret = update_rootfs(dev);
-		break;
-	case UPDATE_TYPE_ALL:
-		// ret = update_dtb(dev);
-		ret = update_kernel(dev, argv[3], argv[4]);
-		ret = update_rootfs(dev);
-		ret = update_uboot(dev);
-		break;
 	default:
 		break;
 	}
@@ -516,7 +362,7 @@ err:
 
 U_BOOT_CMD(
 	loongson_update,    5,    1,     do_loongson_update,
-	"upgrade uboot kernel rootfs dtb over usb\\tftp\\mmc\\dhcp.",
+	"upgrade uboot\\dtb over usb\\tftp\\mmc\\dhcp.",
 	""
 );
 

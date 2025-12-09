@@ -25,7 +25,6 @@ enum gl_extra_e {
 // load {/a.gz in usb0:1 with fs-ext4} to {/root/a in mmc0:1 with fs-ext4} and {decompression}
 // load {disk.img.gz in net:192.168.1.2 with netproto-tftp} to {mmc0} and {decompression}
 // load {uboot in net:192.168.1.2 with netproto-tftp} to {sf:0} and {securecheck}
-// load {mmc0} to {scsi0}
 
 int general_load(gl_target_t* src, gl_target_t* dest, enum gl_extra_e extra);
 
