@@ -1114,15 +1114,6 @@ static void dhcp_handler(uchar *pkt, unsigned dest, struct in_addr sip,
 			dhcp_state = BOUND;
 			printf("DHCP client bound to address %pI4 (%lu ms)\n",
 			       &net_ip, get_timer(bootp_start));
-
-			if ((net_ip.s_addr & net_netmask.s_addr) !=
-					(net_server_ip.s_addr & net_netmask.s_addr))
-			{
-				printf("Not In a Same Subnet\n");
-				net_start_again();
-				return;
-			}
-
 			net_set_timeout_handler(0, (thand_f *)0);
 			bootstage_mark_name(BOOTSTAGE_ID_BOOTP_STOP,
 					    "bootp_stop");
