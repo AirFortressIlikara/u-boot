@@ -50,11 +50,6 @@ static enum button_state_t button_adc_get_state(struct udevice *dev)
 	return (uV >= priv->min && uV < priv->max) ? BUTTON_ON : BUTTON_OFF;
 }
 
-static int button_adc_get_code(struct udevice *dev)
-{
-	return 0;
-}
-
 static int button_adc_of_to_plat(struct udevice *dev)
 {
 	struct button_uc_plat *uc_plat = dev_get_uclass_plat(dev);
@@ -144,7 +139,6 @@ static int button_adc_bind(struct udevice *parent)
 
 static const struct button_ops button_adc_ops = {
 	.get_state	= button_adc_get_state,
-	.get_code = button_adc_get_code,
 };
 
 static const struct udevice_id button_adc_ids[] = {
@@ -161,4 +155,3 @@ U_BOOT_DRIVER(button_adc) = {
 	.bind		= button_adc_bind,
 	.of_to_plat	= button_adc_of_to_plat,
 };
-

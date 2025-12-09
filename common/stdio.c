@@ -19,7 +19,6 @@
 #include <serial.h>
 #include <splash.h>
 #include <i2c.h>
-#include <button.h>
 #include <asm/global_data.h>
 #include <dm/device-internal.h>
 
@@ -373,10 +372,6 @@ int stdio_add_devices(void)
 		    IS_ENABLED(CONFIG_VIDEO_VCXK))
 			drv_video_init();
 	}
-
-#if defined(CONFIG_BUTTON_GPIO)
-	drv_button_input_init();
-#endif
 
 #if defined(CONFIG_KEYBOARD) && !defined(CONFIG_DM_KEYBOARD)
 	drv_keyboard_init();

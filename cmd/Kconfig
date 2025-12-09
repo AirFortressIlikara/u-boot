@@ -2206,12 +2206,6 @@ config CMD_FAT
 	help
 	  Support for the FAT fs
 
-config CMD_ISOFS
-	bool "isofs(iso9660) command support"
-	select FS_ISOFS
-	help
-	  Support for the ISO9660 CDROM fs
-
 config CMD_SQUASHFS
 	bool "SquashFS command support"
 	select FS_SQUASHFS
@@ -2300,30 +2294,6 @@ config MTDPARTS_DEFAULT
 	help
 	  Defines a default MTD partitioning scheme in the Linux MTD command
 	  line partitions format
-
-config RAW_NAND_SCAN_VAILD_SIZE
-	bool "enable raw nand scan vaild size to create bbt"
-	depends on MTD_RAW_NAND
-	default n
-	help
-	  enable raw nand scan not for all bbt
-	  just scan until RAW_NAND_SCAN_LAST_VAILD_PART
-	  if nand too big(e.g 1GiB) scan all nand will need some time
-	  but if just use small field in uboot such as
-	  7M(kernel),80M(root),-(data), just use kernel and root part
-	  data part use in rootfs, uboot can ignore data part scan
-
-config RAW_NAND_SCAN_LAST_VAILD_PART
-	string "raw nand last vaild part"
-	depends on RAW_NAND_SCAN_VAILD_SIZE
-	default root
-	help
-	  if nand divide:
-	  7M(kernel),80M(root),-(data)
-	  just use kernel and root part in uboot
-	  data part would scan when rootfs boot
-	  so this value should be
-	  root
 
 config CMD_REISER
 	bool "reiser - Access to reiserfs filesystems"

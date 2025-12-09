@@ -14,8 +14,6 @@ source "fs/reiserfs/Kconfig"
 
 source "fs/fat/Kconfig"
 
-source "fs/isofs/Kconfig"
-
 source "fs/jffs2/Kconfig"
 
 source "fs/ubifs/Kconfig"

@@ -6,16 +6,9 @@
 #ifndef _PART_CD_H
 #define _PART_CD_H
 
-#define ISO_STANDARD_ID 	"CD001"
-#define ISO_ECMA_ID     	"CDW01"
-/* volume descriptor types */
-#define ISO_VD_PRIMARY 		1
-#define ISO_VD_SUPPLEMENTARY 	2
-#define ISO_VD_END		255
+#define BRVD	0x11
+#define PVD_OFFSET 0x10
 
-#define BRVD			0x11
-#define PVD_OFFSET 		0x10
-#define CD_SECTSIZE 		2048
 
 typedef struct iso_boot_rec {
 	unsigned char desctype;			/* type of Volume descriptor: 0 = boot record, 1 = primary, 2 = Supplement, 3 = volume part 0xff trminator */
@@ -144,50 +137,7 @@ typedef struct iso_init_def_entry {
 	unsigned char rel_block_addr[4];	/* relative Block address */
 } iso_init_def_entry_t;
 
-typedef struct iso_path_table_entry {
-	unsigned char 	namelen;
-	unsigned char 	extlen;
-	unsigned int 	extloc;
-	unsigned short	parent;
-	char			name[255];
-} __packed iso_path_table_entry_t;
 
 void print_partition_cd(int dev);
-
-typedef struct iso_directory_record {
-	unsigned char 	length;
-	unsigned char 	ext_attr_length;
-	unsigned int 	extloc_LE;
-	unsigned int 	extloc_BE;
-	unsigned int 	extlen_LE;
-	unsigned int 	extlen_BE;
-	char 			date[7];
-	unsigned char 	flags;
-	unsigned char 	file_unit_size;
-	char 			interleave;
-	unsigned short 	volume_sequence_number_LE;
-	unsigned short 	volume_sequence_number_BE;
-	unsigned char 	namelen;
-	char 			name[207];
-} __packed iso_directory_record_t;
-
-static inline unsigned long iso_dread(struct blk_desc *block_dev, lbaint_t start,
-                        lbaint_t blkcnt, void *buffer)
-{
-	unsigned long ret;
-
-	if (block_dev->blksz == 512) {
-		/* Convert from 2048 to 512 sector size */
-		start *= 4;
-		blkcnt *= 4;
-	}
-
-	ret = blk_dread(block_dev, start, blkcnt, buffer);
-
-	if (block_dev->blksz == 512)
-		ret /= 4;
-
-	return ret;
-}
 
 #endif /* _PART_CD_H */

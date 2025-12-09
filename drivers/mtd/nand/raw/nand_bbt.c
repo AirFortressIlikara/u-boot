@@ -441,15 +441,6 @@ static int scan_block_fast(struct mtd_info *mtd, struct nand_bbt_descr *bd,
 	return 0;
 }
 
-#if CONFIG_RAW_NAND_SCAN_VAILD_SIZE
-#include <mtd.h>
-#include <linux/mtd/mtd.h>
-#include <linux/mtd/partitions.h>
-
-extern int mtd_get_partition(int type, const char *partname,
-				struct mtd_partition *part);
-#endif
-
 /**
  * create_bbt - [GENERIC] Create a bad block table by scanning the device
  * @mtd: MTD device structure
@@ -477,31 +468,7 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
 		numpages = 1;
 
 	if (chip == -1) {
-#if CONFIG_RAW_NAND_SCAN_VAILD_SIZE
-		struct mtd_partition part;
-		int ret;
-		ret = mtd_get_partition(MTD_DEV_TYPE_NAND, CONFIG_RAW_NAND_SCAN_LAST_VAILD_PART, &part);
-		if (ret)
-			numblocks = mtd->size >> this->bbt_erase_shift;
-		else {
-			uint64_t vaild_part_size;
-			volatile uint64_t temp;
-			vaild_part_size = part.size + part.offset;
-			if (unlikely(vaild_part_size > mtd->size))
-				vaild_part_size = mtd->size;
-
-			temp = vaild_part_size;
-			numblocks = vaild_part_size >> this->bbt_erase_shift;
-
-			// align check if not align mean need one more block
-			temp >>= this->bbt_erase_shift;
-			temp <<= this->bbt_erase_shift;
-			if (unlikely(temp < vaild_part_size))
-				++numblocks;
-		}
-#else
 		numblocks = mtd->size >> this->bbt_erase_shift;
-#endif
 		startblock = 0;
 		from = 0;
 	} else {

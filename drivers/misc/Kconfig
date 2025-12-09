@@ -520,11 +520,4 @@ config SL28CPLD
 	  the base driver which provides common access methods for the
 	  sub-drivers.
 
-config MCP4728_I2CID
-	bool "Set MCP4728 I2C ID"
-	depends on MISC
-	default n
-	help
-	  Set MCP4728 I2C ID.
-
 endmenu

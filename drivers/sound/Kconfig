@@ -148,10 +148,4 @@ config SOUND_WM8994
 	  audio data and I2C for codec control. At present it only works
 	  with the Samsung I2S driver.
 
-config GPIO_BEEPER
-	bool "Support gpio beeper"
-	depends on SOUND
-	help
-	  Enable the gpio beeper.
-
 endmenu

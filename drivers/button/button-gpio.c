@@ -13,7 +13,6 @@
 
 struct button_gpio_priv {
 	struct gpio_desc gpio;
-	int linux_code;
 };
 
 static enum button_state_t button_gpio_get_state(struct udevice *dev)
@@ -30,21 +29,11 @@ static enum button_state_t button_gpio_get_state(struct udevice *dev)
 	return ret ? BUTTON_ON : BUTTON_OFF;
 }
 
-static int button_gpio_get_code(struct udevice *dev)
-{
-	struct button_gpio_priv *priv = dev_get_priv(dev);
-	return priv->linux_code;
-}
-
 static int button_gpio_probe(struct udevice *dev)
 {
 	struct button_uc_plat *uc_plat = dev_get_uclass_plat(dev);
 	struct button_gpio_priv *priv = dev_get_priv(dev);
-	ofnode node;
 	int ret;
-
-	node = dev_ofnode(dev);
-	priv->linux_code = ofnode_read_s32_default(node, "linux,code", 0);
 
 	/* Ignore the top-level button node */
 	if (!uc_plat->label)
@@ -103,7 +92,6 @@ static int button_gpio_bind(struct udevice *parent)
 
 static const struct button_ops button_gpio_ops = {
 	.get_state	= button_gpio_get_state,
-	.get_code = button_gpio_get_code,
 };
 
 static const struct udevice_id button_gpio_ids[] = {
@@ -122,4 +110,3 @@ U_BOOT_DRIVER(button_gpio) = {
 	.probe		= button_gpio_probe,
 	.remove		= button_gpio_remove,
 };
-

@@ -148,22 +148,6 @@ void *board_fdt_blob_setup(int *err)
 }
 #endif
 
-#ifdef CONFIG_GPIO_BEEPER
-static void beep_boot(void)
-{
-	struct udevice *dev;
-
-	uclass_get_device_by_name(UCLASS_SOUND, "gpio-beeper", &dev);
-	if (!dev) {
-		printf("Can not get beeper\n");
-		return;
-	}
-
-	sound_beep(dev, 300, 20000);
-}
-#else
-static void beep_boot(void) {}
-#endif
 
 static void acpi_config(void)
 {
@@ -344,7 +328,6 @@ __weak int ls_board_early_init_r(void)
 
 int board_early_init_r(void)
 {
-	beep_boot();
 	bdinfo_init();
 	return ls_board_early_init_r();
 }

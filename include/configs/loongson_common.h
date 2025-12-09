@@ -52,26 +52,20 @@
 
 #define BOOTMENU_END "Return u-boot console"
 
-#ifdef CONFIG_BUTTON_GPIO
-#define STDIN_GPIOBTN "gpiobtn"
-#else
-#define STDIN_GPIOBTN ""
-#endif
-
 #ifdef CONFIG_VIDEO
 #define CONSOLE_STDOUT_SETTINGS \
-	"stdin=serial,"STDIN_GPIOBTN",usbkbd\0" \
+	"stdin=serial,usbkbd\0" \
 	"stdout=serial\0" \
 	"stderr=serial,vga\0"
 #elif defined(CONFIG_DM_VIDEO)
 #define CONSOLE_STDOUT_SETTINGS \
 	"splashimage=" __stringify(CONFIG_SYS_LOAD_ADDR) "\0" \
-	"stdin=serial,"STDIN_GPIOBTN",usbkbd\0" \
+	"stdin=serial,usbkbd\0" \
 	"stdout=serial\0" \
 	"stderr=serial,vidconsole,vidconsole1\0"
 #else
 #define CONSOLE_STDOUT_SETTINGS \
-	"stdin=serial,"STDIN_GPIOBTN"\0" \
+	"stdin=serial\0" \
 	"stdout=serial\0" \
 	"stderr=serial\0"
 #endif
