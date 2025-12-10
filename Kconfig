@@ -370,6 +370,7 @@ config BUILD_TARGET
 				ARCH_SUNXI || RISCV || ARCH_ZYNQMP)
 	default "u-boot.kwb" if ARCH_KIRKWOOD
 	default "u-boot-with-spl.bin" if ARCH_AT91 && SPL_NAND_SUPPORT
+	default "u-boot-with-spl.bin" if MACH_LOONGSON && SPL
 	default "u-boot-with-spl.imx" if ARCH_MX6 && SPL
 	help
 	  Some SoCs need special image types (e.g. U-Boot binary
