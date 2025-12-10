@@ -21,9 +21,6 @@
 #include <ansi.h>
 #include <version_string.h>
 
-#define NOTICE_STR1 "c to enter u-boot console"
-#define NOTICE_STR2 "m to enter boot menu"
-
 #define ANSI_CURSOR_SAVE		"\e7"
 #define ANSI_CURSOR_RESTORE		"\e8"
 
@@ -224,75 +221,6 @@ int misc_init_r(void)
 }
 #endif
 
-/*
- * display uboot version info on lcd
- * if you make with -DDISPLAY_BANNER_ON_VIDCONSOLE it will
- * display it on lcd
- */
-static int vidconsole_notice(char *buf)
-{
-#if defined(CONFIG_DM_VIDEO) && defined(CONFIG_LOONGSON_VIDCONSOLE_NOTICE)
-	struct vidconsole_priv *priv;
-	struct udevice *con, *vdev = NULL;
-	int col, row, len, ret;
-	int vidcon_id = 0;
-
-	for ( ret = uclass_first_device(UCLASS_VIDEO, &vdev);
-				vdev; uclass_next_device(&vdev)) {
-		debug("video device: %s\n", vdev->name);
-		vidcon_id++;
-	}
-
-	if (vidcon_id < 1) {
-		debug("vidconsole no exist\n");
-		sprintf(buf, "Press %s, %s", NOTICE_STR1, NOTICE_STR2);
-		return 0;
-	}
-
-	for (ret = uclass_first_device(UCLASS_VIDEO_CONSOLE, &con);
-				con; uclass_next_device(&con)) {
-		vidconsole_put_string(con, ANSI_CURSOR_SAVE);
-		priv = dev_get_uclass_priv(con);
-		row = priv->rows - 1;
-#ifdef DISPLAY_BANNER_ON_VIDCONSOLE
-		display_options_get_banner(false, buf, DISPLAY_OPTIONS_BANNER_LENGTH);
-		len = strcspn(buf, "\n");
-		buf[len] = 0;
-		col = (priv->cols / 2) - (len / 2);
-		if (col < 0)
-			col = 0;
-		vidconsole_position_cursor(con, col, row);
-		vidconsole_put_string(con, buf);
-		row -= 1;
-#endif
-		sprintf(buf, "Press %s, %s", NOTICE_STR1, NOTICE_STR2);
-		len = strlen(buf);
-		col = (priv->cols / 2) - (len / 2);
-		if (col < 0)
-			col = 0;
-		vidconsole_position_cursor(con, col, row);
-		vidconsole_put_string(con, buf);
-		vidconsole_position_cursor(con, 0, 0);
-		vidconsole_put_string(con, ANSI_CURSOR_RESTORE);
-	}
-#else
-	sprintf(buf, "Press %s, %s", NOTICE_STR1, NOTICE_STR2);
-#endif
-	return 0;
-}
-
-static void print_notice(void)
-{
-	char notice[DISPLAY_OPTIONS_BANNER_LENGTH];
-
-	if (vidconsole_notice(notice))
-		sprintf(notice, "Press %s, %s", NOTICE_STR1, NOTICE_STR2);
-
-	printf("************************** Notice **************************\n");
-	printf("%s\r\n", notice);
-	printf("************************************************************\n");
-}
-
 #ifdef CONFIG_BOARD_EARLY_INIT_F
 __weak int ls_board_early_init_f(void)
 {
@@ -336,7 +264,6 @@ extern int recover(void);
 
 int last_stage_init(void)
 {
-	print_notice();
 	user_env_fetch();
 
 #ifdef CONFIG_PHY_LS2K_USB

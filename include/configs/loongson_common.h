@@ -31,22 +31,23 @@
 
 #define LOONGSON_BOOTMENU \
 	"menucmd=bootmenu\0" \
-	"bootmenu_0=System boot select=updatemenu bootselect 1\0" \
-	"bootmenu_1=Update kernel=updatemenu kernel 1\0" \
-	"bootmenu_2=Update rootfs=updatemenu rootfs 1\0" \
-	"bootmenu_3=Update u-boot=updatemenu uboot 1\0" \
-	"bootmenu_4=Update dtb=updatemenu dtb 1\0" \
-	"bootmenu_5=System install or recover=updatemenu system 1\0"
+	"bootmenu_0=Normal boot=boot\0" \
+	"bootmenu_1=System boot select=updatemenu bootselect 1\0" \
+	"bootmenu_2=Update kernel=updatemenu kernel 1\0" \
+	"bootmenu_3=Update rootfs=updatemenu rootfs 1\0" \
+	"bootmenu_4=Update u-boot=updatemenu uboot 1\0" \
+	"bootmenu_5=Update dtb=updatemenu dtb 1\0" \
+	"bootmenu_6=System install or recover=updatemenu system 1\0"
 
 #if !defined(CONFIG_DM_VIDEO) || !defined(CONFIG_VIDEO)
 #define LOONGSON_BOOTMENU_VIDEO \
-	"bootmenu_6=Video resolution select=updatemenu resolution 1\0" \
-	"bootmenu_7=Video rotation select=updatemenu rotation 1\0"
+	"bootmenu_7=Video resolution select=updatemenu resolution 1\0" \
+	"bootmenu_8=Video rotation select=updatemenu rotation 1\0"
 #else
 #define LOONGSON_BOOTMENU_VIDEO
 #endif
 
-#define LOONGSON_BOOTMENU_DELAY "bootmenu_delay=10\0"
+#define LOONGSON_BOOTMENU_DELAY "bootmenu_delay=" __stringify(CONFIG_BOOTDELAY) "\0"
 
 #define BOOTMENU_END "Return u-boot console"
 
@@ -59,7 +60,7 @@
 #define CONSOLE_STDOUT_SETTINGS \
 	"splashimage=" __stringify(CONFIG_SYS_LOAD_ADDR) "\0" \
 	"stdin=serial,usbkbd\0" \
-	"stdout=serial\0" \
+	"stdout=serial,vidconsole,vidconsole1\0" \
 	"stderr=serial,vidconsole,vidconsole1\0"
 #else
 #define CONSOLE_STDOUT_SETTINGS \
