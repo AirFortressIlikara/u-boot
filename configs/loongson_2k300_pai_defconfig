@@ -40,6 +40,8 @@ CONFIG_USE_BOOTARGS=y
 CONFIG_BOOTARGS="console=ttyS0,115200 rw noinitrd init=/sbin/init rootfstype=ext4 rootwait"
 CONFIG_USE_BOOTCOMMAND=y
 CONFIG_BOOTCOMMAND="setenv bootargs ${bootargs} root=/dev/mmcblk0p${syspart} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel};sf probe;sf read ${fdt_addr} dtb;ext4load mmc 0:${syspart} ${loadaddr} /boot/uImage;bootm"
+CONFIG_USE_PREBOOT=y
+CONFIG_PREBOOT="usb start"
 CONFIG_LOGLEVEL=7
 CONFIG_SYS_CONSOLE_OVERWRITE_ROUTINE=y
 # CONFIG_SYS_DEVICE_NULLDEV is not set

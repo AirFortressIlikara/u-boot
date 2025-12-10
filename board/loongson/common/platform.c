@@ -339,9 +339,6 @@ int last_stage_init(void)
 	print_notice();
 	user_env_fetch();
 
-	/* start usb so that usb keyboard can be used as input device */
-	usb_init();
-
 #ifdef CONFIG_PHY_LS2K_USB
 	phy_ls2k_usb_init();
 #endif
