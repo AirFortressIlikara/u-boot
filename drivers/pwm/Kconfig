@@ -97,3 +97,10 @@ config PWM_TI_EHRPWM
 	default y
 	help
 	  PWM driver support for the EHRPWM controller found on TI SOCs.
+
+config PWM_LS2K
+	bool "Enable support for PWM in ls2k serial SoC's"
+	depends on DM_PWM && LOONGARCH
+	help
+	  Support for PWM hardware on ls2k based SoC.
+
