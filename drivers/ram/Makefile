@@ -22,3 +22,7 @@ obj-$(CONFIG_IMXRT_SDRAM) += imxrt_sdram.o
 obj-$(CONFIG_RAM_SIFIVE) += sifive/
 
 obj-$(CONFIG_ARCH_OCTEON) += octeon/
+
+obj-$(CONFIG_LOONGSON_DDR) += loongson/
+
+obj-$(CONFIG_LOONGSON_DDR4) += loongson/
