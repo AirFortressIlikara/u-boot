@@ -23,9 +23,6 @@ int dram_init(void)
 		printf("setup mem failed\n");
 		return -EINVAL;
 	}
-#ifdef DEBUG
-	ofnode_list(gd->fdt_blob);
-#endif
 
 	return 0;
 }
