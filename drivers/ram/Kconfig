@@ -128,6 +128,20 @@ config K3_INLINE_ECC
 	  need to be primed with a predefined value prior to enabling ECC
 	  check.
 
+config LOONGSON_DDR
+	bool "Enable Loongson ddr contorller support"
+	depends on RAM
+	help
+	  Enable support for the internal DDR Memory Controller of the Loongson2X
+	  family of SoCs.
+
+config LOONGSON_DDR4
+	bool "Enable Loongson ddr4 contorller support"
+	depends on RAM
+	help
+	  Enable support for the internal DDR Memory Controller of the Loongson2X
+	  family of SoCs.
+
 source "drivers/ram/aspeed/Kconfig"
 source "drivers/ram/cadence/Kconfig"
 source "drivers/ram/octeon/Kconfig"
