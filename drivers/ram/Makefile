@@ -34,3 +34,5 @@ obj-$(CONFIG_CADENCE_DDR_CTRL) += cadence/
 ifdef CONFIG_XPL_BUILD
 obj-$(CONFIG_SPL_THEAD_TH1520_DDR) += thead/
 endif
+obj-$(CONFIG_LOONGSON_DDR) += loongson/
+obj-$(CONFIG_LOONGSON_DDR4) += loongson/
