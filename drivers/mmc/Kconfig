@@ -862,6 +862,13 @@ config MMC_MTK
 	  This is needed if support for any SD/SDIO/MMC devices is required.
 	  If unsure, say N.
 
+config MMC_LOONGSON
+	bool "Loongson MMC Driver"
+	depends on BLK && DM_MMC
+	depends on SOC_LS2K300
+	help
+	  Support Loongson MMC.
+
 endif
 
 config FSL_SDHC_V2_3
