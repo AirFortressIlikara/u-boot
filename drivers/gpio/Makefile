@@ -81,3 +81,4 @@ obj-$(CONFIG_FTGPIO010)		+= ftgpio010.o
 obj-$(CONFIG_$(PHASE_)ADP5585_GPIO)	+= adp5585_gpio.o
 obj-$(CONFIG_RZG2L_GPIO)	+= rzg2l-gpio.o
 obj-$(CONFIG_MPFS_GPIO)	+= mpfs_gpio.o
+obj-$(CONFIG_LOONGSON_GPIO)	+= ls_gpio.o
