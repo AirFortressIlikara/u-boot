@@ -97,4 +97,10 @@ config ZYNQMP_POWER_DOMAIN
 	  configuration and it is extended at run time. Then enabling
 	  the driver will ensure that PMUFW enable access to requested IP.
 
+config LOONGSON_POWER_DOMAIN
+	bool "Enable the Loongson Power domain driver"
+	depends on POWER_DOMAIN && CPU_LOONGARCH64
+	help
+	  Generic power domain implementation for Loongson.
+
 endmenu
