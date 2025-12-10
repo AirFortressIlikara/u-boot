@@ -8,11 +8,6 @@ static inline u16 __get_unaligned_le16(const u8 *p)
 	return p[0] | p[1] << 8;
 }
 
-static inline u32 __get_unaligned_le24(const u8 *p)
-{
-	return p[0] | p[1] << 8 | p[2] << 16;
-}
-
 static inline u32 __get_unaligned_le32(const u8 *p)
 {
 	return p[0] | p[1] << 8 | p[2] << 16 | p[3] << 24;
@@ -28,13 +23,6 @@ static inline void __put_unaligned_le16(u16 val, u8 *p)
 {
 	*p++ = val;
 	*p++ = val >> 8;
-}
-
-static inline void __put_unaligned_le24(u32 val, u8 *p)
-{
-	*p++ = val;
-	*p++ = val >> 8;
-	*p++ = val >> 16;
 }
 
 static inline void __put_unaligned_le32(u32 val, u8 *p)
@@ -54,11 +42,6 @@ static inline u16 get_unaligned_le16(const void *p)
 	return __get_unaligned_le16((const u8 *)p);
 }
 
-static inline u32 get_unaligned_le24(const void *p)
-{
-	return __get_unaligned_le24((const u8 *)p);
-}
-
 static inline u32 get_unaligned_le32(const void *p)
 {
 	return __get_unaligned_le32((const u8 *)p);
@@ -72,11 +55,6 @@ static inline u64 get_unaligned_le64(const void *p)
 static inline void put_unaligned_le16(u16 val, void *p)
 {
 	__put_unaligned_le16(val, p);
-}
-
-static inline void put_unaligned_le24(u32 val, void *p)
-{
-	__put_unaligned_le24(val, p);
 }
 
 static inline void put_unaligned_le32(u32 val, void *p)
