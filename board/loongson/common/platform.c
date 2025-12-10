@@ -21,8 +21,6 @@
 #include <ansi.h>
 #include <version_string.h>
 
-#include "loongson_stdout_operation.h"
-
 #define NOTICE_STR1 "c to enter u-boot console"
 #define NOTICE_STR2 "m to enter boot menu"
 
@@ -218,7 +216,6 @@ static void ethaddr_setup(void)
 #ifdef CONFIG_MISC_INIT_R
 int misc_init_r(void)
 {
-	set_stdout(STDOUT_SERIAL, STDOUT_ONLY_ON);
 	acpi_config();
 #ifdef CONFIG_NET
 	ethaddr_setup();

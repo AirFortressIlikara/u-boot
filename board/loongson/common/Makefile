@@ -14,7 +14,6 @@ obj-$(CONFIG_LOONGSON_RECOVER)		+= recover.o
 obj-$(CONFIG_LOONGSON_BOOT_FIXUP)	+= bootparam.o loongson_efi_systab.o
 obj-y += loongson_boot.o
 obj-y += loongson_init_env.o
-obj-y += loongson_stdout_operation.o
 obj-y += loongson_boot_syspart_manager.o
 obj-y += loongson_wdt_setup.o
 obj-$(CONFIG_LOONGSON_GENERAL_LOAD) += general_load/
