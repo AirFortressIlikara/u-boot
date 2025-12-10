@@ -126,12 +126,6 @@ static struct pci_device_id ehci_pci_ids[] = {
 #define invalidate_dcache_iso_td(addr) invalidate_dcache_buffer(addr, 32)
 #define invalidate_dcache_hcca(addr) invalidate_dcache_buffer(addr, 256)
 
-#if defined(CONFIG_MACH_LOONGSON)
-#define usb_phy_addr_to_cpu_addr(addr) dma_to_virt((phys_addr_t)addr)
-#elif
-#define usb_phy_addr_to_cpu_addr(addr)
-#endif
-
 #if CONFIG_IS_ENABLED(DM_USB)
 /*
  * The various ohci_mdelay(1) calls in the code seem unnecessary. We keep
@@ -268,7 +262,6 @@ static void urb_free_priv(urb_priv_t *urb)
 	if (last >= 0) {
 		for (i = 0; i <= last; i++) {
 			td = urb->td[i];
-			td = (struct td*)usb_phy_addr_to_cpu_addr(td);
 			if (td) {
 				td->usb_dev = NULL;
 				urb->td[i] = NULL;
@@ -735,10 +728,10 @@ static int ep_link(ohci_t *ohci, ed_t *edi)
 			for (ed_p = &(ohci->hcca->int_table[\
 						ep_rev(5, i) + int_branch]);
 				(*ed_p != 0) &&
-				(((ed_t *)usb_phy_addr_to_cpu_addr(ed_p))->int_interval >= interval);
-				ed_p = &(((ed_t *)usb_phy_addr_to_cpu_addr(ed_p))->hwNextED))
+				(((ed_t *)ed_p)->int_interval >= interval);
+				ed_p = &(((ed_t *)ed_p)->hwNextED))
 					inter = ep_rev(6,
-						 ((ed_t *)usb_phy_addr_to_cpu_addr(ed_p))->int_interval);
+						 ((ed_t *)ed_p)->int_interval);
 			ed->hwNextED = *ed_p;
 			flush_dcache_ed(ed);
 			*ed_p = m32_swap((unsigned long)ed);
@@ -763,16 +756,16 @@ static void periodic_unlink(struct ohci *ohci, volatile struct ed *ed,
 		/* ED might have been unlinked through another path */
 		while (*ed_p != 0) {
 			if (((struct ed *)(uintptr_t)
-					usb_phy_addr_to_cpu_addr(m32_swap((unsigned long)*ed_p))) == ed) {
+					m32_swap((unsigned long)ed_p)) == ed) {
 				*ed_p = ed->hwNextED;
 				aligned_ed_p = (unsigned long)ed_p;
 				aligned_ed_p &= ~(ARCH_DMA_MINALIGN - 1);
-				flush_dcache_range((unsigned long)usb_phy_addr_to_cpu_addr(aligned_ed_p),
-					(unsigned long)usb_phy_addr_to_cpu_addr(aligned_ed_p) + ARCH_DMA_MINALIGN);
+				flush_dcache_range(aligned_ed_p,
+					aligned_ed_p + ARCH_DMA_MINALIGN);
 				break;
 			}
 			ed_p = &(((struct ed *)(uintptr_t)
-					usb_phy_addr_to_cpu_addr(m32_swap((unsigned long)*ed_p)))->hwNextED);
+				     m32_swap((unsigned long)ed_p))->hwNextED);
 		}
 	}
 }
@@ -807,8 +800,8 @@ static int ep_unlink(ohci_t *ohci, ed_t *edi)
 		if (ohci->ed_controltail == ed) {
 			ohci->ed_controltail = ed->ed_prev;
 		} else {
-			((ed_t *)(uintptr_t)usb_phy_addr_to_cpu_addr(m32_swap(
-			    *((__u32 *)&ed->hwNextED))))->ed_prev = ed->ed_prev;
+			((ed_t *)(uintptr_t)m32_swap(
+			    *((__u32 *)&ed->hwNextED)))->ed_prev = ed->ed_prev;
 		}
 		break;
 
@@ -828,8 +821,8 @@ static int ep_unlink(ohci_t *ohci, ed_t *edi)
 		if (ohci->ed_bulktail == ed) {
 			ohci->ed_bulktail = ed->ed_prev;
 		} else {
-			((ed_t *)(uintptr_t)usb_phy_addr_to_cpu_addr(m32_swap(
-			     *((__u32 *)&ed->hwNextED))))->ed_prev = ed->ed_prev;
+			((ed_t *)(uintptr_t)m32_swap(
+			     *((__u32 *)&ed->hwNextED)))->ed_prev = ed->ed_prev;
 		}
 		break;
 
@@ -925,8 +918,6 @@ static void td_fill(ohci_t *ohci, unsigned int info,
 	td = urb_priv->td [index] =
 			     (td_t *)(uintptr_t)
 			     (m32_swap(urb_priv->ed->hwTailP) & ~0xf);
-
-	td = (td_t*)usb_phy_addr_to_cpu_addr(td);
 
 	td->ed = urb_priv->ed;
 	td->next_dl_td = NULL;
@@ -1073,22 +1064,6 @@ static void dl_transfer_length(td_t *td)
 	}
 }
 
-static int cc_error_tip_time = 0;
-
-static void usb_error_tip_handle(int cc, char* front_tip)
-{
-	int max_limit = 5;
-	if (cc == 5) {
-		if (cc_error_tip_time != max_limit) {
-			err("%s: %s (%x)", front_tip, cc_to_string[cc], cc);
-			++cc_error_tip_time;
-			if (cc_error_tip_time == max_limit)
-				printf("USB-error display to max limit not display this error again! (file:%s)\n", __FILE__);
-		}
-	} else
-		err("%s: %s (%x)", front_tip, cc_to_string[cc], cc);
-}
-
 /*-------------------------------------------------------------------------*/
 static void check_status(td_t *td_list)
 {
@@ -1099,14 +1074,14 @@ static void check_status(td_t *td_list)
 
 	cc = TD_CC_GET(m32_swap(td_list->hwINFO));
 	if (cc) {
-		usb_error_tip_handle(cc, " USB-error");
+		err(" USB-error: %s (%x)", cc_to_string[cc], cc);
 
 		invalidate_dcache_ed(td_list->ed);
 		if (*phwHeadP & m32_swap(0x1)) {
 			if (lurb_priv &&
 			    ((td_list->index + 1) < urb_len)) {
 				*phwHeadP =
-					(((td_t *)usb_phy_addr_to_cpu_addr(lurb_priv->td[urb_len - 1]))->hwNextTD &\
+					(lurb_priv->td[urb_len - 1]->hwNextTD &\
 							m32_swap(0xfffffff0)) |
 						   (*phwHeadP & m32_swap(0x2));
 
@@ -1134,7 +1109,6 @@ static td_t *dl_reverse_done_list(ohci_t *ohci)
 
 	while (td_list_hc) {
 		td_list = (td_t *)td_list_hc;
-		td_list = (td_t*)usb_phy_addr_to_cpu_addr(td_list);
 		invalidate_dcache_td(td_list);
 		check_status(td_list);
 		td_list->next_dl_td = td_rev;
@@ -1183,7 +1157,7 @@ static int takeback_td(ohci_t *ohci, td_t *td_list)
 	/* error code of transfer */
 	cc = TD_CC_GET(tdINFO);
 	if (cc) {
-		usb_error_tip_handle(cc, "USB-error");
+		err("USB-error: %s (%x)", cc_to_string[cc], cc);
 		stat = cc_to_error[cc];
 	}
 
@@ -1213,7 +1187,6 @@ static int dl_done_list(ohci_t *ohci)
 	td_t	*td_list = dl_reverse_done_list(ohci);
 
 	while (td_list) {
-		td_list = (td_t*)usb_phy_addr_to_cpu_addr(td_list);
 		td_t	*td_next = td_list->next_dl_td;
 		stat = takeback_td(ohci, td_list);
 		td_list = td_next;
