@@ -1080,7 +1080,7 @@ static int usb_prepare_device(struct usb_device *dev, int addr, bool do_read,
 int usb_select_config(struct usb_device *dev)
 {
 	unsigned char *tmpbuf = NULL;
-	int err, try;
+	int err;
 
 	err = get_descriptor_len(dev, USB_DT_DEVICE_SIZE, USB_DT_DEVICE_SIZE);
 	if (err)
@@ -1107,12 +1107,7 @@ int usb_select_config(struct usb_device *dev)
 		if (!tmpbuf)
 			err = -ENOMEM;
 		else
-			for (try = 0; try < 5; try++) {
-				err = usb_get_configuration_no(dev, 0, tmpbuf, err);
-				if (err >= 0)
-					break;
-				udelay(10);
-			}
+			err = usb_get_configuration_no(dev, 0, tmpbuf, err);
 	}
 	if (err < 0) {
 		printf("usb_new_device: Cannot read configuration, " \
@@ -1129,12 +1124,7 @@ int usb_select_config(struct usb_device *dev)
 	 * This seems premature. If the driver wants a different configuration
 	 * it will need to select itself.
 	 */
-	for (try = 0; try < 5; try++) {
-		err = usb_set_configuration(dev, dev->config.desc.bConfigurationValue);
-		if (err >= 0)
-			break;
-		udelay(10);
-	}
+	err = usb_set_configuration(dev, dev->config.desc.bConfigurationValue);
 	if (err < 0) {
 		printf("failed to set default configuration " \
 			"len %d, status %lX\n", dev->act_len, dev->status);
