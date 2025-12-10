@@ -199,12 +199,6 @@ config PHY_MICREL_KSZ8XXX
 
 endif # PHY_MICREL
 
-if PHY_MICREL_KSZ90X1
-config PHY_MICREL_KSZ9021_FIX_100BT
-	bool "Micrel KSZ9021 Fix 100BT"
-
-endif # PHY_MICREL_KSZ9021
-
 config PHY_MSCC
 	bool "Microsemi Corp Ethernet PHYs support"
 

@@ -292,11 +292,7 @@ static struct phy_driver ksz9021_driver = {
 	.name = "Micrel ksz9021",
 	.uid  = 0x221610,
 	.mask = 0xfffffe,
-#ifdef CONFIG_PHY_MICREL_KSZ9021_FIX_100BT
-	.features = PHY_100BT_FEATURES,
-#else
 	.features = PHY_GBIT_FEATURES,
-#endif
 	.config = &ksz9021_config,
 	.startup = &ksz90xx_startup,
 	.shutdown = &genphy_shutdown,
