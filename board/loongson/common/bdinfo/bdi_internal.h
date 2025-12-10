@@ -16,7 +16,6 @@ enum bdi_status {
 
 enum bdi_location {
 	BDI_LOC_UNKNOWN,
-	BDI_LOC_EEPROM,
 	BDI_LOC_SPI_FLASH,
 };
 
@@ -32,12 +31,9 @@ extern char *bdi_id_name[BDI_ID_MAX];
 
 int bdi_validate(enum bdi_id id, char *data);
 
-int load_bdinfo_eeprom(struct ls_bdinfo *bdi);
 int load_bdinfo_sf(struct ls_bdinfo *bdi);
 
 #ifndef CONFIG_SPL_BUILD
-int save_bdinfo_eeprom(struct ls_bdinfo *bdi,
-		const char *data, size_t len);
 int save_bdinfo_sf(struct ls_bdinfo *bdi,
 		const char *data, size_t len);
 #endif

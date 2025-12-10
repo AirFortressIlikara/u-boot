@@ -127,15 +127,7 @@ int bdinfo_init(void)
 {
 	if (bdinfo.status == BDI_VALID)
 		return 0;
-#ifdef CONFIG_I2C_EEPROM
-	// Try to load the board info from eeprom.
-	load_bdinfo_eeprom(&bdinfo);
-#endif
-	// If can not get the board info from eeprom,
-	// we load it from spi-flash.
-	if (bdinfo.status == BDI_INVALID) {
-		load_bdinfo_sf(&bdinfo);
-	}
+	load_bdinfo_sf(&bdinfo);
 
 	// No found the board info, use the default.
 	if (bdinfo.status == BDI_INVALID) {
@@ -149,8 +141,7 @@ int bdinfo_init(void)
 		bdinfo.status = BDI_DEFAULT;
 	}
 
-	printf("bdinfo is %s\n", bdinfo.loc == BDI_LOC_EEPROM ? "in eeprom" :
-				 bdinfo.loc == BDI_LOC_SPI_FLASH ? "in spi-flash" :
+	printf("bdinfo is %s\n", bdinfo.loc == BDI_LOC_SPI_FLASH ? "in spi-flash" :
 				 "default");
 
 #ifdef DEBUG_BDINFO_DUMP
@@ -229,28 +220,14 @@ int bdinfo_save(void)
 		goto err_out;
 	}
 
-	if (bdinfo.loc == BDI_LOC_EEPROM) {
-#ifdef CONFIG_I2C_EEPROM
-		ret = save_bdinfo_eeprom(&bdinfo, buf, len);
-#endif
-		if (ret) {
-			printf("save bdinfo to eeprom failed\n");
-			goto err_out;
-		}
-	} else if (bdinfo.loc == BDI_LOC_SPI_FLASH) {
+	if (bdinfo.loc == BDI_LOC_SPI_FLASH) {
 		ret = save_bdinfo_sf(&bdinfo, buf, len);
 		if (ret) {
 			printf("save bdinfo to spi-flash failed\n");
 			goto err_out;
 		}
 	} else {
-#ifdef CONFIG_I2C_EEPROM
-		// try eeprom first
-		ret = save_bdinfo_eeprom(&bdinfo, buf, len);
-		// then spi-flash
-		if (ret)
-#endif
-			ret = save_bdinfo_sf(&bdinfo, buf, len);
+		ret = save_bdinfo_sf(&bdinfo, buf, len);
 	}
 
 err_out:
