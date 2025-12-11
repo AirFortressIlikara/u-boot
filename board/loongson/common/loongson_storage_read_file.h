@@ -1,7 +1,6 @@
 #ifndef _LOONGSON_STORAGE_READ_FILE_H_
 #define _LOONGSON_STORAGE_READ_FILE_H_
 
-#include <common.h>
 #include <command.h>
 #include <malloc.h>
 #include <blk.h>

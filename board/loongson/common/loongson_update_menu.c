@@ -3,7 +3,6 @@
  * (C) Copyright 2011-2013 Pali Rohár <pali.rohar@gmail.com>
  */
 
-#include <common.h>
 #include <command.h>
 #include <ansi.h>
 #include <env.h>
