@@ -1,4 +1,3 @@
-#include <common.h>
 #include <asm/global_data.h>
 #include <spl.h>
 #include <init.h>

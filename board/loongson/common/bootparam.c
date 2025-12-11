@@ -1,4 +1,3 @@
-#include <common.h>
 #include <command.h>
 #include <asm/addrspace.h>
 #include <smbios.h>

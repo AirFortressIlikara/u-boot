@@ -5,7 +5,6 @@
  * Copyright (C) 2020 Loongson Technology Corporation Limited
  */
 
-#include <common.h>
 #include <efi_api.h>
 #include <efi_loader.h>
 #include <malloc.h>

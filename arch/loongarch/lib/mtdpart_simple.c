@@ -1,4 +1,3 @@
-#include <common.h>
 #include <jffs2/load_kernel.h>
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/partitions.h>
