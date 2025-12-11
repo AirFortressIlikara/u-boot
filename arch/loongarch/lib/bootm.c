@@ -84,7 +84,7 @@ static void linux_cmdline_dump(void)
 		debug("   arg %03d: %s\n", i, linux_argv[i]);
 }
 
-static void linux_cmdline_legacy(bootm_headers_t *images)
+static void linux_cmdline_legacy(struct bootm_headers *images)
 {
 	const char *bootargs, *next, *quote;
 
@@ -124,7 +124,7 @@ static void linux_cmdline_legacy(bootm_headers_t *images)
 	}
 }
 
-// static void linux_cmdline_append(bootm_headers_t *images)
+// static void linux_cmdline_append(struct bootm_headers *images)
 // {
 // 	char buf[24];
 // 	ulong mem, rd_start, rd_size;
@@ -171,7 +171,7 @@ static void linux_env_set(const char *env_name, const char *env_val)
 	}
 }
 
-static void linux_env_legacy(bootm_headers_t *images)
+static void linux_env_legacy(struct bootm_headers *images)
 {
 	char env_buf[12];
 	const char *cp;
@@ -215,7 +215,7 @@ static void linux_env_legacy(bootm_headers_t *images)
 		linux_env_set("eth1addr", cp);
 }
 
-static int boot_reloc_fdt(bootm_headers_t *images)
+static int boot_reloc_fdt(struct bootm_headers *images)
 {
 	/*
 	 * In case of legacy uImage's, relocation of FDT is already done
@@ -235,7 +235,7 @@ static int boot_reloc_fdt(bootm_headers_t *images)
 #endif
 }
 
-static int boot_setup_fdt(bootm_headers_t *images)
+static int boot_setup_fdt(struct bootm_headers *images)
 {
 	images->initrd_start = virt_to_phys((void *)images->initrd_start);
 	images->initrd_end = virt_to_phys((void *)images->initrd_end);
@@ -243,7 +243,7 @@ static int boot_setup_fdt(bootm_headers_t *images)
 		&images->lmb);
 }
 
-static void boot_prep_linux(bootm_headers_t *images)
+static void boot_prep_linux(struct bootm_headers *images)
 {
 	if (images->ft_len) {
 		boot_reloc_fdt(images);
@@ -263,7 +263,7 @@ static void boot_prep_linux(bootm_headers_t *images)
  * 0 代表旧的传参
  * 1 代表新的传参
  */
-static int judge_boot_param_type(bootm_headers_t *images)
+static int judge_boot_param_type(struct bootm_headers *images)
 {
 	char* kernel_type;
 	kernel_type = image_get_name(images->legacy_hdr_os);
@@ -299,7 +299,7 @@ static const char* boot_smbios_type2_board_name(void)
 	return board_name;
 }
 
-static void boot_jump_linux(bootm_headers_t *images)
+static void boot_jump_linux(struct bootm_headers *images)
 {
 	typedef void __noreturn (*kernel_entry_t)(int, ulong, ulong, ulong);
 	kernel_entry_t kernel = (kernel_entry_t)map_to_sysmem((void*)images->ep);
@@ -357,7 +357,7 @@ static void boot_jump_linux(bootm_headers_t *images)
 }
 
 int do_bootm_linux(int flag, int argc, char *const argv[],
-		   bootm_headers_t *images)
+		   struct bootm_headers *images)
 {
 	if (flag & BOOTM_STATE_OS_BD_T) // TODO
 		return -1;
