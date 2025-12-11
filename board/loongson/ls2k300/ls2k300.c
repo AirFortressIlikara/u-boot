@@ -160,9 +160,6 @@ int ls_board_early_init_r(void)
 int ls_board_late_init(void)
 {
 	uclass_probe_all(UCLASS_MISC);
-	if (IS_ENABLED(CONFIG_LED)) {
-		led_default_state();
-	}
 
 	return 0;
 }
