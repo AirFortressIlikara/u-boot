@@ -41,8 +41,7 @@
 
 #if !defined(CONFIG_DM_VIDEO) || !defined(CONFIG_VIDEO)
 #define LOONGSON_BOOTMENU_VIDEO \
-	"bootmenu_7=Video resolution select=updatemenu resolution 1\0" \
-	"bootmenu_8=Video rotation select=updatemenu rotation 1\0"
+	"bootmenu_7=Video resolution select=updatemenu resolution 1\0"
 #else
 #define LOONGSON_BOOTMENU_VIDEO
 #endif

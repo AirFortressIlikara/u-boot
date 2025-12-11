@@ -24,7 +24,7 @@ obj-$(CONFIG_MACH_LOONGSON) += loongson_update_menu.o
 endif
 
 ifneq ($(findstring $(CONFIG_DM_VIDEO)$(CONFIG_VIDEO), y y),)
-obj-y += rotation_menu.o resolution_menu.o
+obj-y += resolution_menu.o
 endif
 
 endif

@@ -175,9 +175,6 @@ static char *updatemenu_getoption(unsigned short int n)
 	case UPDATE_TYPE_RESOLUTION:
 		return get_resolution_option(n);
 		break;
-	case UPDATE_TYPE_ROTATION:
-		return rotation_menu[n];
-		break;
 	}
 	return NULL;
 }
@@ -529,8 +526,6 @@ cleanup:
 		free(title);
 		if (updatemenu_type == UPDATE_TYPE_RESOLUTION) {
 			update_resolution(command, num);
-		} else if (updatemenu_type == UPDATE_TYPE_ROTATION) {
-			update_rotation(command, num);
 		} else {
 			run_command(command, 0);
 		}

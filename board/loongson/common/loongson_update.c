@@ -31,7 +31,6 @@ const char *update_typename_str[UPDATE_TYPE_COUNT] = {
 	[UPDATE_TYPE_SYSTEM]	= "system",
 	[UPDATE_TYPE_BOOTSELECT]		= "bootselect",
 	[UPDATE_TYPE_RESOLUTION]		= "resolution",
-	[UPDATE_TYPE_ROTATION]  = "rotation",
 };
 
 static void user_env_save(void)
