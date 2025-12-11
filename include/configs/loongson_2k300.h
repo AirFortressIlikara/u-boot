@@ -42,13 +42,8 @@
 /* NS16550-ish UARTs */
 #define CONFIG_SYS_NS16550_CLK		(APB_FREQ * 1000000)	// CLK_in: 100MHz
 
-#define CONFIG_SYS_CBSIZE	4096		/* Console I/O buffer size */
-#define CONFIG_SYS_MAXARGS	32		/* Max number of command args */
 #define CONFIG_SYS_BARGSIZE	CONFIG_SYS_CBSIZE 	/* Boot argument buffer size */
 
-
-/* Miscellaneous configuration options */
-#define CONFIG_SYS_BOOTM_LEN		(64 << 20)
 
 /* Environment settings */
 // #define CONFIG_ENV_SIZE			0x4000	/* 16KB */
@@ -68,7 +63,6 @@
 
 /* OHCI configuration */
 #ifdef CONFIG_USB_OHCI_HCD
-#define CONFIG_USB_OHCI_NEW
 #define CONFIG_SYS_USB_OHCI_MAX_ROOT_PORTS	1
 #endif
 
