@@ -17,9 +17,7 @@
 #include <stdlib.h>
 #include <dm.h>
 
-#if defined(CONFIG_LOONGSON_BOOT_FIXUP)
 extern void *build_boot_param(void);
-#endif
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -306,10 +304,8 @@ static void boot_jump_linux(bootm_headers_t *images)
 {
 	typedef void __noreturn (*kernel_entry_t)(int, ulong, ulong, ulong);
 	kernel_entry_t kernel = (kernel_entry_t)map_to_sysmem((void*)images->ep);
-#if defined(CONFIG_LOONGSON_BOOT_FIXUP)
 	void *fw_arg2 = NULL, *fw_arg3 = NULL;
 	void *bootparam = NULL;
-#endif
 
 	debug("## Transferring control to Linux (at address %p) ...\n", kernel);
 
@@ -322,7 +318,6 @@ static void boot_jump_linux(bootm_headers_t *images)
 	bootstage_report();
 #endif
 
-#if defined(CONFIG_LOONGSON_BOOT_FIXUP)
 	bootparam = build_boot_param();
 	if (judge_boot_param_type(images)) {
 		int i;
@@ -360,15 +355,6 @@ static void boot_jump_linux(bootm_headers_t *images)
 
 		kernel(linux_argc, (ulong)linux_argv, (ulong)fw_arg2, (ulong)fw_arg3);
 	}
-
-#else
-	if (images->ft_len) {
-		kernel(-2, (ulong)images->ft_addr, 0, 0);
-	} else {
-		kernel(linux_argc, (ulong)linux_argv, (ulong)linux_env,
-			linux_extra);
-	}
-#endif
 }
 
 int do_bootm_linux(int flag, int argc, char *const argv[],

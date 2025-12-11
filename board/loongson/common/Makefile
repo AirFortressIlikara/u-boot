@@ -11,7 +11,7 @@ obj-$(CONFIG_MACH_LOONGSON)		+= bdinfo/
 ifndef CONFIG_SPL_BUILD
 obj-$(CONFIG_MACH_LOONGSON)		+= loongson_update.o loongson_storage_read_file.o
 obj-$(CONFIG_LOONGSON_RECOVER)		+= recover.o
-obj-$(CONFIG_LOONGSON_BOOT_FIXUP)	+= bootparam.o loongson_efi_systab.o
+obj-y += bootparam.o loongson_efi_systab.o
 obj-y += loongson_boot.o
 obj-y += loongson_init_env.o
 obj-y += loongson_boot_syspart_manager.o

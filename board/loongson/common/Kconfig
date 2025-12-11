@@ -1,10 +1,5 @@
 menu "Loongson common options"
 
-config LOONGSON_BOOT_FIXUP
-	bool "Fixup Loongson boot param before boot kernel."
-	default y
-	depends on MACH_LOONGSON
-
 config LOONGSON_RECOVER
 	bool "Enable the featrue Recovering system from usb/mmc."
 	default n
