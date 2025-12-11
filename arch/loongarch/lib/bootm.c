@@ -45,6 +45,7 @@ static ulong arch_get_sp(void)
 
 void arch_lmb_reserve(struct lmb *lmb)
 {
+	phys_addr_t addr;
 	ulong sp;
 
 	sp = arch_get_sp();
@@ -52,7 +53,8 @@ void arch_lmb_reserve(struct lmb *lmb)
 
 	/* adjust sp by 4K to be safe */
 	sp -= 4096;
-	lmb_reserve(lmb, sp, gd->ram_top - sp);
+	addr = (phys_addr_t)sp;
+	lmb_alloc_mem(LMB_MEM_ALLOC_ADDR, 0, &addr, gd->ram_top - sp, LMB_NOMAP);
 }
 
 static void linux_cmdline_init(void)
@@ -227,8 +229,8 @@ static int boot_reloc_fdt(struct bootm_headers *images)
 	}
 
 #if CONFIG_IS_ENABLED(OF_LIBFDT)
-	boot_fdt_add_mem_rsv_regions(&images->lmb, images->ft_addr);
-	return boot_relocate_fdt(&images->lmb, &images->ft_addr,
+	boot_fdt_add_mem_rsv_regions(images->ft_addr);
+	return boot_relocate_fdt(&images->ft_addr,
 		&images->ft_len);
 #else
 	return 0;
@@ -239,8 +241,7 @@ static int boot_setup_fdt(struct bootm_headers *images)
 {
 	images->initrd_start = virt_to_phys((void *)images->initrd_start);
 	images->initrd_end = virt_to_phys((void *)images->initrd_end);
-	return image_setup_libfdt(images, images->ft_addr, images->ft_len,
-		&images->lmb);
+	return image_setup_libfdt(images, images->ft_addr, true);
 }
 
 static void boot_prep_linux(struct bootm_headers *images)
