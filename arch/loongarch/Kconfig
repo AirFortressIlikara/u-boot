@@ -1,0 +1,80 @@
+menu "LOONGARCH architecture"
+	depends on LOONGARCH
+
+config SYS_ARCH
+	default "loongarch"
+
+choice
+	prompt "CPU selection"
+	default CPU_LOONGARCH64
+
+config CPU_LOONGARCH32
+	bool "LOONGARCH32"
+	select SUPPORTS_CPU_LOONGARCH32
+	select 32BIT
+	help
+	  Choose this option to build an U-Boot for LOONGARCH32 architecture.
+
+config CPU_LOONGARCH64
+	bool "LOONGARCH64"
+	select SUPPORTS_CPU_LOONGARCH64
+	select 64BIT
+	help
+	  Choose this option to build a U-Boot for LOONGARCH64 architecture.
+
+endchoice
+
+choice
+	prompt "Target select"
+	optional
+
+config ARCH_LA_LOONGSON
+	bool "Support Loongson LA platform"
+	select OF_CONTROL
+	select OF_LIBFDT
+	select DM
+	select DM_SERIAL
+	imply DISPLAY_CPUINFO
+	imply CMD_DM
+	select SUPPORT_SPL
+	select SPL_OF_CONTROL if SPL_DM
+	select SPL_DM_SERIAL if SPL_DM
+	help
+	  This supports loongson platform
+
+endchoice
+
+source "arch/loongarch/mach-loongson/Kconfig"
+
+menu "OS boot interface"
+
+config LOONGARCH_BOOT_CMDLINE_LEGACY
+	bool "Hand over legacy command line to Linux kernel"
+	default y
+	help
+	  Enable this option if you want U-Boot to hand over the Yamon-style
+	  command line to the kernel. All bootargs will be prepared as argc/argv
+	  compatible list. The argument count (argc) is stored in register $a0.
+	  The address of the argument list (argv) is stored in register $a1.
+
+endmenu
+
+config SUPPORTS_CPU_LOONGARCH32
+	bool
+
+config SUPPORTS_CPU_LOONGARCH64
+	bool
+
+config 32BIT
+	bool
+
+config 64BIT
+	bool
+
+config DMA_ADDR_T_64BIT
+	bool
+	default y if 64BIT
+	help
+	 Select this to enable 64-bit DMA addressing
+
+endmenu
