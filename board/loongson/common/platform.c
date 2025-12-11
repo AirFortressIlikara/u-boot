@@ -46,7 +46,7 @@ ulong board_get_usable_ram_top(ulong total_size)
 #ifdef CONFIG_SPL
 	// Keep 4MB space for u-boot image.
 	ram_top -= SZ_4M;
-	if (CONFIG_SYS_TEXT_BASE < ram_top) {
+	if (CONFIG_TEXT_BASE < ram_top) {
 		printf("Warning: Run u-boot from SPL, "
 				"but the CONFIG_SYS_TEXT_BASE is out of "
 				"the reserved space for u-boot image\n");
