@@ -1,0 +1,35 @@
+menu "Loongson common options"
+
+config LOONGSON_RECOVER
+	bool "Enable the featrue Recovering system from usb/mmc."
+	default n
+	depends on MACH_LOONGSON
+
+config LOONGSON_VIDCONSOLE_NOTICE
+    bool "Show Notice Under logo"
+    default y
+
+config LOONGSON_GENERAL_LOAD
+    bool "Enable general_load Command"
+    default n
+    select CMD_UNZIP
+
+config LOONGSON_GENERAL_LOAD_FIX_FDISK
+    bool "Enable general_load fdisk.txt after rootfs was installed"
+    default y
+    depends on LOONGSON_GENERAL_LOAD
+
+config LOONGSON_BOARD_MMC_FS
+    bool "board have mmc(such as emmc or SD card) fs"
+    default n
+    select CMD_UNZIP
+
+config LOONGSON_MMC_HIGH_PERFORMANCE
+    bool "Change MMC-PAD to 0x7, will support HS200 mode"
+    default n
+
+config LOONGSON_USB_LOW_PAD
+    bool "Change USB-PAD to 0x1, Some Board USB is better"
+    default n
+
+endmenu
