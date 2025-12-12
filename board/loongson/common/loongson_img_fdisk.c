@@ -1,6 +1,8 @@
 
 #include <command.h>
 #include <malloc.h>
+#include <vsprintf.h>
+#include <env.h>
 
 #define TARGET_FDISK_TXT_PATH "/usr/local/ls_resize/fdisk.txt"
 

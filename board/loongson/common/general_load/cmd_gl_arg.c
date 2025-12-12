@@ -2,6 +2,7 @@
 #include <part.h>
 #include <fs.h>
 #include <command.h>
+#include <env.h>
 #include "cmd_gl_arg.h"
 #include "cmd_gl_arg_default.h"
 
