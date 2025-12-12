@@ -106,20 +106,19 @@ finish:
 }
 
 #ifdef CONFIG_OF_BOARD
-void *board_fdt_blob_setup(int *err)
+int board_fdt_blob_setup(void **fdtp)
 {
 #ifdef CONFIG_SPL
-	uint8_t *fdt_dst;
-	uint8_t *fdt_src;
+	struct fdt_header *fdt_dst;
+	struct fdt_header *fdt_src;
 	ulong size;
 
-	*err = 0;
-	fdt_dst = (uint8_t*)ALIGN((ulong)&__bss_end, ARCH_DMA_MINALIGN);
+	fdt_dst = (struct fdt_header *)ALIGN((ulong)&__bss_end, ARCH_DMA_MINALIGN);
 #ifdef CONFIG_SPL_BUILD
-	fdt_src = (uint8_t*)((ulong)&_image_binary_end - (ulong)__text_start +
+	fdt_src = (struct fdt_header *)((ulong)&_image_binary_end - (ulong)__text_start +
                         BOOT_SPACE_BASE_UNCACHED);
 #else
-	fdt_src = (uint8_t*)&_image_binary_end;
+	fdt_src = (struct fdt_header *)&_image_binary_end;
 
 	//当fdt段落在bss段里面时，需要把fdt复制到bss外面，因为启动过程中bss段会被清零，
 	//当fdt段落在bss段外面时，返回fdt段的地址即可。
@@ -130,14 +129,13 @@ void *board_fdt_blob_setup(int *err)
 	if (fdt_dst != fdt_src) {
 		size = get_fdt_totalsize(fdt_src);
 		memmove(fdt_dst, fdt_src, size);
-		gd->fdt_size = size;
 	}
 
-	return fdt_dst;
+	fdtp = (void **)fdt_dst;
 #else
-	*err = 0;
-	return (void*)gd->fdt_blob;
+	fdtp = (void **)gd->fdt_blob;
 #endif
+	return 0;
 }
 #endif
 
