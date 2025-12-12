@@ -5,7 +5,7 @@
 #include <linux/mtd/partitions.h>
 #include <u-boot/crc.h>
 #include <search.h>
-#include <watchdog.h>
+#include <initcall.h>
 #include <asm/addrspace.h>
 #include <mapmem.h>
 #include "bdi_internal.h"

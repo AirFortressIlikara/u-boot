@@ -2,7 +2,7 @@
 #include <dm.h>
 #include <search.h>
 #include <asm/global_data.h>
-#include <watchdog.h>
+#include <initcall.h>
 #include <errno.h>
 #include <hang.h>
 #include <env_flags.h>
