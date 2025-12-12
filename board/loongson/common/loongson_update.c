@@ -162,7 +162,7 @@ static int update_uboot(int dev)
 		switch (dev) {
 		case UPDATE_DEV_USB:
 			sprintf(cmd, "/update/%s", image_name[i]);
-			ret = storage_read_file(IF_TYPE_USB, "${loadaddr}", cmd, 0, NULL, NULL);
+			ret = storage_read_file(UCLASS_USB, "${loadaddr}", cmd, 0, NULL, NULL);
 			break;
 		case UPDATE_DEV_TFTP:
 			sprintf(cmd, "tftpboot ${loadaddr} %s", image_name[i]);
@@ -170,7 +170,7 @@ static int update_uboot(int dev)
 			break;
 		case UPDATE_DEV_MMC:
 			sprintf(cmd, "/update/%s", image_name[i]);
-			ret = storage_read_file(IF_TYPE_MMC, "${loadaddr}", cmd, 0, NULL, NULL);
+			ret = storage_read_file(UCLASS_MMC, "${loadaddr}", cmd, 0, NULL, NULL);
 			break;
 		case UPDATE_DEV_DHCP:
 			sprintf(cmd, "dhcp ${loadaddr} ${serverip}:%s", image_name[i]);
@@ -247,13 +247,13 @@ static int update_dtb(int dev)
 
 	switch (dev) {
 	case UPDATE_DEV_USB:
-		ret = storage_read_file(IF_TYPE_USB, "${loadaddr}", "/update/dtb.bin", 0, NULL, NULL);
+		ret = storage_read_file(UCLASS_USB, "${loadaddr}", "/update/dtb.bin", 0, NULL, NULL);
 		break;
 	case UPDATE_DEV_TFTP:
 		ret = run_command("tftpboot ${loadaddr} dtb.bin", 0);
 		break;
 	case UPDATE_DEV_MMC:
-		ret = storage_read_file(IF_TYPE_MMC, "${loadaddr}", "/update/dtb.bin", 0, NULL, NULL);
+		ret = storage_read_file(UCLASS_MMC, "${loadaddr}", "/update/dtb.bin", 0, NULL, NULL);
 		break;
 	}
 

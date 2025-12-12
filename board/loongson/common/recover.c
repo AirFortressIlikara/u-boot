@@ -3,6 +3,7 @@
 #include <command.h>
 
 #include <asm/gpio.h>
+#include "dm/uclass-id.h"
 #include "loongson_storage_read_file.h"
 
 typedef enum recover_network {
@@ -14,7 +15,7 @@ typedef enum recover_network {
 // 0 is mmc default
 static int install_target=0;
 
-static int run_recover_cmd_for_storage(enum if_type if_type)
+static int run_recover_cmd_for_storage(enum uclass_id uclass_id)
 {
 	int ret = -1;
 	char cmdbuf[256];	/* working copy of cmd */
@@ -22,7 +23,7 @@ static int run_recover_cmd_for_storage(enum if_type if_type)
 	int last_partition;
 	int i;
 	char* type;
-	enum if_type if_type_set[] = {IF_TYPE_USB, IF_TYPE_MMC};
+	enum uclass_id if_type_set[] = {UCLASS_USB, UCLASS_MMC};
 	char* type_set[] = {"usb", "mmc", NULL};
 	char* ins_target_set[] = {"mmc", NULL};
 	int status;
@@ -32,14 +33,14 @@ static int run_recover_cmd_for_storage(enum if_type if_type)
 	for (i = 0; ; ++i) {
 		if (!type_set[i])
 			break;
-		if (if_type == if_type_set[i])
+		if (uclass_id == if_type_set[i])
 			type = type_set[i];
 	}
 	if (!type)
 		return -1;
 
 	//usb reset mmc dont reset
-	if (if_type == IF_TYPE_USB) {
+	if (uclass_id == UCLASS_USB) {
 		ret = run_command("usb reset", 0);
 		if (ret) {
 			status = 1;
@@ -48,13 +49,13 @@ static int run_recover_cmd_for_storage(enum if_type if_type)
 	}
 
 	//read kernel
-	ret = storage_read_file(if_type, "${loadaddr}", "/install/uImage", 0, &last_devid, &last_partition);
+	ret = storage_read_file(uclass_id, "${loadaddr}", "/install/uImage", 0, &last_devid, &last_partition);
 	if (ret) {
 		status = 2;
 		goto reset_failed;
 	}
 	//read ramdisk
-	ret = storage_read_file(if_type, "${rd_start}", "/install/ramdisk.gz", 1, &last_devid, &last_partition);
+	ret = storage_read_file(uclass_id, "${rd_start}", "/install/ramdisk.gz", 1, &last_devid, &last_partition);
 	if (ret) {
 		status = 2;
 		goto reset_failed;
@@ -156,7 +157,7 @@ static int do_recover_from_usb(void)
 {
 	printf("Install System By USB .....\r\n");
 	// return run_recover_cmd(RECOVER_USB_DEFAULT);
-	return run_recover_cmd_for_storage(IF_TYPE_USB);
+	return run_recover_cmd_for_storage(UCLASS_USB);
 }
 
 static int do_recover_from_tftp(void)
@@ -177,7 +178,7 @@ static int do_recover_from_mmc(void)
 {
 	printf("Install System By MMC .....\r\n");
 	// return run_recover_cmd(RECOVER_MMC_DEFAULT);
-	return run_recover_cmd_for_storage(IF_TYPE_MMC);
+	return run_recover_cmd_for_storage(UCLASS_MMC);
 }
 #endif
 

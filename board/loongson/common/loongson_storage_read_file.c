@@ -93,7 +93,7 @@ static int part_read_update_file(struct blk_desc* desc, char* storage,
 	return -1;
 }
 
-int storage_read_file(enum if_type if_type, char* addr_desc, char* file_path,
+int storage_read_file(enum uclass_id uclass_id, char* addr_desc, char* file_path,
 						int last_enable, int* last_devid, int* last_partition)
 {
 	struct blk_desc* desc;
@@ -102,9 +102,9 @@ int storage_read_file(enum if_type if_type, char* addr_desc, char* file_path,
 	int index;
 	int ret;
 
-	if (if_type == IF_TYPE_USB)
+	if (uclass_id == UCLASS_USB)
 		storage_type = "usb";
-	else if (if_type == IF_TYPE_MMC)
+	else if (uclass_id == UCLASS_MMC)
 		storage_type = "mmc";
 	else {
 		printf("unknow storage_type.\n");
@@ -113,9 +113,9 @@ int storage_read_file(enum if_type if_type, char* addr_desc, char* file_path,
 
 	for (devid = 0;;++devid) {
 		// 得到 存储设备
-		desc = blk_get_devnum_by_type(if_type, devid);
+		desc = blk_get_devnum_by_uclass_id(uclass_id, devid);
 		if (!desc) {
-			printf("blk_get_devnum_by_type fail.\n");
+			printf("blk_get_devnum_by_uclass_id fail.\n");
 			return -1;
 		}
 		ret = part_read_update_file(desc, storage_type, addr_desc, file_path, last_enable, last_devid, last_partition);
