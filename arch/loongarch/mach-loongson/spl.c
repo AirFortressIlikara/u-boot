@@ -176,7 +176,7 @@ static int spl_board_load_image(struct spl_image_info *spl_image,
 			      struct spl_boot_device *bootdev)
 {
 	u8 *imgaddr, *buf;
-	struct image_header *header;
+	struct legacy_img_hdr *header;
 	size_t size, uncompress_size = SZ_4M;
 	ulong payload_offs;
 	int ret;
