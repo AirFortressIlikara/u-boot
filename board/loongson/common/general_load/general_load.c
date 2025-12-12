@@ -285,9 +285,7 @@ static int ldbr_run(ldbr_t* ldbr)
 	void* buf = (void*)CONFIG_SYS_LOAD_ADDR;
 	u64 buf_size;
 #ifdef CONFIG_LMB
-	struct lmb lmb;
-	lmb_init_and_reserve(&lmb, gd->bd, (void *)gd->fdt_blob);
-	buf_size = lmb_get_free_size(&lmb, image_load_addr);
+	buf_size = lmb_get_free_size(image_load_addr);
 #else
 	//buf_size = 0x24000000; // 576M (512M+64M)
 	//buf_size = 0xA000000; //160M (128M+32M)
