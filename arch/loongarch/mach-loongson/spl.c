@@ -246,9 +246,7 @@ static int spl_board_load_image(struct spl_image_info *spl_image,
 		struct spl_load_info load;
 
 		debug("Found FIT\n");
-		load.dev = NULL;
-		load.filename = NULL;
-		load.bl_len = 1;
+		spl_set_bl_len(&load, 1);
 		load.priv = (void*)imgaddr;
 		load.read = spl_board_load_read;
 		spl_load_simple_fit(spl_image, &load, 0, header);
