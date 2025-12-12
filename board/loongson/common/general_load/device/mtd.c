@@ -2,7 +2,7 @@
 #include <gzip.h>
 #include <linux/kernel.h>
 #include <memalign.h>
-#include <watchdog.h>
+#include <initcall.h>
 #include <u-boot/zlib.h>
 #include "mtd.h"
 #include "../gl_debug.h"
