@@ -5,7 +5,6 @@
  * Based on the driver mt7621_gpio.c
  */
 
-#include <common.h>
 #include <dm.h>
 #include <errno.h>
 #include <fdtdec.h>
