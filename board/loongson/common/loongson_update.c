@@ -4,6 +4,7 @@
 #include <malloc.h>
 #include <asm/cache.h>
 #include <asm/global_data.h>
+#include <env.h>
 
 #include <jffs2/jffs2.h>
 
