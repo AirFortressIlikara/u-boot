@@ -4,6 +4,7 @@
 #include "gl_target.h"
 #include "device/mtd.h"
 #include "device/net.h"
+#include "dm/uclass-id.h"
 #include "gl_debug.h"
 
 typedef struct gl_target_priv_s {
@@ -62,12 +63,12 @@ static struct net_gl_desc* gl_net_init(char* ip)
 
 static struct blk_desc* gl_mmc_init(int devnum)
 {
-	return blk_get_devnum_by_type(IF_TYPE_MMC, devnum);
+	return blk_get_devnum_by_uclass_id(UCLASS_MMC, devnum);
 }
 
 static struct blk_desc* gl_usb_init(int devnum)
 {
-	return blk_get_devnum_by_type(IF_TYPE_USB, devnum);
+	return blk_get_devnum_by_uclass_id(UCLASS_USB, devnum);
 }
 
 static struct mtd_gl_desc* gl_flash_init(int devnum)
