@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-2.0+
 
 #include <command.h>
-#include <stdlib.h>
 #include <blk.h>
 #include "cmd_gl_arg.h"
+#include "dm/uclass-id.h"
 #include "general_load.h"
 #ifdef CONFIG_LOONGSON_GENERAL_LOAD_FIX_FDISK
 #include "../loongson_boot_syspart_manager.h"
@@ -23,9 +23,9 @@ static void try_to_read_fdisk(gl_target_t* src)
 		desc = gl_target_get_desc(src);
 		if (!desc)
 			return;
-		if (desc->if_type == IF_TYPE_MMC)
+		if (desc->uclass_id == UCLASS_MMC)
 			loongson_try_read_img_fdisk("mmc");
-		else if (desc->if_type == IF_TYPE_USB)
+		else if (desc->uclass_id == UCLASS_USB)
 			loongson_try_read_img_fdisk("usb");
 	}
 }

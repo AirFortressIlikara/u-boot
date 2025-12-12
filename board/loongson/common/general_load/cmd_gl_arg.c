@@ -4,7 +4,9 @@
 #include <command.h>
 #include <env.h>
 #include "cmd_gl_arg.h"
+#include "blk.h"
 #include "cmd_gl_arg_default.h"
+#include "dm/uclass-id.h"
 
 #define MAX_CMD_GL_ARGLEN 32
 
@@ -59,7 +61,7 @@ static int load_from_external_device(cmd_gl_arg_t* arg, char* filename)
 
 			run_command("usb reset", 0);
 
-			desc = blk_get_devnum_by_type(IF_TYPE_USB, 0);
+			desc = blk_get_devnum_by_uclass_id(UCLASS_USB, 0);
 			if (!desc)
 			{
 				printf("device ERROR: not found usb device %s\n", arg->device);
@@ -91,7 +93,7 @@ static int load_from_external_device(cmd_gl_arg_t* arg, char* filename)
 		else if(arg->device[4] == '\0')
 		{
 			struct blk_desc* desc;
-			desc = blk_get_devnum_by_type(IF_TYPE_MMC, 1);
+			desc = blk_get_devnum_by_uclass_id(UCLASS_MMC, 1);
 			if (!desc)
 			{
 				printf("device ERROR: not found mmc device %s\n", arg->device);
