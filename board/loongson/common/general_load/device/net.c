@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <env.h>
 #include "net.h"
 
 static int m__net_gl_read(struct net_gl_desc* self, int proto,
