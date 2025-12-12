@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <command.h>
 #include <malloc.h>
+#include <env.h>
 #include "bdinfo/bdinfo.h"
 #include "loongson_boot_syspart_manager.h"
 

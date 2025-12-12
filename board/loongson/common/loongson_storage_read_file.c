@@ -1,4 +1,5 @@
 #include "loongson_storage_read_file.h"
+#include <vsprintf.h>
 
 static unsigned char sys_ind_set[] = {0xb, 0xc, 0xe, 0x83, 0x85, 0x0};
 static char* fs_type[] = {"fatload", "ext4load", NULL};
