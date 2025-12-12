@@ -11,6 +11,7 @@
 #include <malloc.h>
 #include <linux/string.h>
 #include <linux/delay.h>
+#include <vsprintf.h>
 
 #include "loongson_update.h"
 
@@ -483,7 +484,8 @@ void updatemenu_show(void)
 		return;
 
 	menu = menu_create(NULL, updatemenu->delay, 1, updatemenu_display_statusline,
-				updatemenu_print_entry, updatemenu_choice_entry, updatemenu);
+				updatemenu_print_entry, updatemenu_choice_entry, NULL,
+				updatemenu);
 	if (!menu) {
 		updatemenu_destroy(updatemenu);
 		return;

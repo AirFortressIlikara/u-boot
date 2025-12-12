@@ -1,5 +1,4 @@
 #include <init.h>
-#include <spl.h>
 #include <asm/addrspace.h>
 #include <asm/sections.h>
 #include <asm/io.h>
@@ -7,6 +6,7 @@
 #include <asm/unaligned.h>
 #include <spi.h>
 #include <spi_flash.h>
+#include <spl.h>
 #include <mach/loongson.h>
 #include <image.h>
 #include <gzip.h>

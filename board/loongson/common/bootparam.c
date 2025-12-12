@@ -4,6 +4,7 @@
 #include <dm/device.h>
 #include <dm/uclass.h>
 #include <ram.h>
+#include <env.h>
 #include "bootparam.h"
 
 #define BOOTPARAMS_ADDRESS			0x0f030400
