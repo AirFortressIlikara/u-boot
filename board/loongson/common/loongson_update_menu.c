@@ -7,7 +7,7 @@
 #include <ansi.h>
 #include <env.h>
 #include <menu.h>
-#include <watchdog.h>
+#include <initcall.h>
 #include <malloc.h>
 #include <linux/string.h>
 #include <linux/delay.h>
