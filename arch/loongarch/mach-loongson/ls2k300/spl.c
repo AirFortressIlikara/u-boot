@@ -5,11 +5,6 @@
 #include <mach/loongson.h>
 #include <linux/io.h>
 
-void spl_mach_init(void)
-{
-	arch_cpu_init();
-}
-
 void spl_mach_init_late(void)
 {
 	unsigned long unlock_base = LOCK_CACHE_BASE;

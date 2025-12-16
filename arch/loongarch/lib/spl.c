@@ -9,16 +9,7 @@ DECLARE_GLOBAL_DATA_PTR;
 extern void ddr_init(void);
 extern ulong spl_relocate_stack_gd(void);
 
-__weak void spl_mach_init(void)
-{
-	arch_cpu_init();
-}
-
 __weak void spl_mach_init_late(void)
-{
-}
-
-__weak void spl_board_init_late(void)
 {
 }
 
@@ -56,13 +47,11 @@ void __noreturn board_init_f(ulong dummy)
 #ifdef DBG_ASM
 	printf("Enter board_init_f...\r\n");
 #endif
-	spl_mach_init();
+	arch_cpu_init();
+
 	ret = spl_early_init();
 	if (ret) {
-		debug("spl_early_init() failed: %d\n", ret);
-#ifdef DBG_ASM
-		printf("spl_early_init() failed.\r\n");
-#endif
+		log_debug("spl_early_init() failed: %d\n", ret);
 		hang();
 	}
 
@@ -74,8 +63,6 @@ void __noreturn board_init_f(ulong dummy)
 		hang();
 	}
 #endif
-
-	spl_board_init_late();
 
 	debug("spl sdram init ...\n");
 	if (spl_sdram_init()) {
