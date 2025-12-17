@@ -11,13 +11,8 @@
 #define I2S_FREQ	100
 #define NETWORK_FREQ 400
 
-#ifdef REF_120M
 #define NODE_REFC	6
 #define NODE_DIV	2
-#else
-#define NODE_REFC	4
-#define NODE_DIV	2
-#endif
 #define NODE_LOOPC	(CORE_FREQ*NODE_REFC*NODE_DIV/REF_FREQ)
 
 #define GMAC_DIV    (CORE_FREQ*NODE_DIV/GMAC_FREQ)
@@ -25,13 +20,8 @@
 
 /* DDR PLL */
 //#define DDR_FREQ	800					//MEM 800~1200Mhz
-#ifdef REF_120M
 #define DDR_REFC	3
 #define DDR_DIV		2
-#else
-#define DDR_REFC	4
-#define DDR_DIV		4
-#endif
 #define DDR_LOOPC	(DDR_FREQ*DDR_REFC*DDR_DIV/REF_FREQ)
 #define MEMDIV_MODE	1
 #define DEV_DIV		(DDR_FREQ*DDR_DIV/APB_FREQ) //APB 100M
