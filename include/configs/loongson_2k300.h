@@ -13,13 +13,7 @@
 #include "loongson_common.h"
 
 /* Loongson LS2K300 clock configuration. */
-#define REF_120M
-
-#ifdef REF_120M
 #define REF_FREQ				120		//参考时钟固定为120MHz
-#else
-#define REF_FREQ				100		//参考时钟固定为100MHz
-#endif
 #define CORE_FREQ				CONFIG_CPU_FREQ	//现在CPU的时钟在 make menuconfig 里面选择
 #define DDR_FREQ				800		//MEM 800Mhz
 #define APB_FREQ				200		//SB 100~200MHz, for BOOT, USB, APB, SDIO
