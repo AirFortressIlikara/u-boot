@@ -21,6 +21,7 @@
 #define	CACHED_TO_UNCACHED(x)		(PHYS_TO_UNCACHED(x))
 #define UNCACHED_TO_CACHED(x)		(PHYS_TO_CACHED(x))
 
+// SPI0 Boot
 #define BOOT_SPACE_BASE			(0x1c000000)
 #define BOOT_SPACE_SIZE			(SZ_1M)
 
