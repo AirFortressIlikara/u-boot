@@ -87,7 +87,7 @@ static void ls_spi_cs_activate(struct udevice *dev)
 	struct ls_spi_platdata *plat = dev_get_plat(bus);
 	struct dm_spi_slave_plat *slave_plat = dev_get_parent_plat(dev);
 	struct ls_spi_regs *const regs = plat->regs;
-	u32 cs = slave_plat->cs;
+	u32 cs = slave_plat->cs[0];
 	u8 ret;
 
 	// disable spi-flash memory
