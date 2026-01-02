@@ -8,7 +8,6 @@
 #include <env.h>
 #include <image.h>
 #include <fdt_support.h>
-#include <lmb.h>
 #include <log.h>
 #include <asm/addrspace.h>
 #include <asm/global_data.h>
@@ -33,29 +32,6 @@ static char *linux_command_line;
 static char **linux_env;
 static char *linux_env_p;
 static int linux_env_idx;
-
-static ulong arch_get_sp(void)
-{
-	ulong ret;
-
-	__asm__ __volatile__("move %0, $sp" : "=r"(ret) : );
-
-	return ret;
-}
-
-void arch_lmb_reserve(struct lmb *lmb)
-{
-	phys_addr_t addr;
-	ulong sp;
-
-	sp = arch_get_sp();
-	debug("## Current stack ends at 0x%08lx\n", sp);
-
-	/* adjust sp by 4K to be safe */
-	sp -= 4096;
-	addr = (phys_addr_t)sp;
-	lmb_alloc_mem(LMB_MEM_ALLOC_ADDR, 0, &addr, gd->ram_top - sp, LMB_NOMAP);
-}
 
 static void linux_cmdline_init(void)
 {
