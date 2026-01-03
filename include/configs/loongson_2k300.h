@@ -38,8 +38,6 @@
 #ifdef CONFIG_ENV_IS_IN_SPI_FLASH
 // #define CONFIG_ENV_SIZE                 0x4000  /* 16KB */
 
-/* GMAC configuration */
-#define CONFIG_DW_ALTDESCRIPTOR		// for designware ethernet driver.
 
 /* OHCI configuration */
 #ifdef CONFIG_USB_OHCI_HCD
