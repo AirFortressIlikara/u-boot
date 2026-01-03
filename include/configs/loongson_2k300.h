@@ -33,11 +33,6 @@
 /* NS16550-ish UARTs */
 #define CONFIG_SYS_NS16550_CLK		(APB_FREQ * 1000000)	// CLK_in: 100MHz
 
-/* Environment settings */
-// #define CONFIG_ENV_SIZE			0x4000	/* 16KB */
-#ifdef CONFIG_ENV_IS_IN_SPI_FLASH
-// #define CONFIG_ENV_SIZE                 0x4000  /* 16KB */
-
 /* video configuration */
 // #define DISPLAY_BANNER_ON_VIDCONSOLE
 
