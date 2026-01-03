@@ -22,8 +22,6 @@
 
 /* Memory configuration */
 #define CONFIG_SYS_BOOTPARAMS_LEN	SZ_64K
-#define CONFIG_SYS_SDRAM_BASE		(0x9000000000000000) /* cached address, use the low 256MB memory */
-#define CONFIG_SYS_SDRAM_SIZE		(SZ_256M)
 #define CONFIG_SYS_MONITOR_BASE		CONFIG_TEXT_BASE
 
 #ifdef CONFIG_SPL_BUILD
