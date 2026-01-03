@@ -85,8 +85,6 @@ static char *updatemenu_bootselect[] = {
 	NULL
 };
 
-#if !defined(CONFIG_VIDEO)
-
 __weak char *resolution_menu[] = {
 	"Video dev not defined=""\0",
 	NULL
@@ -113,7 +111,6 @@ __weak void update_rotation(char *command, int num)
 {
 	run_command(command, 0);
 }
-#endif
 
 /* maximum updatemenu entries */
 #define MAX_COUNT	99
