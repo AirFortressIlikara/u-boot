@@ -85,7 +85,7 @@ static char *updatemenu_bootselect[] = {
 	NULL
 };
 
-#if !defined(CONFIG_DM_VIDEO) || !defined(CONFIG_VIDEO)
+#if !defined(CONFIG_VIDEO)
 
 __weak char *resolution_menu[] = {
 	"Video dev not defined=""\0",
