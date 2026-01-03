@@ -38,12 +38,6 @@
 #ifdef CONFIG_ENV_IS_IN_SPI_FLASH
 // #define CONFIG_ENV_SIZE                 0x4000  /* 16KB */
 
-
-/* OHCI configuration */
-#ifdef CONFIG_USB_OHCI_HCD
-#define CONFIG_SYS_USB_OHCI_MAX_ROOT_PORTS	1
-#endif
-
 /* video configuration */
 // #define DISPLAY_BANNER_ON_VIDCONSOLE
 
