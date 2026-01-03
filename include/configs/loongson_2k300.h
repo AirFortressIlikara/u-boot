@@ -38,14 +38,6 @@
 #ifdef CONFIG_ENV_IS_IN_SPI_FLASH
 // #define CONFIG_ENV_SIZE                 0x4000  /* 16KB */
 
-/*
- * Environment is right behind U-Boot in flash. Make sure U-Boot
- * doesn't grow into the environment area.
- */
-//#define CONFIG_BOARD_SIZE_LIMIT         CONFIG_ENV_OFFSET
-#define CONFIG_BOARD_SIZE_LIMIT         0x180000
-#endif
-
 /* GMAC configuration */
 #define CONFIG_DW_ALTDESCRIPTOR		// for designware ethernet driver.
 
