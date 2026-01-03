@@ -5,7 +5,6 @@
  * (C) Copyright 2022 Jianhui Wang <wangjianhui@loongson.cn>
  */
 
-#include <common.h>
 #include <linux/string.h>
 #include <linux/list.h>
 #include <linux/fb.h>
@@ -13,7 +12,6 @@
 #include <asm/global_data.h>
 #include <asm/io.h>
 #include <malloc.h>
-#include <video_fb.h>
 #include <panel.h>
 #include <dm.h>
 #include <dm/read.h>
@@ -679,12 +677,9 @@ static int ls_video_probe(struct udevice *dev)
 		return -ENOMEM;
 	}
 
-	if (priv->fb_base) {
-		gd->fb_base = uc_plat->base = (ulong)priv->fb_base;
-	} else {
+	if (!priv->fb_base) {
 		// use the uboot reserved video framebuffer
 		priv->fb_base = map_sysmem((phys_addr_t)uc_plat->base, 0);
-		gd->fb_base = uc_plat->base;
 	}
 
 	printf("frame buffer addr: 0x%p\n", priv->fb_base);
