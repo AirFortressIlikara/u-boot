@@ -39,7 +39,7 @@
 	"bootmenu_5=Update dtb=updatemenu dtb 1\0" \
 	"bootmenu_6=System install or recover=updatemenu system 1\0"
 
-#if !defined(CONFIG_DM_VIDEO) || !defined(CONFIG_VIDEO)
+#if !defined(CONFIG_VIDEO)
 #define LOONGSON_BOOTMENU_VIDEO \
 	"bootmenu_7=Video resolution select=updatemenu resolution 1\0"
 #else
@@ -55,7 +55,7 @@
 	"stdin=serial,usbkbd\0" \
 	"stdout=serial\0" \
 	"stderr=serial,vga\0"
-#elif defined(CONFIG_DM_VIDEO)
+#elif defined(CONFIG_VIDEO)
 #define CONSOLE_STDOUT_SETTINGS \
 	"splashimage=" __stringify(CONFIG_SYS_LOAD_ADDR) "\0" \
 	"stdin=serial,usbkbd\0" \

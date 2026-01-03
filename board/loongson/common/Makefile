@@ -23,7 +23,7 @@ ifeq ($(CONFIG_MENU), y)
 obj-$(CONFIG_MACH_LOONGSON) += loongson_update_menu.o
 endif
 
-ifneq ($(findstring $(CONFIG_DM_VIDEO)$(CONFIG_VIDEO), y y),)
+ifneq ($(findstring $(CONFIG_VIDEO), y),)
 obj-y += resolution_menu.o
 endif
 
