@@ -937,6 +937,13 @@ config VIDEO_SEPS525
 source "drivers/video/zynqmp/Kconfig"
 source "drivers/video/nexell/Kconfig"
 
+config VIDEO_LOONGSON
+    bool "Enable video support on Loongson SoC"
+    select PANEL
+    select DISPLAY
+    help
+      Enable Loongson SoC Display controller support.
+
 config CONSOLE_SCROLL_LINES
 	int "Number of lines to scroll the console by"
 	default 1

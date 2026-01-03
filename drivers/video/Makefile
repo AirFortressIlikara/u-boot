@@ -90,6 +90,7 @@ obj-$(CONFIG_VIDEO_SIMPLE) += simplefb.o
 obj-$(CONFIG_VIDEO_VESA) += vesa.o
 obj-$(CONFIG_VIDEO_SEPS525) += seps525.o
 obj-$(CONFIG_VIDEO_ZYNQMP_DPSUB) += zynqmp/
+obj-$(CONFIG_VIDEO_LOONGSON) += loongson_fb.o loongson_common.o
 
 obj-y += bridge/
 obj-y += sunxi/
