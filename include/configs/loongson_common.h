@@ -127,10 +127,6 @@ boot"
 	"syspart_last=4\0" \
 	"syspart_ch=0\0"
 
-#define CONFIG_IPADDR		192.168.1.20
-#define CONFIG_NETMASK		255.255.255.0
-#define CONFIG_SERVERIP		192.168.1.2
-
 #endif /* __LOONGSON_ENV_H__ */
 
 
