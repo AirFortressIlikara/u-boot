@@ -5,7 +5,6 @@
 #include <blk.h>
 #include <part.h>
 #include <gzip.h>
-#include <mach/addrspace.h>
 #include <asm/addrspace.h>
 #include "general_load.h"
 #include "device/mtd.h"

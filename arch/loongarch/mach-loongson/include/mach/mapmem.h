@@ -3,7 +3,7 @@
 
 #ifdef CONFIG_ARCH_MAP_SYSMEM
 
-#include <mach/addrspace.h>
+#include <asm/addrspace.h>
 
 static __always_inline void *map_sysmem_mach(phys_addr_t paddr, unsigned long len)
 {
