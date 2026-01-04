@@ -7,7 +7,7 @@
 
 	sysinfo-smbios {
 		compatible = "u-boot,sysinfo-smbios";
-		u-boot,dm-pre-reloc;
+		bootph-all;
 
 		smbios {
 			system {

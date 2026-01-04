@@ -54,14 +54,14 @@
 		compatible = "simple-bus";
 		#address-cells = <1>;
 		#size-cells = <0>;
-		u-boot,dm-pre-reloc;
+		bootph-all;
 
 		osc_clk: osc-clock {
 			compatible = "fixed-clock";
 			#clock-cells = <0>;
 			clock-frequency = <100000000>;
 			clock-output-names = "osc-clk";
-			u-boot,dm-pre-reloc;
+			bootph-all;
 		};
 
 		boot_clk: boot-clock {
@@ -69,7 +69,7 @@
 			#clock-cells = <0>;
 			clock-frequency = <200000000>;
 			clock-output-names = "boot-clk";
-			u-boot,dm-pre-reloc;
+			bootph-all;
 		};
 
 		apb_clk: apb-clock {
@@ -77,7 +77,7 @@
 			#clock-cells = <0>;
 			clock-frequency = <200000000>;
 			clock-output-names = "apb-clk";
-			u-boot,dm-pre-reloc;
+			bootph-all;
 		};
 	};
 
@@ -129,7 +129,7 @@
 			0 0x0d000000  0 0x0d000000  0 0x2000000
 			0 0x40000000 0x80000000 0x40000000 0 0x40000000
 			0xfe 0x00000000 0x800000fe 0x00000000 0 0x40000000>;
-		u-boot,dm-pre-reloc;
+		bootph-all;
 
 		isa@16400000 {
 			compatible = "isa";
@@ -145,7 +145,7 @@
 			interrupt-parent = <&extioiic>;
 			interrupts = <2>;
 			no-loopback-test;
-			u-boot,dm-pre-reloc;
+			bootph-all;
 		};
 
 		pmc: syscon@0x16124000 {
@@ -179,7 +179,7 @@
 			pinctrl-names = "default";
 			#address-cells = <1>;
 			#size-cells = <0>;
-			u-boot,dm-pre-reloc;
+			bootph-all;
 
 			dvo0: dvo@0 {
 				compatible = "loongson,ls-dc-dvo";
@@ -255,7 +255,7 @@
 			clocks = <&boot_clk>;
 			clock-names = "sclk";
 			status = "disabled";
-			u-boot,dm-pre-reloc;
+			bootph-all;
 		};
 
 		spi1: spi@0x16018000 {

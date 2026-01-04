@@ -4,12 +4,12 @@
 		device_type = "memory";
 		reg = <0x90000000 0x00000000 0 0x10000000
 		       0x90000000 0x90000000 0 0x10000000>;
-		u-boot,dm-pre-reloc;
+		bootph-all;
 	};
 
 	mc0: ram@0 {
 		compatible = "loongson,ls2k0300-ddr";
-		u-boot,dm-pre-reloc;
+		bootph-all;
 
 		soc-config-reg = <0x1fe10100>;
 		mc-disable-offs = <4>;
