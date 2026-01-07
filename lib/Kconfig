@@ -1191,7 +1191,7 @@ config SPL_OID_REGISTRY
 
 config SMBIOS
 	bool "SMBIOS support"
-	depends on X86 || EFI_LOADER
+	depends on X86 || EFI_LOADER || LOONGARCH
 	default y
 	select LAST_STAGE_INIT
 	help
