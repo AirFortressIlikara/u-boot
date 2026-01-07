@@ -24,6 +24,10 @@ static inline unsigned long bus_to_phys(unsigned long bus)
 #if CONFIG_IS_ENABLED(DM)
 #include <dm/device.h>
 
+#ifdef CONFIG_LOONGARCH
+dma_addr_t dev_phys_to_bus(struct udevice *dev, phys_addr_t phys);
+phys_addr_t dev_bus_to_phys(struct udevice *dev, dma_addr_t bus);
+#else
 static inline dma_addr_t dev_phys_to_bus(struct udevice *dev, phys_addr_t phys)
 {
 	return phys - dev_get_dma_offset(dev);
@@ -33,6 +37,7 @@ static inline phys_addr_t dev_bus_to_phys(struct udevice *dev, dma_addr_t bus)
 {
 	return bus + dev_get_dma_offset(dev);
 }
+#endif
 #else
 #define dev_phys_to_bus(_, _addr)	_addr
 #define dev_bus_to_phys(_, _addr)	_addr
