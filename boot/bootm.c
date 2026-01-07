@@ -705,7 +705,7 @@ static int bootm_load_os(struct bootm_headers *images, int boot_progress)
 	if (CONFIG_IS_ENABLED(LMB)) {
 		phys_addr_t load;
 
-		load = (phys_addr_t)images->os.load;
+		load = (phys_addr_t)map_sysmem(images->os.load, 0);
 		err = lmb_alloc_mem(LMB_MEM_ALLOC_ADDR, 0, &load,
 				    (load_end - images->os.load), LMB_NONE);
 		if (err) {
