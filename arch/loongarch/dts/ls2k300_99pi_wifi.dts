@@ -5,7 +5,6 @@
 / {
 	sysinfo-smbios {
 		compatible = "u-boot,sysinfo-smbios";
-		bootph-all;
 
 		smbios {
 			system {
