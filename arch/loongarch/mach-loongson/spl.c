@@ -66,15 +66,9 @@ unsigned int spl_spi_get_uboot_offs(struct spi_flash *flash)
 #endif
 
 
-#ifdef CONFIG_SPL_DISPLAY_PRINT
+#ifdef CONFIG_XPL_BUILD
 void spl_display_print(void)
 {
-	// ascii art (style: Matchsticks)
-	printf("\n"
-		" _     __   __  _  _  ___  ___  __  _  _    /   ___  __  \\ \n"
-		" |    |  | |  | |\\ | | __ [__  |  | |\\ |    |  | __ |  \\ | \n"
-		" |___ |__| |__| | \\| |__] ___] |__| | \\|    \\  |__] |__/ / \n"
-		"\n");
 }
 #endif
 
