@@ -24,6 +24,11 @@ void __weak _machine_restart(void)
 		/* NOP */;
 }
 
+void reset_cpu(void)
+{
+	_machine_restart();
+}
+
 int do_reset(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 {
 	_machine_restart();
