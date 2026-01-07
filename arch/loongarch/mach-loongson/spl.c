@@ -254,7 +254,7 @@ static int spl_board_load_image(struct spl_image_info *spl_image,
 		ret = spl_parse_image_header(spl_image, bootdev, header);
 		if (ret)
 			return ret;
-		memcpy((void *)spl_image->load_addr,
+		memcpy((void *)map_sysmem(spl_image->load_addr, 0),
 			imgaddr + spl_image->offset, spl_image->size);
 	}
 
