@@ -22,23 +22,23 @@
 			};
 		};
 
-
 		cpu0: cpu@10000 {
 			device_type = "cpu";
 			compatible = "loongarch";
 			reg=<0>;
 			numa-node-id = <0>;
+			bootph-all;
 		};
-
 	};
 
 	cpuic: interrupt-controller {
 		compatible = "loongson,cpu-interrupt-controller";
 		interrupt-controller;
 		#interrupt-cells = <1>;
+		bootph-all;
 	};
 
-	extioiic: interrupt-controller@0x16001400 {
+	extioiic: interrupt-controller@16001400 {
 		compatible = "loongson,extioi-interrupt-controller";
 		interrupt-controller;
 		#interrupt-cells = <1>;
@@ -48,14 +48,10 @@
 		vec_count=<128>;
 		misc_func=<0x100>;
 		eio_en_off=<27>;
+		bootph-all;
 	};
 
 	clocks {
-		compatible = "simple-bus";
-		#address-cells = <1>;
-		#size-cells = <0>;
-		bootph-all;
-
 		osc_clk: osc-clock {
 			compatible = "fixed-clock";
 			#clock-cells = <0>;
@@ -81,7 +77,7 @@
 		};
 	};
 
-	pinmux: pinmux@0x16000490 {
+	pinmux: pinmux@16000490 {
 		compatible = "pinctrl-single";
 		reg = <0x80000000 0x16000490 0 0x20>;
 		#address-cells = <1>;
@@ -138,7 +134,7 @@
 			ranges = <1 0 0 0x16400000 0x4000>;
 		};
 
-		uart0: serial@0x16100000 {
+		uart0: serial@16100000 {
 			compatible = "ns16550a";
 			reg = <0 0x16100000 0 0x10>;
 			clocks = <&apb_clk>;
@@ -148,27 +144,27 @@
 			bootph-all;
 		};
 
-		pmc: syscon@0x16124000 {
+		pmc: syscon@16124000 {
 			compatible = "syscon";
 			reg = <0x0 0x16124000 0x0 0x20>;
+
+			reboot {
+				compatible ="syscon-reboot";
+				regmap = <&pmc>;
+				offset = <0x0>;
+				mask = <0x1>;
+			};
+
+			poweroff {
+				compatible ="syscon-poweroff";
+				regmap = <&pmc>;
+				offset = <0x14>;
+				mask = <0x3c00>;
+				value = <0x3c00>;
+			};
 		};
 
-		reboot {
-			compatible ="syscon-reboot";
-			regmap = <&pmc>;
-			offset = <0x0>;
-			mask = <0x1>;
-		};
-
-		poweroff {
-			compatible ="syscon-poweroff";
-			regmap = <&pmc>;
-			offset = <0x14>;
-			mask = <0x3c00>;
-			value = <0x3c00>;
-		};
-
-		dc: dc@0x16090000 {
+		dc: dc@16090000 {
 			compatible = "loongson,ls-dc", "simple-bus";
 			reg = <	0 0x16090000 0 0xffff		/* DC register base */
 					0 0x16000410 0 0x4			/* pix pll config0 addr */
@@ -179,7 +175,6 @@
 			pinctrl-names = "default";
 			#address-cells = <1>;
 			#size-cells = <0>;
-			bootph-all;
 
 			dvo0: dvo@0 {
 				compatible = "loongson,ls-dc-dvo";
@@ -192,7 +187,7 @@
 
 		};
 
-		gmac0: ethernet@0x16020000 {
+		gmac0: ethernet@16020000 {
 			compatible = "snps,dwmac-3.70a", "snps,arc-dwmac-3.70a";
 			reg = <0 0x16020000 0 0x10000>;
 			pinctrl-0 = <&gmac0_pins>;
@@ -205,14 +200,10 @@
 			bus_id = <0x0>;
 			phy_addr = <0xffffffff>;
 			dma-mask = <0xffffffff 0xffffffff>;
-			// snps,pbl = <2>;
-			// snps,fixed-burst;
-			// snps,force_sf_dma_mode;
 			status = "disabled";
-
 		};
 
-		gmac1: ethernet@0x16030000 {
+		gmac1: ethernet@16030000 {
 			compatible = "snps,dwmac-3.70a", "snps,arc-dwmac-3.70a";
 			reg = <0 0x16030000 0 0x10000>;
 			pinctrl-0 = <&gmac1_pins>;
@@ -228,7 +219,7 @@
 			status = "disabled";
 		};
 
-		gpio:gpio@0x16104000 {
+		gpio:gpio@16104000 {
 			#address-cells = <1>;
 			#size-cells = <0>;
 
@@ -247,7 +238,7 @@
 			};
 		};
 
-		spi0: spi@0x16010000 {
+		spi0: spi@16010000 {
 			compatible = "loongson,ls-spi";
 			reg = <0 0x16010000 0 0x40000>;
 			#address-cells = <1>;
@@ -258,7 +249,7 @@
 			bootph-all;
 		};
 
-		spi1: spi@0x16018000 {
+		spi1: spi@16018000 {
 			compatible = "loongson,ls-spi";
 			reg = <0 0x16018000 0 0x40000>;
 			#address-cells = <1>;
@@ -268,7 +259,7 @@
 			status = "disabled";
 		};
 
-		i2c0: i2c@0x16108000 {
+		i2c0: i2c@16108000 {
 			compatible = "opencores,i2c-ocores";
 			reg = <0 0x16108000 0 0x1000>;
 			#address-cells = <1>;
@@ -280,7 +271,7 @@
 			status = "disabled";
 		};
 
-		i2c1: i2c@0x16109000 {
+		i2c1: i2c@16109000 {
 			compatible = "opencores,i2c-ocores";
 			reg = <0 0x16109000 0 0x1000>;
 			#address-cells = <1>;
@@ -291,7 +282,7 @@
 			status = "disabled";
 		};
 
-		i2c2: i2c@0x1610a000 {
+		i2c2: i2c@1610a000 {
 			compatible = "opencores,i2c-ocores";
 			reg = <0 0x1610a000 0 0x1000>;
 			#address-cells = <1>;
@@ -302,7 +293,7 @@
 			status = "disabled";
 		};
 
-		i2c3: i2c@0x1610b000 {
+		i2c3: i2c@1610b000 {
 			compatible = "opencores,i2c-ocores";
 			reg = <0 0x1610b000 0 0x1000>;
 			#address-cells = <1>;
@@ -313,7 +304,7 @@
 			status = "disabled";
 		};
 
-		emmc0: emmc@0x16140000 {
+		emmc0: emmc@16140000 {
 			compatible = "loongson,ls-mmc";
 			reg = <0 0x16140000 0 0x8000>;
 			pinctrl-0 = <&sdio0_pins>;
@@ -323,7 +314,7 @@
 			status = "disabled";
 		};
 
-		sdio1: mmc@0x16148000 {
+		sdio1: mmc@16148000 {
 			compatible = "loongson,ls-mmc";
 			reg = <0 0x16148000 0 0x8000>;
 			pinctrl-0 = <&sdio1_pins>;
@@ -333,19 +324,19 @@
 			status = "disabled";
 		};
 
-		ehci@0x16080000 {
+		ehci@16080000 {
 			compatible = "generic-ehci";
 			reg = <0 0x16080000 0 0x8000>;
 			dma-mask = <0x0 0xffffffff>;
 		};
 
-		ohci@0x16088000 {
+		ohci@16088000 {
 			compatible = "generic-ohci";
 			reg = <0 0x16088000 0 0x8000>;
 			dma-mask = <0x0 0xffffffff>;
 		};
 
-		otg: otg@0x16040000 {
+		otg: otg@16040000 {
 			compatible = "snps,dwc2";
 			reg = <0 0x16040000 0 0x40000>;
 			dma-mask = <0x0 0xffffffff>;
@@ -353,7 +344,7 @@
 		};
 
 		// 必须是 watchdog_d 意味着 detect 用于长时间的任务检测
-		wdt:watchdog_d{
+		wdt: watchdog_d@16124000 {
 			compatible = "loongson,ls2x-wdt";
 			reg = <0 0x16124000 0 0xC>;
 			clocks = <&apb_clk>;
