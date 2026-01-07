@@ -1,4 +1,4 @@
-obj-y 	+= cpu.o reset.o sdram.o
+obj-y 	+= cpu.o reset.o sdram.o phys2bus.o
 
 ifdef CONFIG_SPL_BUILD
 obj-y 	+= spl.o
