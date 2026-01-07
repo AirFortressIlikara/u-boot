@@ -234,7 +234,7 @@ static int spl_board_load_image(struct spl_image_info *spl_image,
 		memcpy((void *)CONFIG_SYS_LOAD_ADDR,
 				imgaddr, roundup(fdt_totalsize(header), 4));
 		ret = spl_parse_image_header(spl_image, bootdev,
-				(struct image_header *)CONFIG_SYS_LOAD_ADDR);
+				(const struct legacy_img_hdr *)CONFIG_SYS_LOAD_ADDR);
 	} else if (IS_ENABLED(CONFIG_SPL_LOAD_FIT) &&
 			image_get_magic(header) == FDT_MAGIC) {
 		struct spl_load_info load;
