@@ -19,10 +19,6 @@
 #define APB_FREQ				200		//SB 100~200MHz, for BOOT, USB, APB, SDIO
 #define NET_FREQ				200		//NETWORK 200~400MHz, for NETWORK, DC
 
-#ifdef CONFIG_SPL_BUILD
-#define CONFIG_SPL_STACK			0x9000000090040000
-#endif
-
 /* UART configuration */
 #define CONSOLE_BASE_ADDR			LS_UART0_REG_BASE
 /* NS16550-ish UARTs */
