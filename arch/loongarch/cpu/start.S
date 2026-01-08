@@ -40,6 +40,7 @@
 #include <asm/addrspace.h>
 #include <config.h>
 #include <mach/loongson.h>
+#include <system-constants.h>
 
 #define PRINT_EXCEPTION_PROMPT	\
 		li.w	a0, 'e';	\
@@ -288,11 +289,7 @@ start:
 
 locate:
 #if defined(CONFIG_SPL) && !defined(CONFIG_SPL_BUILD)
-  #ifdef CONFIG_SYS_INIT_SP_ADDR
-	li.d	a0, CONFIG_SYS_INIT_SP_ADDR
-  #else
-	li.d	a0, PHYS_TO_CACHED(MEM_WIN_BASE + 0x2000000)
-  #endif
+	li.d	a0, SYS_INIT_SP_ADDR
 #else
 #ifdef DBG_ASM
 	PRINTSTR("\r\nRAM(Cache AS RAM) Initializing ...\r\n")

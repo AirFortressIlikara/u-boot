@@ -1,6 +1,7 @@
 #include <config.h>
 #include <linux/linkage.h>
 #include <asm/regdef.h>
+#include <system-constants.h>
 
 
 WEAK(lowlevel_init)
@@ -16,11 +17,7 @@ ENDPROC(lowlevel_init)
  **********************************************/
 WEAK(ram_init)
     // implement it in every machine.
-#ifdef CONFIG_SYS_INIT_SP_ADDR
-    li.d    a0, CONFIG_SYS_INIT_SP_ADDR
-#else
-    li.d    a0, (-1)
-#endif
+    li.d    a0, SYS_INIT_SP_ADDR
     jirl	zero, ra, 0
 ENDPROC(ram_init)
 
