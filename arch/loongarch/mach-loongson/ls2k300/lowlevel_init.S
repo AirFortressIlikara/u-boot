@@ -3,10 +3,7 @@
 #include <asm/regdef.h>
 #include <asm/addrspace.h>
 #include <mach/loongson.h>
-
-#ifndef CONFIG_SYS_INIT_SP_ADDR
-#define CONFIG_SYS_INIT_SP_ADDR		PHYS_TO_CACHED(0x02000000)	// 32MB
-#endif
+#include <system-constants.h>
 
 // Note: the Address mapping window NOT setup yet.
 // 		 so, use the real physicl address.
@@ -200,9 +197,9 @@ jump_cache:
 	blt	t0, t1, 2b
 
 	// return the sp addr.
-	li.d	a0, CONFIG_SYS_INIT_SP_ADDR
+	li.d	a0, SYS_INIT_SP_ADDR
 #else
-	li.d	a0, CONFIG_SYS_INIT_SP_ADDR
+	li.d	a0, SYS_INIT_SP_ADDR
 #endif
 
 	or	ra, s1, zero
