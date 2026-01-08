@@ -696,8 +696,8 @@ config SYS_UBOOT_START
 
 config HAVE_SYS_MONITOR_BASE
 	bool
-	depends on ARC || MIPS || M68K || NIOS2 || PPC || XTENSA || X86 \
-		|| ENV_IS_IN_FLASH || MTD_NOR_FLASH
+	depends on ARC || LOONGARCH || MIPS || M68K || NIOS2 || PPC || XTENSA \
+		|| X86 || ENV_IS_IN_FLASH || MTD_NOR_FLASH
 	depends on !EFI_APP
 	default y
 
