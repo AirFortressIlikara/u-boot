@@ -24,9 +24,6 @@
 /* NS16550-ish UARTs */
 #define CONFIG_SYS_NS16550_CLK		(APB_FREQ * 1000000)	// CLK_in: 100MHz
 
-/* video configuration */
-// #define DISPLAY_BANNER_ON_VIDCONSOLE
-
 #define DBG_ASM
 
 #endif /* __LOONGSON_LA_COMMON_H__ */
