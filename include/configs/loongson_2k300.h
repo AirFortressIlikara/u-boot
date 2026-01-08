@@ -21,7 +21,6 @@
 
 
 /* Memory configuration */
-#define CONFIG_SYS_BOOTPARAMS_LEN	SZ_64K
 #define CONFIG_SYS_MONITOR_BASE		CONFIG_TEXT_BASE
 
 #ifdef CONFIG_SPL_BUILD
