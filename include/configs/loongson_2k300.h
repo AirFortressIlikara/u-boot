@@ -22,7 +22,7 @@
 /* UART configuration */
 #define CONSOLE_BASE_ADDR			LS_UART0_REG_BASE
 /* NS16550-ish UARTs */
-#define CONFIG_SYS_NS16550_CLK		(APB_FREQ * 1000000)	// CLK_in: 100MHz
+#define CFG_SYS_NS16550_CLK		(APB_FREQ * 1000000)	// CLK_in: 100MHz
 
 #define DBG_ASM
 
