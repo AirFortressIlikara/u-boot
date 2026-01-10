@@ -209,7 +209,7 @@ static int dw_dm_mdio_init(const char *name, void *priv)
 		const char *subnode_name = ofnode_get_name(node);
 		struct udevice *mdiodev;
 
-		if (strcmp(subnode_name, "mdio"))
+		if (strncmp(subnode_name, "mdio", 4))
 			continue;
 
 		ret = device_bind_driver_to_node(dev, "eth_designware_mdio",
