@@ -291,7 +291,7 @@ static int sdio_send_cmd(struct udevice *dev, struct mmc_cmd *cmd, struct mmc_da
 
 	// 部分EMMC芯片需要延迟
 	// 否则指令发送频率一高会有数据传输问题
-	udelay(1);
+	udelay(10);
 
 	while ((cmd_fin == 0) && timeout--) {
 		sdiintmsk = sdio_readl(host, SDIINTMSK);
