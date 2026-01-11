@@ -957,12 +957,16 @@ ulong write_smbios_table(ulong addr)
 		len += method->write((ulong *)&addr, handle++, &ctx);
 	}
 
+#ifdef CONFIG_MACH_LOONGSON
+    table_addr = (ulong)VA_TO_PHYS(tables);
+#else
 	/*
 	 * We must use a pointer here so things work correctly on sandbox. The
 	 * user of this table is not aware of the mapping of addresses to
 	 * sandbox's DRAM buffer.
 	 */
 	table_addr = (ulong)map_sysmem(tables, 0);
+#endif
 
 	/* now go back and write the SMBIOS3 header */
 	se = map_sysmem(start_addr, sizeof(struct smbios3_entry));
