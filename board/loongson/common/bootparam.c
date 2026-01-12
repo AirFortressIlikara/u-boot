@@ -5,7 +5,9 @@
 #include <dm/uclass.h>
 #include <ram.h>
 #include <env.h>
+#include <stdio.h>
 #include "bootparam.h"
+#include "efi_load_initrd.h"
 
 #define SMBIOS_PHYSICAL_ADDRESS 	0x0fffe000
 #define SMBIOS_SIZE_LIMIT 			0x800
@@ -48,11 +50,29 @@ void loongson_fdt_init(void)
 						(void *)fdt);
 }
 
+struct linux_efi_initrd {
+	unsigned long	base;
+	unsigned long	size;
+};
+struct linux_efi_initrd initrd = {
+	VA_TO_PHYS(RD_ADDR),
+	RD_SIZE
+};
+bool loongson_load_initrd = false;
+void loongson_initrd_init(void)
+{
+	const efi_guid_t initrd_guid = EFI_INITRD_MEDIA_GUID;
+	if (loongson_load_initrd)
+		efi_install_configuration_table(&initrd_guid,
+						(void *)&initrd);
+}
+
 struct efi_system_table *build_efi_table(void) {
 #if defined(CONFIG_GENERATE_SMBIOS_TABLE)
 	loongson_smbios_init();
 #endif
 	loongson_fdt_init();
+	loongson_initrd_init();
 	if(efi_init_systab() == EFI_SUCCESS)
 		return &systab;
 	return NULL;
