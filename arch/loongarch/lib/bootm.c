@@ -56,27 +56,6 @@ static void boot_prep_linux(struct bootm_headers *images)
 	}
 }
 
-static const char* boot_smbios_type2_board_name(void)
-{
-	struct udevice *dev;
-	ofnode parent_node, node;
-
-	const char* board_name = NULL;
-	uclass_first_device(UCLASS_SYSINFO, &dev);
-	if (dev) {
-		parent_node = dev_read_subnode(dev, "smbios");
-		if (!ofnode_valid(parent_node))
-			return NULL;
-
-		node = ofnode_find_subnode(parent_node, "baseboard");
-		if (!ofnode_valid(node))
-			return NULL;
-
-		board_name = ofnode_read_string(node, "product");
-	}
-	return board_name;
-}
-
 static void boot_jump_linux(struct bootm_headers *images)
 {
 	typedef void __noreturn (*kernel_entry_t)(int, ulong, ulong);
@@ -97,10 +76,8 @@ static void boot_jump_linux(struct bootm_headers *images)
 
 	efitab = build_efi_table();
 
-	const char* board_name;
 	// 见于 龙芯CPU统一系统架构规范（LA架构嵌入式系列）.pdf 的 4.1 传参约定 一节
 	fw_arg2 = efitab;
-	board_name = boot_smbios_type2_board_name();
 
 	linux_command_line = (char*)calloc(256, sizeof(char));
 	const char *bootargs = env_get("bootargs");
@@ -108,8 +85,6 @@ static void boot_jump_linux(struct bootm_headers *images)
         bootargs = "";
     sprintf(linux_command_line, "%s", bootargs);
 
-	if (board_name)
-		sprintf(linux_command_line, "%s board_name=%s", linux_command_line, board_name);
 	sprintf(linux_command_line, "%s noefi", linux_command_line);
 
 	kernel(1, (ulong)linux_command_line, (ulong)fw_arg2);
