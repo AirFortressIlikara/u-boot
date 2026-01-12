@@ -12,7 +12,7 @@ libs-y += arch/loongarch/cpu/
 libs-y += arch/loongarch/lib/
 
 
-machine-$(CONFIG_ARCH_LA_LOONGSON) += loongson
+machine-$(CONFIG_TARGET_LOONGSON_2K) += loongson
 
 machdirs := $(patsubst %,arch/loongarch/mach-%/,$(machine-y))
 libs-y += $(machdirs)
@@ -20,10 +20,10 @@ libs-y += $(machdirs)
 PLATFORM_CPPFLAGS += $(patsubst %,-I$(srctree)/%include,$(machdirs))
 
 # Optimize for Loongarch architectures
-arch-$(CONFIG_CPU_LOONGARCH64) += -march=loongarch64
+arch-$(CONFIG_64BIT) += -march=loongarch64
 
 # Allow extra optimization for specific CPUs/SoCs
-tune-$(CONFIG_CPU_LOONGARCH64) = -mtune=loongarch64
+tune-$(CONFIG_64BIT) = -mtune=loongarch64
 
 # Include default header files
 cflags-y += -I$(srctree)/arch/loongarch/include/asm/mach-generic

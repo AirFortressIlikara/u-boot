@@ -406,7 +406,7 @@ config SPL_SHARES_INIT_SP_ADDR
 
 config SPL_HAVE_INIT_STACK
 	bool "SPL requires a initial, fixed, stack-pointer location"
-	depends on (ARM || ARCH_JZ47XX || MICROBLAZE || RISCV) && \
+	depends on (ARM || ARCH_JZ47XX || LOONGARCH || MICROBLAZE || RISCV) && \
 		SPL_FRAMEWORK || ROCKCHIP_RK3036
 	depends on !SPL_SHARES_INIT_SP_ADDR
 	default y if ARCH_MX7

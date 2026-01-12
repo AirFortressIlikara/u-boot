@@ -1,0 +1,20 @@
+if SOC_LS2K300
+
+config SYS_CPU
+	default "LA264"
+
+config SYS_SOC
+	default "ls2k300"
+
+config SYS_BOARD
+	default "ls2k300"
+
+config SYS_VENDOR
+	default "loongson"
+
+config SYS_CONFIG_NAME
+	default "loongson_2k300"
+
+source "board/loongson/common/Kconfig"
+
+endif

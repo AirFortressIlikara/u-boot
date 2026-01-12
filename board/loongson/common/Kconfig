@@ -3,7 +3,7 @@ menu "Loongson common options"
 config LOONGSON_RECOVER
 	bool "Enable the featrue Recovering system from usb/mmc."
 	default n
-	depends on MACH_LOONGSON
+	depends on TARGET_LOONGSON_2K
 
 config LOONGSON_VIDCONSOLE_NOTICE
     bool "Show Notice Under logo"

@@ -1,18 +1,18 @@
-menu "Loongson setup"
+menu "Loongson platforms"
 choice
 	prompt "Loongson soc family select"
-	depends on ARCH_LA_LOONGSON
+	depends on TARGET_LOONGSON_2K
 
 config SOC_LS2K300
 	bool "Support for LS2K300 family SoCs"
-	depends on SUPPORTS_CPU_LOONGARCH64
+	depends on 64BIT
 	select SYS_CACHE_SHIFT_6
 
 endchoice
 
 choice
 	prompt "CPU freq select"
-	depends on ARCH_LA_LOONGSON
+	depends on TARGET_LOONGSON_2K
 
 config CPU_500MHZ
 	bool "500MHz"
@@ -40,12 +40,6 @@ config CPU_1100MHZ
 	depends on SOC_LS2K300
 endchoice
 
-config SYS_CPU
-	default "LA264" if SOC_LS2K300
-
-config SYS_SOC
-	default "ls2k300" if SOC_LS2K300
-
 config CPU_FREQ
 	int
 	default 500 if CPU_500MHZ
@@ -55,7 +49,5 @@ config CPU_FREQ
 	default 900 if CPU_900MHZ
 	default 1000 if CPU_1000MHZ
 	default 1100 if CPU_1100MHZ
-
-source "board/loongson/Kconfig"
 
 endmenu
