@@ -68,8 +68,8 @@
 	"stderr=serial\0"
 #endif
 
-#define RECOVER_FRONT_BOOTARGS "setenv bootargs " CMDLINE_CONSOLE " rd_start=${rd_start} rd_size=${rd_size} \
-mtdparts=${mtdparts} root=/dev/ram init=/linuxrc rw rootfstype=ext2 fbcon=rotate:${rotate} panel=${panel};"
+#define RECOVER_FRONT_BOOTARGS "setenv bootargs " CMDLINE_CONSOLE " \
+mtdparts=${mtdparts} root=/dev/ram0 init=/linuxrc rw rootfstype=ext2 fbcon=rotate:${rotate} panel=${panel};"
 
 #define RECOVER_START "bootm ${loadaddr}"
 

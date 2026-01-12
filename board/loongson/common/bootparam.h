@@ -3,4 +3,5 @@
 #include <efi_api.h>
 
 struct efi_system_table *build_efi_table(void);
+extern bool loongson_load_initrd;
 #endif

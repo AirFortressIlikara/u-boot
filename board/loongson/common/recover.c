@@ -3,6 +3,7 @@
 #include <command.h>
 
 #include <asm/gpio.h>
+#include "bootparam.h"
 #include "dm/uclass-id.h"
 #include "loongson_storage_read_file.h"
 
@@ -67,6 +68,7 @@ static int run_recover_cmd_for_storage(enum uclass_id uclass_id)
 		status = 3;
 		goto reset_start_failed;
 	};
+	loongson_load_initrd = true;
 
 	// set bootargs env by loongson env
 	memset(cmdbuf, 0, 256);
@@ -127,6 +129,7 @@ static int run_recover_cmd_for_network(recover_network network_way)
 		status = 3;
 		goto reset_failed;
 	};
+	loongson_load_initrd = true;
 
 	// set bootargs env by loongson env
 	memset(cmdbuf, 0, 256);
