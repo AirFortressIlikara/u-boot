@@ -957,7 +957,7 @@ ulong write_smbios_table(ulong addr)
 		len += method->write((ulong *)&addr, handle++, &ctx);
 	}
 
-#ifdef CONFIG_MACH_LOONGSON
+#ifdef CONFIG_LOONGARCH
     table_addr = (ulong)VA_TO_PHYS(tables);
 #else
 	/*

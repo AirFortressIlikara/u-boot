@@ -5,30 +5,10 @@ config SYS_ARCH
 	default "loongarch"
 
 choice
-	prompt "CPU selection"
-	default CPU_LOONGARCH64
-
-config CPU_LOONGARCH32
-	bool "LOONGARCH32"
-	select SUPPORTS_CPU_LOONGARCH32
-	select 32BIT
-	help
-	  Choose this option to build an U-Boot for LOONGARCH32 architecture.
-
-config CPU_LOONGARCH64
-	bool "LOONGARCH64"
-	select SUPPORTS_CPU_LOONGARCH64
-	select 64BIT
-	help
-	  Choose this option to build a U-Boot for LOONGARCH64 architecture.
-
-endchoice
-
-choice
 	prompt "Target select"
 	optional
 
-config ARCH_LA_LOONGSON
+config TARGET_LOONGSON_2K
 	bool "Support Loongson LA platform"
 	select OF_CONTROL
 	select OF_LIBFDT
@@ -39,24 +19,31 @@ config ARCH_LA_LOONGSON
 	select SUPPORT_SPL
 	select SPL_OF_CONTROL if SPL_DM
 	select SPL_DM_SERIAL if SPL_DM
+	select LAST_STAGE_INIT
+	select SPL_BOARD_INIT if SPL
 	help
 	  This supports loongson platform
 
 endchoice
 
+# board-specific options below
+source "board/loongson/ls2k300/Kconfig"
+
+# platform-specific options below
 source "arch/loongarch/mach-loongson/Kconfig"
 
-config SUPPORTS_CPU_LOONGARCH32
-	bool
+# architecture-specific options below
+choice
+	prompt "Base ISA"
 
-config SUPPORTS_CPU_LOONGARCH64
-	bool
+config ARCH_LA64
+	bool "LoongArch64"
+	select 64BIT
+	select PHYS_64BIT
+	help
+	  Choose this option to target the LoongArch64 base ISA.
 
-config 32BIT
-	bool
-
-config 64BIT
-	bool
+endchoice
 
 config DMA_ADDR_T_64BIT
 	bool
