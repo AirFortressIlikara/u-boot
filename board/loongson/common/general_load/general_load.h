@@ -8,7 +8,6 @@
 enum gl_extra_e {
 	GL_EXTRA_NONE,
 	GL_EXTRA_DECOMPRESS = 1,
-	GL_EXTRA_UBOOTSECURE = 2,
 };
 
 // load-from <src-target> burn-to <dest-target>
