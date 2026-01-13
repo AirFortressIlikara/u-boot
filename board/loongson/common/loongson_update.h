@@ -29,7 +29,6 @@ enum update_type {
 	UPDATE_TYPE_DTB,
 	UPDATE_TYPE_SYSTEM,
 
-	UPDATE_TYPE_BOOTSELECT,
 	UPDATE_TYPE_RESOLUTION,
 
 	UPDATE_TYPE_COUNT,			/* Number of update types */

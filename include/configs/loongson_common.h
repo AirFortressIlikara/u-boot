@@ -36,18 +36,4 @@ mtdparts=${mtdparts} root=/dev/ram0 init=/linuxrc rw rootfstype=ext2 fbcon=rotat
 
 #define RECOVER_DHCP_DOWNLOAD_CMD "dhcp ${loadaddr} uImage;dhcp ${rd_start} ramdisk.gz;"
 
-#define EMMC_BOOT_ENV "setenv bootargs " CMDLINE_CONSOLE " noinitrd init=/sbin/init rootfstype=ext4 rw rootwait; \
-setenv bootcmd ' setenv bootargs ${bootargs} root=/dev/mmcblk0p${syspart} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel}; \
-ext4load mmc 0:1 ${loadaddr} /boot/uImage;bootm ';\
-saveenv;"
-
-#define BOOT_EMMC_DEFAULT EMMC_BOOT_ENV"boot"
-
-#define SDCARD_BOOT_ENV "setenv bootargs " CMDLINE_CONSOLE " noinitrd init=/sbin/init  rootfstype=ext4 rw rootwait; \
-setenv bootcmd ' setenv bootargs ${bootargs} root=/dev/mmcblk1p${syspart} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel}; \
-ext4load mmc 1:1 ${loadaddr} /boot/uImage;bootm ';\
-saveenv;"
-
-#define BOOT_SDCARD_DEFAULT SDCARD_BOOT_ENV"boot"
-
 #endif /* __LOONGSON_ENV_H__ */

@@ -29,7 +29,6 @@ const char *update_typename_str[UPDATE_TYPE_COUNT] = {
 	[UPDATE_TYPE_UBOOT]		= "uboot",
 	[UPDATE_TYPE_DTB]		= "dtb",
 	[UPDATE_TYPE_SYSTEM]	= "system",
-	[UPDATE_TYPE_BOOTSELECT]		= "bootselect",
 	[UPDATE_TYPE_RESOLUTION]		= "resolution",
 };
 
