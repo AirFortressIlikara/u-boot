@@ -3,33 +3,7 @@
 #include <command.h>
 #include <blk.h>
 #include "cmd_gl_arg.h"
-#include "dm/uclass-id.h"
 #include "general_load.h"
-#ifdef CONFIG_LOONGSON_GENERAL_LOAD_FIX_FDISK
-#include "../loongson_boot_syspart_manager.h"
-#include "../loongson_img_fdisk.h"
-
-static void try_to_read_fdisk(gl_target_t* src)
-{
-	int type;
-	struct blk_desc* desc;
-	if (!src)
-		return;
-
-	type = gl_target_get_type(src);
-	if (type == GL_DEVICE_NET)
-		loongson_try_read_img_fdisk("tftp");
-	else if (type == GL_DEVICE_BLK) {
-		desc = gl_target_get_desc(src);
-		if (!desc)
-			return;
-		if (desc->uclass_id == UCLASS_MMC)
-			loongson_try_read_img_fdisk("mmc");
-		else if (desc->uclass_id == UCLASS_USB)
-			loongson_try_read_img_fdisk("usb");
-	}
-}
-#endif
 
 // [--from xxx [--fs xxx]] [--to xxx [--fs xxx]]
 static int do_general_load(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[])
@@ -38,9 +12,6 @@ static int do_general_load(struct cmd_tbl *cmdtp, int flag, int argc, char * con
 	gl_target_t* src;
 	gl_target_t* dest;
 	enum gl_extra_e extra = GL_EXTRA_NONE;
-#ifdef CONFIG_LOONGSON_GENERAL_LOAD_FIX_FDISK
-	int update_rootfs_target;
-#endif
 
 	if(argc == 1)
 		goto end;
@@ -57,20 +28,6 @@ static int do_general_load(struct cmd_tbl *cmdtp, int flag, int argc, char * con
 		goto free_targets;
 
 	ret = general_load(src, dest, extra);
-#ifdef CONFIG_LOONGSON_GENERAL_LOAD_FIX_FDISK
-	if (!ret) {
-		update_rootfs_target = 0;
-		if (!strncmp(src->get_symbol(src), "rootfs", strlen("rootfs")))
-			update_rootfs_target = 1;
-		if (!strncmp(src->get_symbol(src), "/update/rootfs", strlen("/update/rootfs")))
-			update_rootfs_target = 1;
-
-		if (update_rootfs_target) {
-			setup_cur_syspart(SYSPART_FIRST);
-			try_to_read_fdisk(src);
-		}
-	}
-#endif
 free_targets:
 	destroy_gl_target(dest);
 free_src:

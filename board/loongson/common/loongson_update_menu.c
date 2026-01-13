@@ -32,20 +32,6 @@ static char *updatemenu_kernel[] = {
 	NULL
 };
 
-static char *updatemenu_rootfs[] = {
-#ifdef CONFIG_LOONGSON_GENERAL_LOAD
-	#ifdef CONFIG_USB_STORAGE
-	"Update rootfs (rootfs.img) (by usb)=general_load --if usb --sym rootfs.img --decompress;\0",
-	#endif
-	"Update rootfs (rootfs.img) (by tftp)=general_load --if net --sym rootfs.img --decompress;\0",
-	#ifdef CONFIG_MMC
-	"Update rootfs (rootfs.img) (by mmc)=general_load --if mmc1 --sym rootfs.img --decompress;\0",
-	#endif
-#endif
-
-	NULL
-};
-
 static char *updatemenu_uboot[] = {
 	"Update u-boot to spi flash (by usb)=loongson_update usb uboot\0",
 	#ifdef CONFIG_MMC
@@ -144,9 +130,6 @@ static char *updatemenu_getoption(unsigned short int n)
 	switch (updatemenu_type) {
 	case UPDATE_TYPE_KERNEL:
 		return updatemenu_kernel[n];
-		break;
-	case UPDATE_TYPE_ROOTFS:
-		return updatemenu_rootfs[n];
 		break;
 	case UPDATE_TYPE_UBOOT:
 		return updatemenu_uboot[n];
@@ -537,7 +520,7 @@ int do_updatemenu(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 	}
 	if ((updatemenu_type == UPDATE_TYPE_UNKNOWN) || (updatemenu_type >= UPDATE_TYPE_COUNT)) {
 		printf("updatemenu type unknown\r\n");
-		printf("please intput type: kernel/rootfs/uboot/dtb\r\n");
+		printf("please intput type: kernel/uboot/dtb\r\n");
 		goto err;
 	}
 
@@ -562,5 +545,5 @@ err:
 U_BOOT_CMD(
 	updatemenu, 3, 1, do_updatemenu,
 	"ANSI terminal updatemenu",
-	"<kernel|rootfs|uboot|dtb|system|resolution>"
+	"<kernel|uboot|dtb|system|resolution>"
 );

@@ -24,7 +24,6 @@ const char *update_devname_str[UPDATE_DEV_COUNT] = {
 
 const char *update_typename_str[UPDATE_TYPE_COUNT] = {
 	[UPDATE_TYPE_KERNEL]	= "kernel",
-	[UPDATE_TYPE_ROOTFS]	= "rootfs",
 	[UPDATE_TYPE_UBOOT]		= "uboot",
 	[UPDATE_TYPE_DTB]		= "dtb",
 	[UPDATE_TYPE_SYSTEM]	= "system",
