@@ -13,7 +13,6 @@ obj-$(CONFIG_TARGET_LOONGSON_2K)		+= loongson_update.o loongson_storage_read_fil
 obj-$(CONFIG_LOONGSON_RECOVER)		+= recover.o
 obj-y += bootparam.o loongson_efi_systab.o
 obj-y += loongson_boot_syspart_manager.o
-obj-y += loongson_wdt_setup.o
 obj-$(CONFIG_LOONGSON_GENERAL_LOAD) += general_load/
 obj-$(CONFIG_LOONGSON_GENERAL_LOAD) += loongson_img_fdisk.o
 
