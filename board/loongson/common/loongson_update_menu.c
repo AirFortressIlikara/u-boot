@@ -76,15 +76,6 @@ static char *updatemenu_system[] = {
 	NULL
 };
 
-static char *updatemenu_bootselect[] = {
-#ifdef CONFIG_MMC
-	"System Boot from emmc=loongson_boot emmc\0",
-	"System Boot from sdcard=loongson_boot sdcard\0",
-#endif
-//	"System Boot from usb=" BOOT_USB_DEFAULT "\0",
-	NULL
-};
-
 __weak char *resolution_menu[] = {
 	"Video dev not defined=""\0",
 	NULL
@@ -165,9 +156,6 @@ static char *updatemenu_getoption(unsigned short int n)
 		break;
 	case UPDATE_TYPE_SYSTEM:
 		return updatemenu_system[n];
-		break;
-	case UPDATE_TYPE_BOOTSELECT:
-		return updatemenu_bootselect[n];
 		break;
 	case UPDATE_TYPE_RESOLUTION:
 		return get_resolution_option(n);
