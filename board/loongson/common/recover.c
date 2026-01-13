@@ -159,13 +159,11 @@ reset_failed:
 static int do_recover_from_usb(void)
 {
 	printf("Install System By USB .....\r\n");
-	// return run_recover_cmd(RECOVER_USB_DEFAULT);
 	return run_recover_cmd_for_storage(UCLASS_USB);
 }
 
 static int do_recover_from_tftp(void)
 {
-	// char cmd[]= "tftpboot ${loadaddr} uImage;tftpboot ${rd_start} ramdisk.gz;"RECOVER_DEFAULT_ENV"";
 	printf("Install System By tftp .....\r\n");
 	return run_recover_cmd_for_network(NETWORK_TFTP);
 }
@@ -180,7 +178,6 @@ static int do_recover_from_dhcp(void)
 static int do_recover_from_mmc(void)
 {
 	printf("Install System By MMC .....\r\n");
-	// return run_recover_cmd(RECOVER_MMC_DEFAULT);
 	return run_recover_cmd_for_storage(UCLASS_MMC);
 }
 #endif
