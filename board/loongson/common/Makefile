@@ -6,7 +6,6 @@
 #
 
 obj-$(CONFIG_TARGET_LOONGSON_2K)		+= platform.o
-obj-$(CONFIG_TARGET_LOONGSON_2K)		+= bdinfo/
 
 ifndef CONFIG_SPL_BUILD
 obj-$(CONFIG_TARGET_LOONGSON_2K)		+= loongson_update.o loongson_storage_read_file.o

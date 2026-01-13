@@ -9,7 +9,6 @@
 #include <jffs2/jffs2.h>
 
 #include "loongson_update.h"
-#include "bdinfo/bdinfo.h"
 #include "loongson_storage_read_file.h"
 
 extern int mtdparts_init(void);
@@ -31,59 +30,6 @@ const char *update_typename_str[UPDATE_TYPE_COUNT] = {
 	[UPDATE_TYPE_SYSTEM]	= "system",
 	[UPDATE_TYPE_RESOLUTION]		= "resolution",
 };
-
-static void user_env_save(void)
-{
-	char *env_val;
-	char *bdi_val;
-	bool need_save = false;
-
-	// syspart 用于保存操作系统分区的分区号，如：
-	//   linux: sda1、sda2 ...
-	//   uboot: mmc 0:1、mmc 0:2 ...
-	env_val = env_get("syspart");
-	if (env_val == NULL)
-		return;
-
-	bdi_val = bdinfo_get(BDI_ID_SYSPART);
-
-	if (strcmp(env_val, bdi_val) != 0) {
-		bdinfo_set(BDI_ID_SYSPART, env_val);
-		need_save = true;
-	}
-
-	if (need_save)
-		bdinfo_save();
-}
-
-static void user_env_fetch_about_syspart(void)
-{
-	char *bdi_val;
-	char *temp_env_val;
-
-	// syspart 这个变量被人为改动 所以不需要按bdiinfo的信息为准
-	// 需要同步到 bdiinfo才真
-	temp_env_val = env_get("syspart_ch");
-	if (temp_env_val && !strcmp(temp_env_val, "1")) {
-		env_set("syspart_ch", "0");
-		env_save();
-		user_env_save();
-		return;
-	}
-
-	bdi_val = bdinfo_get(BDI_ID_SYSPART);
-	if (bdi_val)
-		env_set("syspart", bdi_val);
-}
-
-void user_env_fetch(void)
-{
-	if(bdinfo_save_in_nv()) {
-		user_env_save();
-		return;
-	}
-	user_env_fetch_about_syspart();
-}
 
 static void update_failed_way_tip(int way)
 {
@@ -230,8 +176,6 @@ static int update_uboot(int dev)
 	printf("Erase ddr_context partition ... ");
 	sprintf(cmd, "mtd erase ddr_context");
 	run_command(cmd, 0);
-
-	user_env_save();
 
 out:
 	update_result_display(ret, dev, UPDATE_TYPE_UBOOT);
