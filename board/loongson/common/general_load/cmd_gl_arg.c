@@ -149,9 +149,6 @@ parse_opt:
 	else if ((strcmp(*a, "--decompress") == 0)) {
 		goto indicate_decompress;
 	}
-	else if ((strcmp(*a, "--ubootsecure") == 0)) {
-		goto indicate_ubootsecure;
-	}
 	else if ((strcmp(*a, "--force") == 0)) {
 		goto force_run;
 	}
@@ -192,11 +189,6 @@ parse_symbol:
 
 indicate_decompress:
 	*extra |= GL_EXTRA_DECOMPRESS;
-	a++;
-	goto parse_opt;
-
-indicate_ubootsecure:
-	*extra |= GL_EXTRA_UBOOTSECURE;
 	a++;
 	goto parse_opt;
 

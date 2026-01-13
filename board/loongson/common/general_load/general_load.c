@@ -9,7 +9,6 @@
 #include "general_load.h"
 #include "device/mtd.h"
 #include "device/net.h"
-#include "utils/flash_secure.h"
 #include "gl_debug.h"
 
 #define ldbr_get_ld_type(ldbr) \
@@ -213,23 +212,6 @@ static int m__br_mtd_decompress(ldbr_t* self, u64 offset,
 	return gzwrite_mtd_gl(buf, size, desc, 1024*1024, offset, 0, retsize);
 }
 
-static int m__br_mtd_ubootsecure(ldbr_t* self, u64 offset,
-		void* buf, u64 size, u64* retsize)
-{
-	struct mtd_gl_desc* desc = ldbr_get_br_desc(self);
-	int part = ldbr_get_br_part(self);
-	u64 remain;
-
-	if (!uboot_secure(buf, size))
-		return -1;
-
-	remain = mtd_gl_partition_remain(desc, offset, part);
-	offset += mtd_gl_partition_offset(desc, part);
-
-	return mtd_gl_write(desc, offset,
-			size < remain ? size : remain, retsize, buf);
-}
-
 static int m__ldfin_mtd_clearbad(ldbr_t* self)
 {
 	struct mtd_gl_desc* desc = ldbr_get_ld_desc(self);
@@ -370,8 +352,6 @@ static int ldbr_init_br(ldbr_t* ldbr, enum gl_extra_e extra)
 			// extra 暂时多选一
 			if (extra & GL_EXTRA_DECOMPRESS)
 				ldbr->br = m__br_mtd_decompress;
-			else if (extra & GL_EXTRA_UBOOTSECURE)
-				ldbr->br = m__br_mtd_ubootsecure;
 			else
 				ldbr->br = m__br_mtd;
 			ldbr->brfin = m__brfin_mtd_eraserest;
