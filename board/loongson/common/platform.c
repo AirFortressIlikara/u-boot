@@ -13,7 +13,6 @@
 #include <mach/loongson.h>
 #include <linux/delay.h>
 #include <sound.h>
-#include "bdinfo/bdinfo.h"
 #include <env.h>
 #include <net.h>
 #include <phy.h>
@@ -167,41 +166,17 @@ static void acpi_config(void)
 // mac地址来源优先级：env > bdinfo > random
 static void ethaddr_setup(void)
 {
-	uchar bdi_ethaddr[ARP_HLEN];
 	uchar env_ethaddr[ARP_HLEN];
-	char *bdi_ethaddr_str;
 	int id;
-	char* env_val;
 	int need_update_bdinfo;
 
 	for (id = 0; id < 2; ++id) {
 		if (!eth_env_get_enetaddr_by_index("eth", id, env_ethaddr)) {
-			need_update_bdinfo = 0;
-			if (id == 0)
-				bdi_ethaddr_str = bdinfo_get(BDI_ID_MAC0);
-			else
-				bdi_ethaddr_str = bdinfo_get(BDI_ID_MAC1);
-
-			string_to_enetaddr(bdi_ethaddr_str, bdi_ethaddr);
-			if (is_valid_ethaddr(bdi_ethaddr)) {
-				memcpy(env_ethaddr, bdi_ethaddr, ARP_HLEN);
-			} else {
-				need_update_bdinfo = 1;
-				net_random_ethaddr(env_ethaddr);
-				printf("\neth%d: using random MAC address - %pM\n",
-					id, env_ethaddr);
-			}
+			need_update_bdinfo = 1;
+			net_random_ethaddr(env_ethaddr);
+			printf("\neth%d: using random MAC address - %pM\n",
+				id, env_ethaddr);
 			eth_env_set_enetaddr_by_index("eth", id, env_ethaddr);
-			if (need_update_bdinfo) {
-				if (id == 0){
-					env_val = env_get("ethaddr");
-					bdinfo_set(BDI_ID_MAC0, env_val);
-				} else {
-					env_val = env_get("eth1addr");
-					bdinfo_set(BDI_ID_MAC1, env_val);
-				}
-				bdinfo_save();
-			}
 		}
 	}
 }
@@ -238,7 +213,6 @@ __weak int ls_board_early_init_r(void)
 
 int board_early_init_r(void)
 {
-	bdinfo_init();
 	return ls_board_early_init_r();
 }
 #endif

@@ -2,7 +2,6 @@
 #include <command.h>
 #include <malloc.h>
 #include <env.h>
-#include "bdinfo/bdinfo.h"
 #include "loongson_boot_syspart_manager.h"
 
 static int setup_syspart_uboot_env(char* syspart)
@@ -19,17 +18,6 @@ static int setup_syspart_uboot_env(char* syspart)
 	env_set(SYSPART_USER_CH_UBOOT_ENV_NAME, "0");
 
 	env_save();
-	return 0;
-}
-
-static int setup_syspart_nvme_env(char* syspart)
-{
-	if (!syspart)
-		return -1;
-
-	bdinfo_set(BDI_ID_SYSPART, syspart);
-
-	bdinfo_save();
 	return 0;
 }
 
@@ -51,9 +39,6 @@ int switch_syspart(void)
 	ret = setup_syspart_uboot_env(env_val);
 	if (ret)
 		printf("%s: setup uboot env failed! (target: %s)", __func__, env_val);
-	ret = setup_syspart_nvme_env(env_val);
-	if (ret)
-		printf("%s: setup nvme env failed! (target: %s)", __func__, env_val);
 	return ret ? -1 : 0;
 }
 
@@ -67,15 +52,11 @@ int setup_cur_syspart(char* syspart)
 	ret = setup_syspart_uboot_env(syspart);
 	if (ret)
 		printf("%s: setup uboot env failed! (target: %s)\n", __func__, syspart);
-	ret = setup_syspart_nvme_env(syspart);
-	if (ret)
-		printf("%s: setup nvme env failed! (target: %s)\n", __func__, syspart);
 	return ret ? -1 : 0;
 }
 
 int detect_user_change_syspart(void)
 {
-	int ret = 0;
 	char *env_val = NULL;
 
 	env_val = env_get(SYSPART_USER_CH_UBOOT_ENV_NAME);
@@ -89,8 +70,5 @@ int detect_user_change_syspart(void)
 	if (!env_val)
 		return -1;
 
-	ret = setup_syspart_nvme_env(env_val);
-	if (ret)
-		printf("%s: setup nvme env failed! (target: %s)", __func__, env_val);
-	return ret ? -1 : 0;
+	return 0;
 }
