@@ -10,7 +10,6 @@
 #include <asm/byteorder.h>
 #include <asm/barrier.h>
 #include <asm/addrspace.h>
-#include <mach/mapmem.h>
 #include <asm/config.h>
 
 static inline void sync(void)
@@ -19,6 +18,19 @@ static inline void sync(void)
 }
 
 #ifdef CONFIG_ARCH_MAP_SYSMEM
+
+static __always_inline void *map_sysmem_mach(phys_addr_t paddr, unsigned long len)
+{
+	if (VA_TO_PHYS(paddr) >= (unsigned long)MEM_WIN_BASE &&
+			VA_TO_PHYS(paddr) < (unsigned long)MEM_WIN_BASE + (unsigned long)MEM_WIN_SIZE)
+		return (void *)PHYS_TO_CACHED((unsigned long)paddr);
+
+	if (VA_TO_PHYS(paddr) >= (unsigned long)HIGH_MEM_WIN_BASE &&
+			VA_TO_PHYS(paddr) < (unsigned long)HIGH_MEM_WIN_BASE + (unsigned long)HIGH_MEM_WIN_SIZE)
+		return (void *)PHYS_TO_CACHED((unsigned long)paddr);
+
+	return (void *)PHYS_TO_UNCACHED((unsigned long)paddr);
+}
 
 static __always_inline void *map_sysmem(phys_addr_t paddr, unsigned long len)
 {
