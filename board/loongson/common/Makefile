@@ -11,9 +11,7 @@ ifndef CONFIG_SPL_BUILD
 obj-$(CONFIG_TARGET_LOONGSON_2K)		+= loongson_update.o loongson_storage_read_file.o
 obj-$(CONFIG_LOONGSON_RECOVER)		+= recover.o
 obj-y += bootparam.o loongson_efi_systab.o
-obj-y += loongson_boot_syspart_manager.o
 obj-$(CONFIG_LOONGSON_GENERAL_LOAD) += general_load/
-obj-$(CONFIG_LOONGSON_GENERAL_LOAD) += loongson_img_fdisk.o
 
 ifeq ($(CONFIG_MENU), y)
 obj-$(CONFIG_TARGET_LOONGSON_2K) += loongson_update_menu.o
