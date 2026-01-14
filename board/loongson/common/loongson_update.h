@@ -23,17 +23,9 @@ enum update_dev {
 /* Update types: */
 enum update_type {
 	UPDATE_TYPE_UNKNOWN = 0,
-	UPDATE_TYPE_KERNEL,
-	UPDATE_TYPE_UBOOT,
-	UPDATE_TYPE_DTB,
 	UPDATE_TYPE_SYSTEM,
-
-	UPDATE_TYPE_RESOLUTION,
 
 	UPDATE_TYPE_COUNT,			/* Number of update types */
 };
-
-void get_resolution(void);
-void update_resolution(char *command, int num);
 
 #endif
