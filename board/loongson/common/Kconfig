@@ -1,19 +1,5 @@
 menu "Loongson common options"
 
-config LOONGSON_RECOVER
-	bool "Enable the featrue Recovering system from usb/mmc."
-	default n
-	depends on TARGET_LOONGSON_2K
-
-config LOONGSON_VIDCONSOLE_NOTICE
-    bool "Show Notice Under logo"
-    default y
-
-config LOONGSON_BOARD_MMC_FS
-    bool "board have mmc(such as emmc or SD card) fs"
-    default n
-    select CMD_UNZIP
-
 config LOONGSON_MMC_HIGH_PERFORMANCE
     bool "Change MMC-PAD to 0x7, will support HS200 mode"
     default n
