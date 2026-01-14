@@ -10,7 +10,6 @@
 #define __LOONGSON_LA_COMMON_H__
 
 #include <linux/sizes.h>
-#include "loongson_common.h"
 
 /* Loongson LS2K300 clock configuration. */
 #define REF_FREQ				120		//参考时钟固定为120MHz
