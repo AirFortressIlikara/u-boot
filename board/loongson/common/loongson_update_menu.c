@@ -19,38 +19,6 @@ extern const char *update_typename_str[UPDATE_TYPE_COUNT];
 int updatemenu_type;
 int updatemenu_return = UPDATEMENU_RETURN_CONSOLE;
 
-static char *updatemenu_kernel[] = {
-#ifdef CONFIG_LOONGSON_GENERAL_LOAD
-	#ifdef CONFIG_USB_STORAGE
-	"Update kernel (uImage) (by usb)=general_load --if usb --sym uImage\0",
-	#endif
-	#ifdef CONFIG_MMC
-	"Update kernel (uImage) (by mmc)=general_load --if mmc1 --sym uImage\0",
-	#endif
-	"Update kernel (uImage) (by tftp)=general_load --if net --sym uImage\0",
-#endif
-	NULL
-};
-
-static char *updatemenu_uboot[] = {
-	"Update u-boot to spi flash (by usb)=loongson_update usb uboot\0",
-	#ifdef CONFIG_MMC
-	"Update u-boot to spi flash (by mmc)=loongson_update mmc uboot\0",
-	#endif
-	"Update u-boot to spi flash (by tftp)=loongson_update tftp uboot\0",
-	NULL
-};
-
-static char *updatemenu_dtb[] = {
-	"Update DTB (dtb.bin) to spi flash (by usb)=loongson_update usb dtb\0",
-	#ifdef CONFIG_MMC
-	"Update DTB (dtb.bin) to spi flash (by mmc)=loongson_update mmc dtb\0",
-	#endif
-	"Update DTB (dtb.bin) to spi flash (by tftp)=loongson_update tftp dtb\0",
-	"Clean  DTB parts=mtd erase dtb\0",
-	NULL
-};
-
 static char *updatemenu_system[] = {
 #ifdef CONFIG_LOONGSON_BOARD_MMC_FS
 	"System install to mmc device (by usb)=recover_cmd usb 1 mmc\0",
@@ -61,33 +29,6 @@ static char *updatemenu_system[] = {
 #endif
 	NULL
 };
-
-__weak char *resolution_menu[] = {
-	"Video dev not defined=""\0",
-	NULL
-};
-
-__weak void update_resolution(char *command, int num)
-{
-	run_command(command, 0);
-}
-
-__weak char* get_resolution_option(int n)
-{
-	return resolution_menu[n];
-}
-
-//////////////////////////////
-
-__weak char *rotation_menu[] = {
-	"Video dev not defined=""\0",
-	NULL
-};
-
-__weak void update_rotation(char *command, int num)
-{
-	run_command(command, 0);
-}
 
 /* maximum updatemenu entries */
 #define MAX_COUNT	99
@@ -128,20 +69,8 @@ static char *updatemenu_getoption(unsigned short int n)
 		return NULL;
 
 	switch (updatemenu_type) {
-	case UPDATE_TYPE_KERNEL:
-		return updatemenu_kernel[n];
-		break;
-	case UPDATE_TYPE_UBOOT:
-		return updatemenu_uboot[n];
-		break;
-	case UPDATE_TYPE_DTB:
-		return updatemenu_dtb[n];
-		break;
 	case UPDATE_TYPE_SYSTEM:
 		return updatemenu_system[n];
-		break;
-	case UPDATE_TYPE_RESOLUTION:
-		return get_resolution_option(n);
 		break;
 	}
 	return NULL;
@@ -493,11 +422,7 @@ cleanup:
 	if (title && command) {
 		debug("Starting entry '%s'\n", title);
 		free(title);
-		if (updatemenu_type == UPDATE_TYPE_RESOLUTION) {
-			update_resolution(command, num);
-		} else {
-			run_command(command, 0);
-		}
+		run_command(command, 0);
 		free(command);
 	}
 

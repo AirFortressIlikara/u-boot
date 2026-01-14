@@ -32,7 +32,6 @@ CONFIG_SPL_SPI_FLASH_SUPPORT=y
 CONFIG_SPL_SPI=y
 CONFIG_TARGET_LOONGSON_2K=y
 CONFIG_LOONGSON_RECOVER=y
-CONFIG_LOONGSON_GENERAL_LOAD=y
 CONFIG_LOONGSON_BOARD_MMC_FS=y
 CONFIG_LOONGSON_MMC_HIGH_PERFORMANCE=y
 CONFIG_SOC_LS2K300=y
@@ -48,7 +47,7 @@ CONFIG_AUTOBOOT_MENU_SHOW=y
 CONFIG_USE_BOOTARGS=y
 CONFIG_BOOTARGS="console=ttyS0,115200 rw noinitrd init=/sbin/init rootfstype=ext4 rootwait"
 CONFIG_USE_BOOTCOMMAND=y
-CONFIG_BOOTCOMMAND="setenv bootargs ${bootargs} root=/dev/mmcblk0p${syspart} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel};sf probe;sf read ${fdt_addr} dtb;ext4load mmc 0:${syspart} ${loadaddr} /boot/uImage;bootm"
+CONFIG_BOOTCOMMAND="setenv bootargs ${bootargs} root=/dev/mmcblk${mmcdev}p${mmcpart} mtdparts=${mtdparts} fbcon=rotate:${rotate} panel=${panel};sf probe;sf read ${fdt_addr} dtb;ext4load mmc ${mmcdev}:${mmcpart} ${loadaddr} /boot/uImage;bootm"
 CONFIG_USE_PREBOOT=y
 CONFIG_PREBOOT="usb start"
 CONFIG_SYS_CBSIZE=4096
@@ -73,6 +72,8 @@ CONFIG_SPL_MTD=y
 CONFIG_SPL_DM_SPI_FLASH=y
 CONFIG_SPL_SPI_FLASH_MTD=y
 CONFIG_SPL_SPI_LOAD=y
+CONFIG_CMDLINE=y
+CONFIG_HUSH_PARSER=y
 CONFIG_SYS_MAXARGS=32
 # CONFIG_BOOTM_PLAN9 is not set
 CONFIG_CMD_BOOTMENU=y
