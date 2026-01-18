@@ -9,6 +9,7 @@
 
 #include <asm/types.h>
 #include <asm/cache.h>
+#include <asm/u-boot.h>
 
 /* Architecture-specific global data */
 struct arch_global_data {
