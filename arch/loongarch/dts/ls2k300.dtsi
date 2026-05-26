@@ -27,7 +27,6 @@
 			compatible = "loongarch";
 			reg=<0>;
 			numa-node-id = <0>;
-			bootph-all;
 		};
 	};
 
@@ -35,7 +34,6 @@
 		compatible = "loongson,cpu-interrupt-controller";
 		interrupt-controller;
 		#interrupt-cells = <1>;
-		bootph-all;
 	};
 
 	extioiic: interrupt-controller@16001400 {
@@ -48,7 +46,6 @@
 		vec_count=<128>;
 		misc_func=<0x100>;
 		eio_en_off=<27>;
-		bootph-all;
 	};
 
 	clocks {
@@ -246,7 +243,6 @@
 			clocks = <&boot_clk>;
 			clock-names = "sclk";
 			status = "disabled";
-			bootph-all;
 		};
 
 		spi1: spi@16018000 {

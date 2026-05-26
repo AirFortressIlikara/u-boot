@@ -1,4 +1,4 @@
-#include "ls2k300_99pi.dtsi"
+#include "loongson_2k0300_ctcisz_forever_pi.dtsi"
 #include "ls2k300_ddr_samsung_512m.dtsi"
 #include <dt-bindings/gpio/gpio.h>
 

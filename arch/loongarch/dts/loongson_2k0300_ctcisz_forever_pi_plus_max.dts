@@ -140,10 +140,9 @@
 	pix-fmt = "rgb888";
 };
 
-&sdio1 {
-	status = "okay";
-	use-sdcard;
-};
+// &sdio1 {
+// 	status = "okay";
+// };
 
 &spi0 {
 	status = "okay";
