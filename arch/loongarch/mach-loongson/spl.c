@@ -72,7 +72,7 @@ void spl_display_print(void)
 }
 #endif
 
-void spl_perform_fixups(struct spl_image_info *spl_image)
+void spl_perform_arch_fixups(struct spl_image_info *spl_image)
 {
 	spl_image->entry_point =
 		(uintptr_t)map_sysmem(spl_image->entry_point, 0);
